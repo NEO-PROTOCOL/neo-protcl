@@ -11,7 +11,7 @@ export default defineConfig({
       manifest: {
         name: 'NΞØ Protocol',
         short_name: 'NEO',
-        description: 'NΞØ Protocol - Uma nova forma de existir em rede',
+        description: 'O Protocolo NΞØ não nasceu para ser uma empresa. Nasceu para ser uma topologia. Uma rede de nós autônomos. Uma consciência distribuída. Descentralização não é uma tecnologia. É um ato político. Uma forma de existir.',
         theme_color: '#000000',
         background_color: '#000000',
         display: 'standalone',

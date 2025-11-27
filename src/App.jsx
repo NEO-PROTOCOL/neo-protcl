@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NeoProtocol from './pages/home/NeoProtocol';
 import MCPConsole from './pages/mcp-console';
-import X402Example from './pages/x402-example';
-import SDKExample from './pages/sdk-example';
+import ManifestoPage from './pages/manifesto/ManifestoPage';
+import NosPage from './pages/nos/NosPage';
 
 function App() {
   return (
@@ -10,9 +10,9 @@ function App() {
       <Routes>
         <Route path="/" element={<NeoProtocol />} />
         <Route path="/neo-protocol" element={<NeoProtocol />} />
+        <Route path="/manifesto" element={<ManifestoPage />} />
+        <Route path="/nos" element={<NosPage />} />
         <Route path="/mcp" element={<MCPConsole />} />
-        <Route path="/x402" element={<X402Example />} />
-        <Route path="/sdk" element={<SDKExample />} />
       </Routes>
     </Router>
   );

@@ -1,5 +1,7 @@
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import Navbar from '../../components/Navbar';
+import BottomNavigation from '../../components/BottomNavigation';
 import ConnectButton from '../../components/WalletConnect/ConnectButton';
 
 const phrases = [
@@ -11,19 +13,11 @@ const phrases = [
 ];
 
 export default function NeoProtocol() {
-  const fullText = 'NΞØ Protocol';
-  const [typedText, setTypedText] = useState('');
   const [currentPhrase, setCurrentPhrase] = useState(phrases[0]);
-
-  useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      setTypedText(fullText.slice(0, index + 1));
-      index++;
-      if (index === fullText.length) clearInterval(interval);
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
+  const [pullDistance, setPullDistance] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const touchStartY = useRef(0);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const rotate = setInterval(() => {
@@ -35,180 +29,257 @@ export default function NeoProtocol() {
     return () => clearInterval(rotate);
   }, []);
 
+  // Pull to Refresh
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0) {
+        touchStartY.current = e.touches[0].clientY;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (window.scrollY === 0 && touchStartY.current > 0) {
+        const distance = e.touches[0].clientY - touchStartY.current;
+        if (distance > 0) {
+          setPullDistance(Math.min(distance, 80));
+        }
+      }
+    };
+
+    const handleTouchEnd = () => {
+      if (pullDistance > 50) {
+        setIsRefreshing(true);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
+      setPullDistance(0);
+      touchStartY.current = 0;
+    };
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: true });
+    container.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [pullDistance]);
+
+  // Smooth scroll para âncoras
+  useEffect(() => {
+    const handleClick = (e) => {
+      const href = e.target.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    };
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', handleClick);
+    });
+
+    return () => {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.removeEventListener('click', handleClick);
+      });
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-black text-white safe-area-inset">
-      {/* 🧠 HERO - Mobile First */}
-      <section className="relative py-12 px-4 pt-safe pb-safe">
-        <div className="max-w-full mx-auto text-center">
-          <div className="mb-6 animate-pulse">
-            <img 
-              src="/logos/neo_ico.png" 
-              alt="NΞØ Protocol" 
-              className="w-24 h-24 mx-auto mb-4"
-              loading="eager"
-            />
-          </div>
+    <div 
+      ref={containerRef}
+      className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100 overflow-x-hidden pb-16 safe-area-inset relative scanline"
+      style={{ paddingBottom: `calc(60px + env(safe-area-inset-bottom))` }}
+    >
+      {/* Scanline overlay effect */}
+      <div className="scanline"></div>
 
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent neon-text px-4">
-            {typedText}
-          </h1>
+      {/* Pull to Refresh Indicator */}
+      {pullDistance > 0 && (
+        <div 
+          className="fixed top-0 left-0 right-0 flex justify-center items-center z-50 transition-transform"
+          style={{ transform: `translateY(${Math.min(pullDistance, 80)}px)` }}
+        >
+          <div className={`pull-indicator ${pullDistance > 50 ? 'active' : ''}`}></div>
+        </div>
+      )}
 
-          <h2 className="text-xl font-medium mb-4 text-gray-300 px-4">
-            é uma nova forma de existir em rede.
-          </h2>
+      {/* Background Effects - 90s style */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl"></div>
+      </div>
 
-          <div className="px-4 space-y-4 mb-6 text-sm leading-relaxed text-gray-400">
-            <p>
-              Quando você vê o selo "Desenvolvido por NΞØ Protocol", está diante de um sistema simbólico e tecnológico que rompe com a lógica centralizada das plataformas tradicionais.
+      <div className="relative z-10">
+        {/* Status Bar Spacer */}
+        <div className="ios-status-bar"></div>
+
+        <Navbar />
+
+        {/* Hero Section - Terminal/90s Style */}
+        <header className="container mx-auto px-4 py-6 pt-safe">
+          <div className="mb-6">
+            {/* Terminal prompt style */}
+            <div className="mb-4 font-mono text-xs text-cyan-400/60 cyber-glow">
+              <span className="text-green-400">$</span> <span className="text-cyan-400">neo-protocol</span> <span className="text-gray-500">--init</span>
+            </div>
+            
+            <div className="mb-4 text-center">
+              {/* Container circular para a imagem hero */}
+              <div className="w-32 h-32 md:w-40 md:h-40 mx-auto mb-6 rounded-full overflow-hidden border-4 border-cyan-400/50 bg-gray-800/50 backdrop-blur-sm flex items-center justify-center"
+                   style={{
+                     boxShadow: '0 0 30px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.1)'
+                   }}>
+                <img
+                  src="https://gateway.lighthouse.storage/ipfs/bafybeicwktbd4bpuey7w5efaqqzgtrul43hlwn4ison5l4vn37b3cklzdi"
+                  alt="NΞØ Protocol Symbol"
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                />
+              </div>
+              
+              {/* Logo NΞØ abaixo da imagem */}
+              <div className="mb-4">
+                <img
+                  src="https://gateway.lighthouse.storage/ipfs/bafkreifm3hzdhem47tfzzqxm4274t3rqkzrgsa2zi2bc72nzjecxaixsxm"
+                  alt="NΞØ Protocol"
+                  className="h-12 md:h-16 w-auto mx-auto drop-shadow-[0_0_20px_rgba(0,255,255,0.5)]"
+                  loading="eager"
+                />
+              </div>
+              
+              <div className="h-1 w-24 bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 mx-auto mb-4 rounded-full cyber-glow"
+                   style={{ boxShadow: '0 0 10px rgba(0, 255, 255, 0.5)' }}></div>
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-black mb-3 text-center cyber-glow"
+                style={{
+                  textShadow: '0 0 10px rgba(59, 130, 246, 0.6), 0 0 20px rgba(59, 130, 246, 0.4)',
+                  color: '#3b82f6',
+                  fontFamily: "'Courier New', monospace",
+                  letterSpacing: '0.1em'
+                }}>
+              PROTOCOL
+            </h2>
+
+            <p className="text-sm md:text-base mb-6 opacity-90 max-w-md mx-auto leading-relaxed font-mono text-center px-4"
+               style={{ color: '#d1d5db' }}>
+              Você não precisa ser mais uma conta no sistema.
+              <br />
+              Pode ser um <span className="text-cyan-300 font-bold cyber-glow">nó ativo</span> na revolução digital.
             </p>
 
-            <p>
-              O protocolo é <strong className="text-white">open source</strong> por princípio e <strong className="text-white">Web3</strong> por arquitetura. Sua empresa não precisa ficar presa a <strong className="text-white">Big Techs</strong>. Ela pode se tornar uma <strong className="text-white">rede própria</strong> — com regras públicas, autonomia digital e soberania simbólica.
-            </p>
-          </div>
-
-          {/* 🔐 MCP + Thirdweb Wallet - Mobile Optimized */}
-          <div className="flex justify-center mt-6 px-4">
-            <div className="w-full max-w-sm bg-gray-900/40 border border-gray-700 rounded-2xl p-5 shadow-lg">
-              <h3 className="text-base font-semibold mb-4 text-gray-300">Conectar Wallet</h3>
-              <ConnectButton />
+            <div className="flex flex-col gap-3 justify-center mb-6 px-4">
+              <div className="w-full max-w-xs mx-auto">
+                <ConnectButton />
+              </div>
+              <Link
+                to="/nos"
+                className="block w-full max-w-xs mx-auto text-center py-3 px-6 border-2 border-cyan-400/50 bg-gray-800/50 backdrop-blur-sm font-mono text-sm text-cyan-300 hover:border-cyan-400 hover:bg-gray-800/70 transition-all cyber-glow"
+                style={{ 
+                  textShadow: '0 0 5px rgba(0, 255, 255, 0.5)',
+                  boxShadow: '0 0 10px rgba(0, 255, 255, 0.2)'
+                }}
+              >
+                &gt; EXPLORAR NÓS
+              </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </header>
 
-      {/* 📰 MANIFESTO - Mobile First */}
-      <section className="py-12 px-4 bg-gray-900/50">
-        <div className="max-w-full mx-auto">
-          <h2 className="text-2xl font-bold mb-6 text-center px-4">
-            📰 MANIFESTO PÚBLICO
-          </h2>
-
-          <div className="space-y-4 text-sm leading-relaxed px-4">
-            <p>
-              Uma <strong>DAO (Organização Autônoma Descentralizada)</strong> não pertence a empresas. Não depende de liderança carismática. É movida por <strong>contratos inteligentes</strong>: regras autoexecutáveis registradas em Blockchain, abertas, auditáveis, imutáveis.
-            </p>
-
-            <p>
-              <strong>NΞØ Protocol</strong> opera sob essa lógica. Nenhum centro de comando. Nenhuma hierarquia vertical.
-            </p>
-
-            <p>
-              Cada participante é um <strong>nó com voz</strong>. Cada decisão emerge da <strong>inteligência coletiva da rede</strong>.
-            </p>
-
-            <p>
-              <strong>NΞØ é uma organização sem dono</strong>. Um organismo vivo que aprende, adapta e evolui com quem o habita.
-            </p>
-
-            <p>
-              Isso não é uma promessa. Isso já está acontecendo — em sistemas reais, em interações invisíveis, em projetos que escolheram se libertar da dependência estrutural.
-            </p>
-
-            <p className="text-base font-medium text-blue-400 neon-blue">
-              O protocolo já está em curso. E quem acessa, transforma.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ⚙️ COMO FUNCIONA - Mobile First */}
-      <section className="py-12 px-4 bg-gray-900/50">
-        <div className="max-w-full mx-auto">
-          <h2 className="text-2xl font-bold mb-4 text-center px-4">
-            ⚙️ COMO FUNCIONA
-          </h2>
-
-          <h3 className="text-lg font-medium mb-6 text-center text-gray-300 px-4">
-            O que significa estar plugado ao NΞØ Protocol?
-          </h3>
-
-          <div className="grid grid-cols-1 gap-4 mb-6 px-4">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-blue-400 rounded-full neon-dot"></div>
-                <span>Autonomia simbólica e técnica</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-blue-400 rounded-full neon-dot"></div>
-                <span>Governança descentralizada via DAPP</span>
-              </div>
+        {/* Quick Links Section - Terminal Style */}
+        <section id="protocolo" className="container mx-auto px-4 py-4">
+          <div className="bg-gray-700/40 backdrop-blur-sm rounded-lg shadow-2xl border border-gray-600/50 p-6 mb-4 paper-texture">
+            <div className="mb-4 font-mono text-xs text-cyan-400/60">
+              <span className="text-green-400">$</span> <span className="text-cyan-400">ls</span> <span className="text-gray-500">-la /protocol</span>
             </div>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-blue-400 rounded-full neon-dot"></div>
-                <span>Integração opcional com o token $NEØ</span>
+            
+            <div className="space-y-3">
+              <Link 
+                to="/nos" 
+                className="block p-4 border-l-4 border-cyan-400/50 bg-gray-800/30 hover:bg-gray-800/50 hover:border-cyan-400 transition-all font-mono"
+                style={{ borderLeftColor: 'rgba(0, 255, 255, 0.5)' }}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-cyan-400 text-lg">🔗</span>
+                  <div>
+                    <h3 className="text-base font-bold text-cyan-300 mb-1 ">THE NODES OF NΞØ PROTOCOL</h3>
+                    <p className="text-xs text-gray-400">Explore os circuitos simultâneos</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link 
+                to="/manifesto" 
+                className="block p-4 border-l-4 border-blue-400/50 bg-gray-800/30 hover:bg-gray-800/50 hover:border-blue-400 transition-all font-mono"
+                style={{ borderLeftColor: 'rgba(59, 130, 246, 0.5)' }}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-blue-400 text-lg">📖</span>
+                  <div>
+                    <h3 className="text-base font-bold text-blue-300 mb-1">MANIFESTO</h3>
+                    <p className="text-xs text-gray-400">Leia o manifesto público</p>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Status Section - Terminal Output Style */}
+        <section id="comunidade" className="container mx-auto px-4 py-4">
+          <div className="bg-gray-700/40 backdrop-blur-sm rounded-lg shadow-2xl border border-gray-600/50 p-6 paper-texture">
+            <div className="mb-4 font-mono text-xs text-cyan-400/60">
+              <span className="text-green-400">$</span> <span className="text-cyan-400">status</span>
+            </div>
+            
+            <div className="space-y-2 font-mono text-sm">
+              <div className="flex items-center gap-2 text-green-400">
+                <span className="text-green-500">●</span>
+                <span>Sistema operacional</span>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-blue-400 rounded-full neon-dot"></div>
-                <span>Rede de validação entre projetos independentes</span>
+              <div className="flex items-center gap-2 text-cyan-400 ml-4">
+                <span className="text-cyan-500">→</span>
+                <span className="italic opacity-80">{currentPhrase}</span>
               </div>
             </div>
           </div>
+        </section>
 
-          <div className="text-center space-y-4 px-4">
-            <p className="text-sm leading-relaxed">
-              A integração pode ser <strong className="text-white">simbólica</strong>, <strong className="text-white">técnica</strong> ou <strong className="text-white">total</strong>. Cada projeto decide seu grau de autonomia. Mas todos compartilham o mesmo código: <strong className="text-white">liberdade com responsabilidade</strong>.
-            </p>
+        {/* Footer - Terminal Style */}
+        <footer className="border-t border-gray-600/50 bg-gray-800/50 backdrop-blur-sm mt-6 mb-4">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <img
+                src="https://gateway.lighthouse.storage/ipfs/bafkreifm3hzdhem47tfzzqxm4274t3rqkzrgsa2zi2bc72nzjecxaixsxm"
+                alt="NEO Protocol"
+                className="h-8 w-auto opacity-80"
+                loading="lazy"
+              />
+              <p className="text-xs opacity-70 font-mono text-gray-400">
+                © 2025 NΞØ PROTOCOL • BUILT WITH MORAL VALUE
+              </p>
+              <p className="text-xs text-gray-500 italic font-mono">
+                {currentPhrase}
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </footer>
+      </div>
 
-      {/* ⛃ TOKEN - Mobile First */}
-      <section className="py-12 px-4">
-        <div className="max-w-full mx-auto">
-          <h2 className="text-2xl font-bold mb-4 text-center px-4">
-            ⛃ SOBRE O TOKEN $NΞØ
-          </h2>
-
-          <h3 className="text-lg font-medium mb-6 text-center text-gray-300 px-4">
-            $NΞØ não é investimento. É infraestrutura simbólica.
-          </h3>
-
-          <div className="text-center space-y-4 px-4">
-            <p className="text-sm leading-relaxed">
-              O token <strong className="text-white">$NΞØ</strong> representa participação, não especulação. Ele permite coordenação de decisões, reconhecimento entre pares e validação simbólica da rede.
-            </p>
-
-            <p className="text-base font-medium text-blue-400 neon-blue">
-              Não é um ativo. É sua liberdade.
-            </p>
-
-            <a 
-              href="https://dexscreener.com/base/0x471e78b85b634460c152782667f805310fa66eb850bfda305717836c2ca4f0bb"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-6 py-3 bg-orange-600 active:bg-orange-700 rounded-xl font-medium transition-colors touch-manipulation"
-            >
-              Saiba mais sobre o token →
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* 🛰️ FOOTER - Mobile First */}
-      <footer className="py-8 px-4 border-t border-gray-800 pb-safe">
-        <div className="max-w-full mx-auto text-center space-y-2">
-          <img 
-            src="/logos/neowhite.png" 
-            alt="NΞØ Protocol" 
-            className="w-20 h-auto mx-auto mb-2"
-          />
-          <p className="text-gray-400 text-sm">
-            ↳ Desenvolvido sob o <strong>NΞØ Protocol</strong>
-          </p>
-          <p className="text-xs text-gray-500 italic">
-            {currentPhrase}
-          </p>
-          <Link 
-            to="/"
-            className="inline-block mt-4 px-6 py-3 bg-gray-800 active:bg-gray-700 rounded-lg font-medium transition-colors touch-manipulation"
-          >
-            ← Voltar
-          </Link>
-        </div>
-      </footer>
+      {/* Bottom Navigation */}
+      <BottomNavigation />
     </div>
   );
 }
-
