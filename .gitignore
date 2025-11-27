@@ -30,3 +30,7 @@ dist-ssr
 .env.production.local
 .env.development.local
 
+# Pinata CID
+.pinata-cid
+dist-boot.zip
+

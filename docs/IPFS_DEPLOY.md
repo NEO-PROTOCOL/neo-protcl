@@ -34,7 +34,37 @@ npm run build:boot
 
 ## 📦 Passo 2: Upload para IPFS
 
-### Opção A: Usando IPFS CLI
+### Opção A: Usando Script Automatizado (Pinata) ⭐ RECOMENDADO
+
+**Pré-requisito**: Configure as chaves do Pinata no arquivo `.env`:
+
+```env
+PINATA_JWT_SECRET=seu_jwt_token_aqui
+# OU
+PINATA_API_KEY=sua_api_key
+PINATA_API_SECRET=sua_api_secret
+```
+
+**Executar**:
+
+```bash
+# Build + Upload em um comando
+npm run deploy:boot
+
+# Ou separadamente:
+npm run build:boot
+npm run deploy:pinata
+```
+
+O script irá:
+
+- ✅ Verificar se o build existe
+- ✅ Autenticar no Pinata
+- ✅ Fazer upload do diretório `dist-boot`
+- ✅ Exibir o CID e URLs de acesso
+- ✅ Salvar o CID em `.pinata-cid` para referência
+
+### Opção B: Usando IPFS CLI
 
 ```bash
 # Instalar IPFS CLI (se não tiver)
@@ -56,13 +86,13 @@ ipfs add -r dist-boot
 # Copie o hash do diretório (última linha)
 ```
 
-### Opção B: Usando Pinata
+### Opção C: Usando Pinata (Interface Web)
 
 1. Acesse [pinata.cloud](https://pinata.cloud)
-2. Faça upload da pasta `dist`
+2. Faça upload da pasta `dist-boot`
 3. Copie o CID retornado
 
-### Opção C: Usando Lighthouse Storage
+### Opção D: Usando Lighthouse Storage
 
 ```bash
 # Se já tem Lighthouse configurado
@@ -70,6 +100,10 @@ npx lighthouse upload dist --apiKey YOUR_API_KEY
 ```
 
 ## 🔗 Passo 3: Configurar ENS Content Hash
+
+**Nota**: Você já tem o conteúdo no IPFS! CID: `Qmar2He46w4Muwen5qdYzu45gypGbZBMw6MYhLpqA4heX1`
+
+Você pode usar este CID diretamente no ENS ou configurar IPNS (veja [IPNS_SETUP.md](./IPNS_SETUP.md) para mais detalhes).
 
 ### Usando Ethers.js (JavaScript)
 

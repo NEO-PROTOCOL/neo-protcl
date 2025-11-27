@@ -5,6 +5,7 @@
 Todas as imagens do projeto agora usam URLs do IPFS via Lighthouse Storage:
 
 ### 1. Símbolo Circular (Favicon + Hero)
+
 - **CID**: `bafybeicwktbd4bpuey7w5efaqqzgtrul43hlwn4ison5l4vn37b3cklzdi`
 - **URL**: `https://gateway.lighthouse.storage/ipfs/bafybeicwktbd4bpuey7w5efaqqzgtrul43hlwn4ison5l4vn37b3cklzdi`
 - **Uso**:
@@ -12,11 +13,13 @@ Todas as imagens do projeto agora usam URLs do IPFS via Lighthouse Storage:
   - Logo principal no Hero section (`NeoProtocol.jsx`)
 
 ### 2. Logo Avatar do Token (Removido)
+
 - **CID**: `bafkreiboigewtuwih7cfnxppte64l3zkktrb52serzloa4vqfrw5f3zh3i`
 - **URL**: `https://gateway.lighthouse.storage/ipfs/bafkreiboigewtuwih7cfnxppte64l3zkktrb52serzloa4vqfrw5f3zh3i`
 - **Status**: Não utilizado (seção de token removida)
 
 ### 3. Logo NEO Horizontal (Footer)
+
 - **CID**: `bafkreifm3hzdhem47tfzzqxm4274t3rqkzrgsa2zi2bc72nzjecxaixsxm`
 - **URL**: `https://gateway.lighthouse.storage/ipfs/bafkreifm3hzdhem47tfzzqxm4274t3rqkzrgsa2zi2bc72nzjecxaixsxm`
 - **Uso**: Logo no footer da página principal
@@ -39,6 +42,7 @@ Todas as imagens do projeto agora usam URLs do IPFS via Lighthouse Storage:
 ## 🎨 Estilos CSS Adicionados
 
 Novos estilos em `src/index.css`:
+
 - `@keyframes glow` - Animação de brilho para texto
 - `@keyframes slideInUp` - Animação de entrada
 - `.glow-text` - Classe para texto com brilho
@@ -49,11 +53,13 @@ Novos estilos em `src/index.css`:
 ## 🔗 Referências no Código
 
 ### index.html
+
 ```html
 <link rel="icon" type="image/png" href="https://gateway.lighthouse.storage/ipfs/bafybeicwktbd4bpuey7w5efaqqzgtrul43hlwn4ison5l4vn37b3cklzdi" />
 ```
 
 ### NeoProtocol.jsx (Hero)
+
 ```jsx
 <img
   src="https://gateway.lighthouse.storage/ipfs/bafybeicwktbd4bpuey7w5efaqqzgtrul43hlwn4ison5l4vn37b3cklzdi"
@@ -62,11 +68,13 @@ Novos estilos em `src/index.css`:
 ```
 
 ### TokenSection.jsx (Removido)
+
 ```jsx
 // Componente removido - seção de token não está mais no projeto
 ```
 
 ### NeoProtocol.jsx (Footer)
+
 ```jsx
 <img
   src="https://gateway.lighthouse.storage/ipfs/bafkreifm3hzdhem47tfzzqxm4274t3rqkzrgsa2zi2bc72nzjecxaixsxm"
@@ -77,7 +85,7 @@ Novos estilos em `src/index.css`:
 ## ✅ Confirmação
 
 Imagens em uso:
+
 - ✅ Símbolo circular (favicon + hero)
 - ⚠️ Logo avatar do token (não utilizado - seção removida)
 - ✅ Logo NEO horizontal (footer)
-
