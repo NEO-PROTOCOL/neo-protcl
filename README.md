@@ -31,6 +31,11 @@ Este nó contém:
 - Layouts visuais baseados em estados da rede
 - Templates para novos nós (com ou sem wallet)
 
+📐 **Arquitetura Geral do Ecossistema**: 
+- [`docs/ARQUITETURA_GERAL.md`](docs/ARQUITETURA_GERAL.md) — Estrutura completa do NΞØ em suas 4 camadas
+- [`docs/ARQUITETURA_GERAL_MAP.md`](docs/ARQUITETURA_GERAL_MAP.md) — **Guia de Implementação Visual** — Mapeamento direto das camadas para componentes React
+- [`docs/PROPOSTA_FRONTEND_ARQUITETURA.md`](docs/PROPOSTA_FRONTEND_ARQUITETURA.md) — Proposta técnica detalhada com exemplos e fluxos
+
 ---
 
 ## ⛓ REGRAS DO PROTOCOLO
