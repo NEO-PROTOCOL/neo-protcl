@@ -12,7 +12,7 @@ export const dimensions = [
     title: 'Resolução de Problemas',
     subtitle: '[ Como você navega no caos? ]',
     particle: particles.null, 
-    prompt: 'O que acontece dentro de você nos primeiros momentos de uma situação crítica?',
+    prompt: 'Imagine que você se depara com um quebra-cabeça crítico, algo que parece não ter uma solução óbvia. Não me conte sobre o problema. Em vez disso, descreva a cena interna. O que acontece dentro de você nos primeiros momentos? Quais impulsos, imagens, raciocínios ou sensações surgem? Como a engrenagem começa a girar?',
     color: 'from-blue-600/20 to-cyan-600/10',
   },
   {
@@ -20,7 +20,7 @@ export const dimensions = [
     title: 'Conexão & Colaboração',
     subtitle: '[ Como você se vincula? ]',
     particle: particles.null, 
-    prompt: 'Qual é seu papel natural em uma teia de trabalho compartilhado?',
+    prompt: 'Pense na última vez que você precisou trabalhar ou criar algo com outras pessoas para um objetivo comum. Não me fale sobre o projeto. Descreva seu papel natural nessa teia. O que você automaticamente faz para que a conexão funcione? Você observa, catalisa, estrutura, protege, desafia? Como você se move nesse campo de energias múltiplas?',
     color: 'from-emerald-600/20 to-teal-600/10',
   },
   {
@@ -28,7 +28,7 @@ export const dimensions = [
     title: 'Criação & Geração',
     subtitle: '[ Como você manifesta? ]',
     particle: particles.null, 
-    prompt: 'De onde vem seus impulsos criativos? Como eles crescem até se tornarem reais?',
+    prompt: 'Pense em um momento em que você gerou algo que sentiu como verdadeiramente seu – uma ideia, um projeto, uma solução, uma arte. Ignore o resultado final. Descreva a fagulha e o combustível. De onde veio o impulso inicial? E, mais importante, como ele cresceu? Foi uma explosão, uma montagem lenta, uma decantação? O que o processo pediu de você?',
     color: 'from-purple-600/20 to-pink-600/10',
   },
 ];
@@ -36,73 +36,104 @@ export const dimensions = [
 export const archetypeDatabase = {
   problem_solving: {
     'Engenheiro': {
-      keywords: ['desmontar', 'partes', 'sistema', 'mapa', 'lógica', 'padrão', 'eficiente'],
-      intent: 'Estruturar o caos através da razão',
+      keywords: ['desmontar', 'partes', 'sistema', 'mapa', 'lógica', 'padrão', 'eficiente', 'peça', 'funcionamento', 'estrutura', 'arquitetura', 'componentes'],
+      intent: 'Controlar o caos através da estrutura',
+      strengths: 'Clareza analítica, solução escalável',
+      risks: 'Paralisia por análise, perda do contexto humano',
     },
     'Contador de Histórias': {
-      keywords: ['história', 'analogia', 'significado', 'exemplo', 'metáfora', 'sentido'],
-      intent: 'Encontrar narrativa para navegar',
+      keywords: ['história', 'analogia', 'significado', 'exemplo', 'metáfora', 'sentido', 'como se fosse', 'personagem', 'reenquadrar', 'narrativa'],
+      intent: 'Encontrar sentido para navegar no caos',
+      strengths: 'Comunicabilidade, adaptabilidade, resiliência',
+      risks: 'Solução muito particular, falta de rigor generalizável',
     },
     'Cirurgião': {
-      keywords: ['isolar', 'cortar', 'intervir', 'rápido', 'núcleo', 'pressão'],
-      intent: 'Eliminar disfunção com precisão',
+      keywords: ['isolar', 'cortar', 'intervir', 'rápido', 'núcleo', 'pressão', 'fonte', 'doloroso mas necessário', 'extrair', 'disfunção'],
+      intent: 'Eliminar a disfunção para restaurar a saúde',
+      strengths: 'Decisão, coragem, foco absoluto',
+      risks: 'Danos colaterais, visão de curto prazo, trauma',
     },
     'Jardineiro': {
-      keywords: ['nutrir', 'ambiente', 'crescer', 'paciência', 'ecossistema', 'processo'],
-      intent: 'Cultivar emergência orgânica',
+      keywords: ['nutrir', 'ambiente', 'crescer', 'paciência', 'ecossistema', 'processo', 'contexto', 'fertilizar', 'observar', 'cultivar'],
+      intent: 'Cultivar condições para que a solução emergia',
+      strengths: 'Sustentabilidade, solução orgânica, holismo',
+      risks: 'Lentidão, passividade, falta de ação direta',
     },
     'Jogador': {
-      keywords: ['desafio', 'regras', 'estratégia', 'vencer', 'tática', 'recompensa'],
-      intent: 'Transformar caos em competição',
+      keywords: ['desafio', 'regras', 'estratégia', 'vencer', 'tática', 'recompensa', 'movimento', 'oponente', 'partida', 'competição'],
+      intent: 'Transformar o caos em um jogo a ser vencido',
+      strengths: 'Inovação, motivação alta, pensamento tático',
+      risks: 'Banalização, competitividade tóxica, falta de profundidade',
     },
   },
   collaboration: {
     'Catalisador': {
-      keywords: ['pergunta', 'apontar', 'inconsistência', 'desafiar', 'atrito', 'verdade'],
-      intent: 'Acelerar clareza através da tensão',
+      keywords: ['pergunta óbvia', 'apontar', 'inconsistência', 'desafiar', 'atrito', 'verdade', 'ponto cego', 'lógica', 'inconsistência'],
+      intent: 'Acelerar a verdade (ou o conflito) para chegar à clareza',
+      strengths: 'Honestidade radical, prevenção de erros grupais',
+      risks: 'Criar resistência, ser visto como disruptor negativo',
     },
     'Costureiro': {
-      keywords: ['conectar', 'harmonia', 'ouvidos', 'ponte', 'traduzir', 'sentir'],
-      intent: 'Tecer redes de significado',
+      keywords: ['conectar', 'harmonia', 'ouvidos', 'ponte', 'traduzir', 'sentir', 'relacionar', 'grupo', 'teia'],
+      intent: 'Criar e fortalecer a rede de conexões',
+      strengths: 'Coesão, alta inteligência emocional, mediação',
+      risks: 'Evitar conflitos necessários, desgaste emocional',
     },
     'Estrategista': {
-      keywords: ['meta', 'dividir', 'eficiência', 'prazo', 'função', 'recursos'],
-      intent: 'Otimizar rendimento coletivo',
+      keywords: ['meta clara', 'dividir trabalho', 'eficiência', 'prazo', 'função', 'recursos', 'evitar perda de tempo', 'organizar'],
+      intent: 'Otimizar o sistema humano para o resultado',
+      strengths: 'Produtividade, foco, organização',
+      risks: 'Visão transacional, negligenciar a motivação intrínseca',
     },
     'Especialista Reserva': {
-      keywords: ['retaguarda', 'observar', 'técnico', 'específico', 'autonomia'],
-      intent: 'Ofertar excelência pontual',
+      keywords: ['retaguarda', 'observar', 'entrar quando necessário', 'único', 'técnico', 'específico', 'não forçar participação', 'autonomia'],
+      intent: 'Oferecer excelência pontual, preservando autonomia',
+      strengths: 'Alta qualidade, foco profundo, sem dispersão',
+      risks: 'Isolamento, parecer descomprometido, perda de contexto',
     },
     'Guardião': {
-      keywords: ['proteger', 'cuidar', 'alerta', 'integridade', 'valores', 'lealdade'],
-      intent: 'Salvaguardar o essencial',
+      keywords: ['proteger', 'cuidar', 'alerta', 'integridade', 'valores', 'defender', 'conflito interno', 'lealdade'],
+      intent: 'Proteger o grupo de ameaças internas e externas',
+      strengths: 'Segurança, confiança, cultura forte',
+      risks: 'Desconfiança excessiva, resistência a mudanças',
     },
   },
   creation: {
     'Visionário': {
-      keywords: ['imagem', 'visão', 'insight', 'traduzir', 'forma', 'fidelidade'],
-      intent: 'Materializar visão interna',
+      keywords: ['imagem', 'visão', 'insight', 'traduzir', 'forma exata', 'fidelidade', 'ver claramente', 'perseguir', 'visão interna perfeita'],
+      intent: 'Materializar uma visão interna perfeita',
+      strengths: 'Clareza de direção, alta consistência estética/conceitual',
+      risks: 'Rigidez, frustração com limitações do mundo real, bloqueio do "não ficou igual"',
     },
     'Alquimista': {
-      keywords: ['fusão', 'colisão', 'cacos', 'soldar', 'hibridização', 'conexão'],
-      intent: 'Criar pela fusão improvável',
+      keywords: ['conexão bizarra', 'juntar cacos', 'colisão', 'soldar', 'união', 'hibridização', 'metamorfose', 'fusão do inesperado'],
+      intent: 'Criar através da fusão do inesperado',
+      strengths: 'Inovação radical, pensamento lateral, surpreender',
+      risks: 'Resultados podem ser caóticos ou incomunicáveis, falta de foco',
     },
     'Agricultor': {
-      keywords: ['fermentar', 'semente', 'alimentar', 'amadurecer', 'colher', 'processo'],
-      intent: 'Cultivar maturação profunda',
+      keywords: ['fermentar', 'semente', 'alimentar', 'processo', 'deixar amadurecer', 'colher no momento certo', 'ecossistema interno', 'maturação orgânica'],
+      intent: 'Cultivar ideias até a maturação orgânica',
+      strengths: 'Profundidade, timing natural, trabalhos ricos e complexos',
+      risks: 'Lentidão extrema, passividade (esperar demais), dificuldade com prazos',
     },
     'Artesão da Jaula': {
-      keywords: ['restrição', 'limite', 'puzzle', 'jogo', 'dançar', 'estrutura'],
-      intent: 'Libertar-se dentro dos limites',
+      keywords: ['restrição', 'limite', 'forma fixa', 'problema', 'puzzle', 'jogo', 'dançar dentro da jaula', 'estrutura como impulso'],
+      intent: 'Encontrar liberdade expressiva dentro dos limites',
+      strengths: 'Alta adaptabilidade, criatividade prática, excelência em craft',
+      risks: 'Pode se sentir sem direção própria, dependente de briefings externos',
     },
     'Explosivo': {
-      keywords: ['pressão', 'explosão', 'urgência', 'catártico', 'potência', 'fluxo'],
-      intent: 'Liberar em catálise súbita',
+      keywords: ['pressão', 'explosão', 'urgência', 'tudo de uma vez', 'catártico', 'fluxo intenso', 'não conseguir segurar', 'evento catalítico'],
+      intent: 'Liberar energia acumulada em um evento catalítico',
+      strengths: 'Potência, impacto emocional, conclusão rápida',
+      risks: 'Esgotamento pós-obra, inconsistência, dificuldade em projetos longos',
     },
   },
 };
 
 export const synergyTable = {
+  // Sinergias existentes (mantidas)
   'Alquimista-Costureiro-Agricultor': {
     name: 'Narrador de Comunidades',
     intent: 'Cultivar significado compartilhado. Histórias que nutrem tecido social.',
@@ -137,6 +168,28 @@ export const synergyTable = {
     power: 'Visão Sustentável. Futuro desejável materializado.',
     alert: 'Dogmatismo. Defesa da visão pode gerar rigidez.',
     metaphor: 'Um profeta pragmático, construindo o jardim do amanhã com vigilância terna.',
+  },
+  // Novas sinergias adicionadas
+  'Jogador-Especialista Reserva-Alquimista': {
+    name: 'Mestre do Jogo Oculto',
+    intent: 'Dominar sistemas através de manobras pontuais e inesperadas.',
+    power: 'Vantagem Inimaginável. Surpreende com soluções de nicho e altamente eficazes.',
+    alert: 'Desconexão. O foco em jogos paralelos pode afastá-lo do "jogo principal" do grupo.',
+    metaphor: 'Um enxadrista que vence não no tabuleiro principal, mas fundindo regras de jogos diferentes.',
+  },
+  'Contador de Histórias-Costureiro-Agricultor': {
+    name: 'Narrador de Comunidades',
+    intent: 'Cultivar significado compartilhado para nutrir o tecido social.',
+    power: 'Cohosão Profunda. Cria laços fortes e senso de pertencimento.',
+    alert: 'Inércia. Pode evitar conflitos necessários para preservar a "história bonita".',
+    metaphor: 'Um guardião de mitos, que planta histórias e colhe cultura grupal.',
+  },
+  'Engenheiro-Estrategista-Artesão da Jaula': {
+    name: 'Arquiteto de Sistemas Vivos',
+    intent: 'Projetar estruturas otimizadas que evoluem sob restrição.',
+    power: 'Eficiência Adaptativa. Sistemas que são robustos e flexíveis.',
+    alert: 'Sufocamento. O foco no sistema perfeito pode matar a espontaneidade orgânica.',
+    metaphor: 'Um engenheiro de ecossistemas, que projeta com regras rígidas para gerar vida adaptativa.',
   },
 };
 

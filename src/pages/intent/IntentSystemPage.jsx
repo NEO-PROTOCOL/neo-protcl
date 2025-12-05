@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { ChevronRight, Sparkles, Lock } from 'lucide-react';
+import { ChevronRight, Sparkles, Lock, Copy, Info, X, Upload } from 'lucide-react';
 import { useDesktopBlock } from '../../hooks/useDesktopBlock';
 import { AgentProvider, AgentContext } from '../../terminal/AgentContext';
 import { soundManager } from '../../utils/sounds';
@@ -14,6 +14,7 @@ import {
   archetypeDatabase,
 } from '../../utils/intentSystemData';
 import MermaidDiagram from '../../components/MermaidDiagram';
+import { saveIntentToIPFS, isLighthouseConfigured, getIPFSGatewayUrl } from '../../services/intentDataCapture';
 
 function IntentSystemContent() {
   useDesktopBlock();
@@ -24,6 +25,21 @@ function IntentSystemContent() {
   const [responses, setResponses] = useState({});
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [ipfsCid, setIpfsCid] = useState(null);
+  const [savingToIPFS, setSavingToIPFS] = useState(false);
+  const [ipfsError, setIpfsError] = useState(null);
+  const [showCompleteForm, setShowCompleteForm] = useState(false);
+  const [userData, setUserData] = useState({ email: '', phone: '', github: '' });
+  const [focusedDim, setFocusedDim] = useState(null);
+
+  // Scroll to top when result phase is shown
+  useEffect(() => {
+    if (phase === 'result') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [phase]);
 
   const handleSelectDimension = (dimId) => {
     if (!selectedDimensions.includes(dimId)) {
@@ -81,6 +97,30 @@ function IntentSystemContent() {
       resonance: Math.min(agentState.resonance + 2, 10),
       coherence: Math.min((agentState.coherence || 0) + 1, 10),
     });
+
+    // Salvar no IPFS (se configurado e com consentimento)
+    if (isLighthouseConfigured()) {
+      // Salvar automaticamente (dados anonimizados)
+      handleSaveToIPFS({ profileData, synergy, selectedDimensions, mermaidDiagram });
+    }
+  };
+
+  const handleSaveToIPFS = async (intentData) => {
+    setSavingToIPFS(true);
+    setIpfsError(null);
+    
+    try {
+      // Não precisamos de wallet para salvar (dados anonimizados)
+      const cid = await saveIntentToIPFS(intentData, null);
+      setIpfsCid(cid);
+      soundManager.playConfirm();
+    } catch (error) {
+      console.error('Erro ao salvar no IPFS:', error);
+      setIpfsError(error.message);
+      soundManager.playError();
+    } finally {
+      setSavingToIPFS(false);
+    }
   };
 
   // INTRO PHASE
@@ -319,7 +359,7 @@ function IntentSystemContent() {
                             boxShadow: '0 0 12px rgba(37, 99, 235, 0.4), inset 0 0 8px rgba(37, 99, 235, 0.2)',
                           }}
                         >
-                          <span className="text-xl text-[#60A5FA]">{particles.xi}</span>
+                          <span className="text-xl text-[#60A5FA]">{particles.theta}</span>
                           <img 
                             src="/splash/box_intent.png" 
                             alt="NΞØ" 
@@ -483,7 +523,36 @@ function IntentSystemContent() {
               }}
             >
               <div className="mb-6">
-                <span className="ios-caption text-[#06B6D4] uppercase tracking-widest font-bold">Padrão Integrado</span>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="ios-caption text-[#06B6D4] uppercase tracking-widest font-bold">Padrão Integrado</span>
+                  {isLighthouseConfigured() && (
+                    <div className="flex items-center gap-2">
+                      {savingToIPFS && (
+                        <span className="text-xs text-[#9CA3AF] flex items-center gap-1">
+                          <div className="w-3 h-3 border-2 border-[#3B82F6] border-t-transparent rounded-full animate-spin" />
+                          Salvando no IPFS...
+                        </span>
+                      )}
+                      {ipfsCid && (
+                        <a
+                          href={getIPFSGatewayUrl(ipfsCid)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-[#3B82F6] flex items-center gap-1 hover:underline"
+                          title="Ver no IPFS"
+                        >
+                          <Upload size={12} />
+                          IPFS
+                        </a>
+                      )}
+                      {ipfsError && (
+                        <span className="text-xs text-red-500" title={ipfsError}>
+                          Erro IPFS
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
                 <h3 className="ios-headline text-[#111827] mt-3 text-3xl font-bold">{result.synergy.name}</h3>
               </div>
 
@@ -536,7 +605,38 @@ function IntentSystemContent() {
                 animationDelay: '0.5s',
               }}
             >
-              <h3 className="ios-headline text-[#111827] mb-5 text-2xl font-bold">Diagrama Visual</h3>
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="ios-headline text-[#111827] text-2xl font-bold">Diagrama Visual</h3>
+                <div className="flex gap-2">
+                  <button
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(result.mermaidDiagram);
+                        setCopied(true);
+                        soundManager.playConfirm();
+                        setTimeout(() => setCopied(false), 2000);
+                      } catch (err) {
+                        console.error('Erro ao copiar:', err);
+                        soundManager.playError();
+                      }
+                    }}
+                    className="px-4 py-2 rounded-xl bg-[#3B82F6] text-white text-sm font-semibold flex items-center gap-2 hover:bg-[#2563EB] transition-colors"
+                  >
+                    <Copy size={16} />
+                    {copied ? 'Copiado!' : 'Copiar Código'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowInstructions(true);
+                      soundManager.playClick();
+                    }}
+                    className="px-4 py-2 rounded-xl bg-[#F9FAFB] text-[#3B82F6] text-sm font-semibold flex items-center gap-2 hover:bg-[#F3F4F6] transition-colors border border-[#E5E7EB]"
+                  >
+                    <Info size={16} />
+                    Como Usar
+                  </button>
+                </div>
+              </div>
               <div 
                 className="p-5 rounded-2xl bg-[#F9FAFB]"
                 style={{
@@ -555,31 +655,73 @@ function IntentSystemContent() {
                 border: '1px solid #E5E7EB',
               }}
             >
-              <div className="flex gap-4">
+              <div className="flex flex-col gap-3">
                 <button
                   onClick={() => {
-                    setPhase('dimensions');
-                    setSelectedDimensions([]);
-                    setResponses({});
-                    setResult(null);
-                    soundManager.playClick();
+                    setShowCompleteForm(true);
+                    soundManager.playConfirm();
                   }}
-                  className="flex-1 ios-button-primary ios-compact"
-                >
-                  Explorar de Novo
-                </button>
-                <button
-                  onClick={() => {
-                    setPhase('intro');
-                    setSelectedDimensions([]);
-                    setResponses({});
-                    setResult(null);
-                    soundManager.playClick();
+                  className="w-full px-6 py-4 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#06B6D4] text-white font-semibold flex items-center justify-center gap-2 hover:from-[#2563EB] hover:to-[#0891B2] transition-colors"
+                  style={{
+                    boxShadow: '0 8px 24px rgba(59, 130, 246, 0.25)',
                   }}
-                  className="flex-1 ios-button-secondary ios-compact"
                 >
-                  Voltar
+                  <Sparkles size={20} />
+                  Ver Completo
                 </button>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => {
+                      setPhase('dimensions');
+                      setSelectedDimensions([]);
+                      setResponses({});
+                      setResult(null);
+                      soundManager.playClick();
+                    }}
+                    className="flex-1 ios-button-primary ios-compact"
+                  >
+                    Explorar de Novo
+                  </button>
+                  <button
+                    onClick={() => {
+                      setPhase('intro');
+                      setSelectedDimensions([]);
+                      setResponses({});
+                      setResult(null);
+                      soundManager.playClick();
+                    }}
+                    className="flex-1 ios-button-secondary ios-compact"
+                  >
+                    Voltar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Contatos */}
+            <div 
+              className="p-6 mb-6 rounded-2xl bg-white text-center"
+              style={{
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+                border: '1px solid #E5E7EB',
+              }}
+            >
+              <p className="text-sm text-[#4B5563] mb-2">NΞØ Protocol</p>
+              <div className="flex flex-col gap-1 text-sm">
+                <a 
+                  href="mailto:neo@neoprotocol.space" 
+                  className="text-[#3B82F6] hover:underline"
+                >
+                  neo@neoprotocol.space
+                </a>
+                <a 
+                  href="https://neoprotocol.space" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-[#3B82F6] hover:underline"
+                >
+                  neoprotocol.space
+                </a>
               </div>
             </div>
 
@@ -588,6 +730,190 @@ function IntentSystemContent() {
         </div>
 
         <BottomNavigation />
+
+        {/* Complete Form Modal */}
+        {showCompleteForm && (
+          <div 
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowCompleteForm(false)}
+          >
+            <div 
+              className="bg-white rounded-3xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+              }}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-[#111827]">Ver Mapa Completo</h3>
+                <button
+                  onClick={() => setShowCompleteForm(false)}
+                  className="p-2 rounded-xl hover:bg-[#F9FAFB] transition-colors"
+                >
+                  <X size={20} className="text-[#4B5563]" />
+                </button>
+              </div>
+
+              <p className="text-sm text-[#4B5563] mb-6">
+                Para acessar seu mapa completo e receber insights adicionais, compartilhe seus dados de contato.
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-[#111827] mb-2">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    value={userData.email}
+                    onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+                    placeholder="seu@email.com"
+                    className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-all text-[#111827]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-[#111827] mb-2">
+                    Telefone (opcional)
+                  </label>
+                  <input
+                    type="tel"
+                    value={userData.phone}
+                    onChange={(e) => setUserData({ ...userData, phone: e.target.value })}
+                    placeholder="+55 11 99999-9999"
+                    className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-all text-[#111827]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-[#111827] mb-2">
+                    Perfil GitHub (opcional)
+                  </label>
+                  <input
+                    type="text"
+                    value={userData.github}
+                    onChange={(e) => setUserData({ ...userData, github: e.target.value })}
+                    placeholder="username ou github.com/username"
+                    className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-all text-[#111827]"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex gap-3">
+                <button
+                  onClick={() => setShowCompleteForm(false)}
+                  className="flex-1 px-4 py-3 rounded-xl bg-[#F9FAFB] text-[#4B5563] font-semibold hover:bg-[#F3F4F6] transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={async () => {
+                    if (!userData.email) {
+                      alert('Por favor, informe seu email');
+                      return;
+                    }
+                    
+                    setSavingToIPFS(true);
+                    try {
+                      // Salvar dados completos no IPFS (com email, telefone, GitHub)
+                      const completeData = {
+                        ...result,
+                        userData: {
+                          email: userData.email,
+                          phone: userData.phone || null,
+                          github: userData.github || null,
+                        },
+                        timestamp: Date.now(),
+                      };
+                      
+                      const cid = await saveIntentToIPFS(completeData, null);
+                      setIpfsCid(cid);
+                      setShowCompleteForm(false);
+                      soundManager.playConfirm();
+                      
+                      // Limpar formulário
+                      setUserData({ email: '', phone: '', github: '' });
+                    } catch (error) {
+                      console.error('Erro ao salvar:', error);
+                      alert('Erro ao salvar. Tente novamente.');
+                      soundManager.playError();
+                    } finally {
+                      setSavingToIPFS(false);
+                    }
+                  }}
+                  disabled={!userData.email || savingToIPFS}
+                  className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#06B6D4] text-white font-semibold hover:from-[#2563EB] hover:to-[#0891B2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {savingToIPFS ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Salvando...
+                    </>
+                  ) : (
+                    'Salvar e Ver Completo'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Instructions Modal */}
+        {showInstructions && (
+          <div 
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowInstructions(false)}
+          >
+            <div 
+              className="bg-white rounded-3xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+              }}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-[#111827]">Como Usar seu Diagrama Mermaid</h3>
+                <button
+                  onClick={() => setShowInstructions(false)}
+                  className="p-2 rounded-xl hover:bg-[#F9FAFB] transition-colors"
+                >
+                  <X size={20} className="text-[#4B5563]" />
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {/* Notion Option */}
+                <div className="p-5 rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB]">
+                  <h4 className="text-lg font-semibold text-[#111827] mb-3">1. No Notion</h4>
+                  <ol className="space-y-2 text-[#4B5563] text-sm list-decimal list-inside">
+                    <li>Cole o código copiado em um bloco de código</li>
+                    <li>Selecione a linguagem como <code className="bg-[#E5E7EB] px-2 py-0.5 rounded">mermaid</code></li>
+                    <li>O diagrama será renderizado automaticamente</li>
+                  </ol>
+                </div>
+
+                {/* Mermaid Chart Option */}
+                <div className="p-5 rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB]">
+                  <h4 className="text-lg font-semibold text-[#111827] mb-3">2. No Mermaid Chart</h4>
+                  <ol className="space-y-2 text-[#4B5563] text-sm list-decimal list-inside mb-4">
+                    <li>Acesse <a href="https://mermaidchart.cello.so/fdEpuF0TutA" target="_blank" rel="noopener noreferrer" className="text-[#3B82F6] font-semibold hover:underline">mermaidchart.cello.so</a></li>
+                    <li>Crie uma conta se ainda não tiver</li>
+                    <li>Cole o código copiado no editor</li>
+                    <li>Visualize e edite seu diagrama</li>
+                  </ol>
+                  <a
+                    href="https://mermaidchart.cello.so/fdEpuF0TutA"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full px-4 py-3 rounded-xl bg-[#3B82F6] text-white text-center font-semibold hover:bg-[#2563EB] transition-colors"
+                  >
+                    Abrir Mermaid Chart
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
