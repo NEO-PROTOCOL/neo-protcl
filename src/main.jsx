@@ -12,14 +12,9 @@ if (typeof window !== 'undefined') {
 globalThis.Buffer = Buffer;
 globalThis.global = globalThis;
 
-// Providers
-import TWProvider from './providers/ThirdwebProvider';
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <TWProvider>
-      <App />
-    </TWProvider>
+    <App />
   </React.StrictMode>
 );
 

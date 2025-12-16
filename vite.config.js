@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   define: {
     'process.env': {},
     global: 'globalThis',
@@ -87,7 +87,12 @@ export default defineConfig({
       },
       workbox: {
         mode: 'development', // evita minificação do SW pelo Terser
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp}'],
+        // Em desenvolvimento, usar padrões mais flexíveis para evitar avisos
+        globPatterns: mode === 'production' 
+          ? ['**/*.{js,css,html,ico,png,svg,woff2,webp}']
+          : ['index.html', '**/*.{js,css}'], // Menos arquivos em dev para evitar avisos
+        globIgnores: ['**/node_modules/**/*', 'sw.js', 'workbox-*.js'],
+        dontCacheBustURLsMatching: /\.\w{8}\./,
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
@@ -134,8 +139,10 @@ export default defineConfig({
       },
       devOptions: {
         enabled: true,
-        type: 'module'
+        type: 'module',
+        // Suprimir avisos de glob patterns em desenvolvimento
+        suppressWarnings: true
       }
     })
   ],
-})
+}))

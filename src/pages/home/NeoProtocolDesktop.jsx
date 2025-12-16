@@ -36,14 +36,14 @@ export default function NeoProtocolDesktop() {
       <div className="relative z-10">
         <Navbar />
 
-        {/* Main Content - Desktop Optimized Layout */}
-        <main className="container mx-auto px-8 py-12 max-w-7xl">
+        {/* Main Content - Desktop Spacious Layout */}
+        <main className="container mx-auto px-12 py-16 max-w-6xl">
           
-          {/* Hero Section - Desktop Wide */}
-          <div className="ios-card mb-8 p-8 spring-in">
-            <div className="flex flex-col items-center text-center">
+          {/* Hero Section - Large and Spacious */}
+          <section className="mb-20 text-center">
+            <div className="flex flex-col items-center">
               {/* Logo Circle - Larger for Desktop */}
-              <div className="w-32 h-32 mb-6 rounded-full overflow-hidden border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 backdrop-blur-sm flex items-center justify-center ios-shadow-md transition-transform hover:scale-105"
+              <div className="w-40 h-40 mb-8 rounded-full overflow-hidden border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 backdrop-blur-sm flex items-center justify-center transition-transform hover:scale-105"
                    style={{
                      boxShadow: '0 0 40px rgba(0, 255, 255, 0.2), inset 0 0 30px rgba(0, 255, 255, 0.05)'
                    }}>
@@ -56,174 +56,174 @@ export default function NeoProtocolDesktop() {
               </div>
               
               {/* Title */}
-              <h1 className="text-5xl font-bold text-white mb-4">NΞØ Protocol</h1>
+              <h1 className="text-6xl font-bold text-white mb-6">NΞØ Protocol</h1>
               
               {/* Animated Phrase */}
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center justify-center gap-3 mb-8">
                 <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse"></div>
-                <span className="text-xl text-cyan-300 font-medium">{currentPhrase}</span>
+                <span className="text-2xl text-cyan-300 font-medium">{currentPhrase}</span>
               </div>
               
               {/* Description - Wider for Desktop */}
-              <p className="text-lg text-gray-300 leading-relaxed max-w-2xl">
+              <p className="text-xl text-gray-300 leading-relaxed max-w-3xl mb-12">
                 Protocolo descentralizado que devolve aos indivíduos o controle sobre identidade digital, presença computacional e governança simbólica.
               </p>
             </div>
-          </div>
+          </section>
 
-          {/* Desktop Bento Grid - 3 Column Layout */}
-          <div className="grid grid-cols-3 gap-6 mb-6">
-            
-            {/* Nodes Card - Large */}
-            <Link 
-              to="/nos" 
-              onClick={() => soundManager.playNavigate()}
-              className="ios-card col-span-1 p-6 flex flex-col justify-between haptic-light spring-in hover:scale-[1.02] transition-transform cursor-pointer group"
-              style={{ animationDelay: '0.1s' }}
-            >
-              <div>
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 flex items-center justify-center mb-4 ios-shadow-sm group-hover:shadow-lg transition-shadow">
-                  <span className="text-3xl font-mono">⦾</span>
+          {/* Navigation Links - Horizontal Spacious */}
+          <section className="mb-20">
+            <div className="flex items-center justify-center gap-12">
+              
+              {/* Nodes Link */}
+              <Link 
+                to="/nos" 
+                onClick={() => soundManager.playNavigate()}
+                className="group flex flex-col items-center gap-4 hover:opacity-80 transition-opacity cursor-pointer"
+              >
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 flex items-center justify-center border border-cyan-500/20 group-hover:border-cyan-400/40 transition-colors">
+                  <span className="text-4xl font-mono">⦾</span>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">Nodes</h3>
-                <p className="text-sm text-gray-400 leading-relaxed">Explore os circuitos simultâneos da rede</p>
-              </div>
-              <div className="mt-6 flex items-center gap-2 text-cyan-400 text-sm font-medium group-hover:text-cyan-300 transition-colors">
-                <span>Explorar</span>
-                <span>→</span>
-              </div>
-            </Link>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold text-white mb-2">Nodes</h3>
+                  <p className="text-sm text-gray-400">Explore os circuitos simultâneos da rede</p>
+                </div>
+              </Link>
 
-            {/* Manifesto Card - Large */}
-            <Link 
-              to="/manifesto" 
-              onClick={() => soundManager.playNavigate()}
-              className="ios-card col-span-1 p-6 flex flex-col justify-between haptic-light spring-in hover:scale-[1.02] transition-transform cursor-pointer group"
-              style={{ animationDelay: '0.2s' }}
-            >
-              <div>
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center mb-4 ios-shadow-sm group-hover:shadow-lg transition-shadow">
-                  <span className="text-3xl font-mono">⦙</span>
+              {/* Manifesto Link */}
+              <Link 
+                to="/manifesto" 
+                onClick={() => soundManager.playNavigate()}
+                className="group flex flex-col items-center gap-4 hover:opacity-80 transition-opacity cursor-pointer"
+              >
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center border border-blue-500/20 group-hover:border-blue-400/40 transition-colors">
+                  <span className="text-4xl font-mono">⦙</span>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">Manifesto</h3>
-                <p className="text-sm text-gray-400 leading-relaxed">Leia o documento público</p>
-              </div>
-              <div className="mt-6 flex items-center gap-2 text-blue-400 text-sm font-medium group-hover:text-blue-300 transition-colors">
-                <span>Ler</span>
-                <span>→</span>
-              </div>
-            </Link>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold text-white mb-2">Manifesto</h3>
+                  <p className="text-sm text-gray-400">Leia o documento público</p>
+                </div>
+              </Link>
 
-            {/* Status Card - Large */}
-            <div className="ios-card col-span-1 p-6 spring-in hover:scale-[1.02] transition-transform" style={{ animationDelay: '0.3s' }}>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-4 h-4 rounded-full bg-green-400 animate-pulse ios-shadow-sm"></div>
-                <span className="text-lg font-semibold text-white">Status</span>
-              </div>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">Network</span>
-                  <span className="text-sm text-green-400 font-medium">Online</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">Nodes</span>
-                  <span className="text-sm text-cyan-400 font-medium">Active</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">Protocol</span>
-                  <span className="text-sm text-blue-400 font-medium">Synced</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Second Row - NFT and Features */}
-          <div className="grid grid-cols-4 gap-6 mb-6">
-            
-            {/* NFT Card - Founder Node - Desktop Enhanced */}
-            <a
-              href="https://opensea.io/item/polygon/0x5d9c5845eba92e64cc181c7f670ae9993ce7d46c/1"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => soundManager.playNavigate()}
-              className="ios-card col-span-1 p-6 flex flex-col justify-between haptic-light spring-in group hover:scale-[1.02] transition-transform cursor-pointer"
-              style={{ animationDelay: '0.35s' }}
-            >
-              <div>
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center mb-4 ios-shadow-sm overflow-hidden group-hover:shadow-lg transition-shadow">
+              {/* NFT Link */}
+              <a
+                href="https://opensea.io/item/polygon/0x5d9c5845eba92e64cc181c7f670ae9993ce7d46c/1"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => soundManager.playNavigate()}
+                className="group flex flex-col items-center gap-4 hover:opacity-80 transition-opacity cursor-pointer"
+              >
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-purple-500/20 group-hover:border-purple-400/40 transition-colors overflow-hidden">
                   <img
                     src="/images/NFT/vfsfv.webp"
                     alt="NODE_001 NFT"
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">NODE_001</h3>
-                <p className="text-sm text-gray-400 mb-3">Entry Point</p>
-                <p className="text-xs text-gray-500 leading-relaxed">
-                  Founder-level NODE of the NΞØ Protocol
-                </p>
-              </div>
-              <div className="mt-6 flex items-center gap-2 text-purple-400 text-sm font-medium group-hover:text-purple-300 transition-colors">
-                <span>Ver NFT</span>
-                <span>→</span>
-              </div>
-            </a>
-
-            {/* Feature 1 */}
-            <div className="ios-card col-span-1 p-6 text-center spring-in hover:scale-[1.02] transition-transform" style={{ animationDelay: '0.4s' }}>
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 flex items-center justify-center mx-auto mb-3">
-                <span className="text-2xl font-mono">⊚</span>
-              </div>
-              <p className="text-sm text-gray-300 font-medium">Auto Custódia</p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="ios-card col-span-1 p-6 text-center spring-in hover:scale-[1.02] transition-transform" style={{ animationDelay: '0.5s' }}>
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center mx-auto mb-3">
-                <span className="text-2xl font-mono">↯</span>
-              </div>
-              <p className="text-sm text-gray-300 font-medium">Blockchain</p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="ios-card col-span-1 p-6 text-center spring-in hover:scale-[1.02] transition-transform" style={{ animationDelay: '0.6s' }}>
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center mx-auto mb-3">
-                <span className="text-2xl font-mono">⧉</span>
-              </div>
-              <p className="text-sm text-gray-300 font-medium">IA Neural</p>
-            </div>
-          </div>
-
-          {/* Info and Terminal Row */}
-          <div className="grid grid-cols-2 gap-6 mb-6">
-            
-            {/* Info Card - Wide Desktop */}
-            <div className="ios-card p-6 spring-in hover:scale-[1.01] transition-transform" style={{ animationDelay: '0.7s' }}>
-              <div className="flex items-start gap-5">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-3xl font-mono">⟲</span>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold text-white mb-2">NODE_001</h3>
+                  <p className="text-sm text-gray-400">Founder-level NODE</p>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-white mb-3">Ecossistema Autônomo</h3>
+              </a>
+            </div>
+          </section>
+
+          {/* Pilares Fundamentais Section */}
+          <section className="mb-20">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-3xl font-bold text-white text-center mb-12">Pilares Fundamentais</h2>
+              <div className="grid grid-cols-3 gap-12">
+                
+                {/* Auto Custódia */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 flex items-center justify-center border border-purple-500/20 mb-6">
+                    <span className="text-4xl font-mono">⊚</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">Auto Custódia</h3>
                   <p className="text-sm text-gray-400 leading-relaxed">
+                    Suas chaves, sua responsabilidade. Liberdade individual por direito, sem terceirização de confiança.
+                  </p>
+                </div>
+
+                {/* Blockchain */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center border border-green-500/20 mb-6">
+                    <span className="text-4xl font-mono">↯</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">Blockchain</h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">
+                    Tecnologia base que garante transparência, imutabilidade e operação sem intermediários.
+                  </p>
+                </div>
+
+                {/* IA Neural */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center border border-orange-500/20 mb-6">
+                    <span className="text-4xl font-mono">⧉</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">IA Neural</h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">
+                    Consciência distribuída. Cada nó como parte de uma rede neural descentralizada.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Info Section - Wide and Spacious */}
+          <section className="mb-20">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-start gap-8">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 flex items-center justify-center flex-shrink-0 border border-indigo-500/20">
+                  <span className="text-4xl font-mono">⟲</span>
+                </div>
+                <div className="flex-1 pt-2">
+                  <h3 className="text-2xl font-semibold text-white mb-4">Ecossistema Autônomo</h3>
+                  <p className="text-lg text-gray-400 leading-relaxed">
                     Cada participante atua como um <span className="text-cyan-300 font-medium">nó consciente de execução</span>, formando uma rede neural descentralizada.
                   </p>
                 </div>
               </div>
             </div>
+          </section>
 
-            {/* Terminal Card - Wide Desktop */}
-            <div className="ios-card p-6 bg-black/60 border border-green-500/20 spring-in hover:scale-[1.01] transition-transform" style={{ animationDelay: '0.8s' }}>
+          {/* Status Section - Centered */}
+          <section className="mb-20">
+            <div className="max-w-2xl mx-auto">
+              <div className="flex items-center justify-center gap-4 mb-8">
+                <div className="w-4 h-4 rounded-full bg-green-400 animate-pulse"></div>
+                <span className="text-2xl font-semibold text-white">Status do Sistema</span>
+              </div>
+              <div className="flex items-center justify-center gap-12 text-center">
+                <div>
+                  <p className="text-sm text-gray-400 mb-2">Network</p>
+                  <p className="text-lg text-green-400 font-medium">Online</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400 mb-2">Nodes</p>
+                  <p className="text-lg text-cyan-400 font-medium">Active</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400 mb-2">Protocol</p>
+                  <p className="text-lg text-blue-400 font-medium">Synced</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Terminal Section - Centered and Spacious */}
+          <section className="mb-20">
+            <div className="max-w-3xl mx-auto bg-black/40 border border-green-500/20 rounded-lg p-8">
               <div className="font-mono">
-                <div className="flex items-center gap-3 mb-4 pb-3 border-b border-green-500/20">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-green-500/20">
                   <div className="flex gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-500/60"></div>
                     <div className="w-3 h-3 rounded-full bg-yellow-500/60"></div>
                     <div className="w-3 h-3 rounded-full bg-green-500/60"></div>
                   </div>
-                  <span className="text-xs text-gray-500">neo-protocol@system</span>
+                  <span className="text-sm text-gray-500">neo-protocol@system</span>
                 </div>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-3 text-base">
                   <div className="text-green-400">
                     <span className="text-green-500">$</span>
                     <span className="ml-2 text-cyan-400">status</span>
@@ -240,10 +240,7 @@ export default function NeoProtocolDesktop() {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Footer Spacer */}
-          <div className="h-8"></div>
+          </section>
 
         </main>
       </div>

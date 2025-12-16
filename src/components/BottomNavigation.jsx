@@ -1,8 +1,15 @@
 import { Link, useLocation } from 'react-router-dom';
 import { soundManager } from '../utils/sounds';
+import { useDeviceDetection } from '../hooks/useDeviceDetection';
 
 export default function BottomNavigation() {
   const location = useLocation();
+  const { isMobile } = useDeviceDetection();
+  
+  // Não renderizar em desktop
+  if (!isMobile) {
+    return null;
+  }
 
   // Partículas NΞØ conforme biblioteca de símbolos
   const navItems = [

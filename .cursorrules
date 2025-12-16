@@ -1,0 +1,43 @@
+# Cursor Rules - NΞØ Protocol
+
+## Markdown Formatting Rules
+
+**CRITICAL**: When creating or editing `.md` files, ALWAYS follow this pattern:
+
+### Rule: Blank Line After Headers
+
+**ALWAYS add a blank line after any header** (###, ##, #) before starting content.
+
+#### ✅ Correct Format:
+
+```markdown
+### 1. **Section Title** ✅ STATUS
+
+- **Field**: Value
+- **Another field**: Another value
+```
+
+#### ❌ Incorrect Format:
+
+```markdown
+### 1. **Section Title** ✅ STATUS
+- **Field**: Value
+- **Another field**: Another value
+```
+
+## Project Standards
+
+- Use 2 spaces for indentation
+- Remove trailing whitespace
+- Add final newline at end of files
+- Use LF line endings (Unix style)
+- UTF-8 encoding
+
+## Markdown Style
+
+- Headers: Always followed by blank line
+- Lists: Use `-` for unordered, numbers for ordered
+- Code: Use backticks for inline, code blocks for multi-line
+- Emphasis: `**bold**` for strong, `*italic*` for emphasis
+
+See `.markdown-style-guide.md` for complete style guide.

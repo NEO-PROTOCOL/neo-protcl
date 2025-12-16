@@ -13,21 +13,18 @@
     "deploy:lighthouse": "npm run build:boot && node scripts/upload-to-lighthouse.js",
     "prepare:lighthouse": "npm run build:boot && node scripts/prepare-for-lighthouse.js",
     "check:ens": "node scripts/check-ens-status.js",
+    "analyze": "node scripts/analyze-code.js",
+    "monitor:vulns": "node scripts/monitor-vulnerabilities.js",
     "preview": "vite preview",
     "start": "serve -s dist -l 10000"
   },
   "dependencies": {
-    "@safe-global/safe-core-sdk-types": "2.3.0",
-    "@thirdweb-dev/chains": "^0.1.120",
-    "@thirdweb-dev/react": "^4.9.4",
-    "@thirdweb-dev/sdk": "^4.0.99",
     "ethers": "^5.7.2",
     "lucide-react": "^0.555.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.0",
-    "serve": "^14.2.1",
-    "thirdweb": "^5.112.4"
+    "serve": "^14.2.1"
   },
   "devDependencies": {
     "@lighthouse-web3/sdk": "^0.4.3",
@@ -42,9 +39,10 @@
     "mermaid": "^11.12.2",
     "node-fetch": "^3.3.2",
     "postcss": "^8.4.32",
+    "prettier": "^3.7.4",
     "tailwindcss": "^3.3.6",
-    "vite": "^5.0.8",
-    "vite-plugin-pwa": "^0.17.4"
+    "vite": "^7.3.0",
+    "vite-plugin-pwa": "^1.2.0"
   },
   "overrides": {
     "react": "^18.2.0",

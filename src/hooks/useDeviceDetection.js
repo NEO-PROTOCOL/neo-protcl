@@ -14,11 +14,14 @@ export function useDeviceDetection() {
       const width = window.innerWidth;
       setWindowWidth(width);
       
+      // Verificar se é realmente um dispositivo móvel pelo User Agent
+      const isMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
       // Considera mobile se:
-      // - Largura <= 768px OU
-      // - Tem suporte a touch (ontouchstart ou maxTouchPoints > 0)
-      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      const isMobileDevice = width <= 768 || hasTouch;
+      // 1. Largura <= 768px E
+      // 2. É um dispositivo móvel real (não apenas touch - laptops touchscreen não contam)
+      // Isso evita que desktops/laptops com touch sejam considerados mobile
+      const isMobileDevice = width <= 768 && isMobileUserAgent;
       
       setIsMobile(isMobileDevice);
     };

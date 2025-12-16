@@ -5,8 +5,8 @@ import NeoProtocol from './pages/home/NeoProtocol';
 import ManifestoPage from './pages/manifesto/ManifestoPage';
 import NosPage from './pages/nos/NosPage';
 import IntelligenceBoot from './pages/boot/IntelligenceBoot';
-import X402Example from './pages/x402-example';
-import SDKExample from './pages/sdk-example';
+// import X402Example from './pages/x402-example'; // Removido - Thirdweb não está em uso
+// import SDKExample from './pages/sdk-example'; // Removido - Thirdweb não está em uso
 import IntentSystemPage from './pages/intent/IntentSystemPage';
 import { soundManager } from './utils/sounds';
 import PWAUpdatePrompt from './components/PWAUpdatePrompt';
@@ -40,8 +40,8 @@ function App() {
         <Route path="/nos" element={<NosPage />} />
         <Route path="/boot" element={<IntelligenceBoot />} />
         <Route path="/intent" element={<IntentSystemPage />} />
-        <Route path="/x402-example" element={<X402Example />} />
-        <Route path="/sdk-example" element={<SDKExample />} />
+        {/* <Route path="/x402-example" element={<X402Example />} /> Removido - Thirdweb não está em uso */}
+        {/* <Route path="/sdk-example" element={<SDKExample />} /> Removido - Thirdweb não está em uso */}
         {/* <Route path="/mcp" element={<MCPConsole />} /> Comentado - será instruído depois */}
       </Routes>
       {/* PWA Update Prompt - aparece quando há nova versão */}
