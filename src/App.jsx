@@ -9,6 +9,7 @@ import X402Example from './pages/x402-example';
 import SDKExample from './pages/sdk-example';
 import IntentSystemPage from './pages/intent/IntentSystemPage';
 import { soundManager } from './utils/sounds';
+import PWAUpdatePrompt from './components/PWAUpdatePrompt';
 
 // Componente para detectar mudanças de rota
 function RouteChangeListener() {
@@ -43,6 +44,8 @@ function App() {
         <Route path="/sdk-example" element={<SDKExample />} />
         {/* <Route path="/mcp" element={<MCPConsole />} /> Comentado - será instruído depois */}
       </Routes>
+      {/* PWA Update Prompt - aparece quando há nova versão */}
+      <PWAUpdatePrompt />
     </Router>
   );
 }

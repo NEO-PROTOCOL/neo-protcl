@@ -9,6 +9,7 @@
  * - PINATA_API_KEY
  * - PINATA_API_SECRET
  * - PINATA_JWT_SECRET (opcional, pode usar API_KEY + API_SECRET)
+ * - PINATA_GATEWAY (opcional, gateway dedicado, ex: amaranth-advisory-coyote-805.mypinata.cloud)
  */
 
 import { readdirSync, statSync, createReadStream, writeFileSync, createWriteStream, unlinkSync } from 'fs';
@@ -16,8 +17,9 @@ import { join, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import FormData from 'form-data';
-import archiver from 'archiver';
 import dotenv from 'dotenv';
+import fetch from 'node-fetch';
+import archiver from 'archiver';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,6 +30,7 @@ dotenv.config({ path: join(__dirname, '..', '.env') });
 const PINATA_API_KEY = process.env.PINATA_API_KEY;
 const PINATA_API_SECRET = process.env.PINATA_API_SECRET;
 const PINATA_JWT_SECRET = process.env.PINATA_JWT_SECRET;
+const PINATA_GATEWAY = process.env.PINATA_GATEWAY || 'gateway.pinata.cloud'; // Gateway dedicado ou público
 
 const DIST_BOOT_DIR = join(__dirname, '..', 'dist-boot');
 const PINATA_API_URL = 'https://api.pinata.cloud';
@@ -54,12 +57,14 @@ async function getAuthToken() {
   };
 }
 
+
 /**
  * Criar arquivo ZIP do diretório
+ * Pinata aceita ZIP como arquivo único, o que é mais confiável
  */
 function createZip(directory) {
   return new Promise((resolve, reject) => {
-    const zipPath = join(__dirname, '..', 'dist-boot.zip');
+    const zipPath = join(__dirname, '..', 'dist-boot-temp.zip');
     const output = createWriteStream(zipPath);
     const archive = archiver('zip', { zlib: { level: 9 } });
 
@@ -85,8 +90,8 @@ function createZip(directory) {
         if (stat.isDirectory()) {
           addFiles(filePath, baseDir);
         } else {
-          const relativePath = relative(baseDir, filePath);
-          archive.file(filePath, { name: relativePath.replace(/\\/g, '/') });
+          const relativePath = relative(baseDir, filePath).replace(/\\/g, '/');
+          archive.file(filePath, { name: relativePath });
         }
       }
     }
@@ -98,16 +103,21 @@ function createZip(directory) {
 
 /**
  * Fazer upload de um arquivo ZIP para o Pinata
+ * Usa ZIP porque é mais confiável que enviar múltiplos arquivos
  */
 async function uploadZip(zipPath, auth) {
   const formData = new FormData();
   
-  // Adicionar arquivo - Pinata espera o campo 'file'
-  // Usar apenas o stream, sem opções extras primeiro
-  const fileStream = createReadStream(zipPath);
-  formData.append('file', fileStream);
+  // Adicionar arquivo ZIP - Pinata aceita ZIP e extrai automaticamente
+  console.log('📤 Fazendo upload do ZIP para Pinata...');
+  formData.append('file', createReadStream(zipPath));
 
-  console.log('📤 Fazendo upload para Pinata...');
+  // Adicionar opções de pinning
+  const pinataOptions = {
+    cidVersion: 0,
+    wrapWithDirectory: false
+  };
+  formData.append('pinataOptions', JSON.stringify(pinataOptions));
 
   // Preparar headers de autenticação
   const headers = formData.getHeaders();
@@ -123,26 +133,33 @@ async function uploadZip(zipPath, auth) {
 
   console.log('📡 Enviando requisição...');
 
-  const response = await fetch(`${PINATA_API_URL}/pinning/pinFileToIPFS`, {
-    method: 'POST',
-    headers,
-    body: formData,
-  });
+  try {
+    const response = await fetch(`${PINATA_API_URL}/pinning/pinFileToIPFS`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    let errorMessage = `Falha no upload: ${response.status} ${response.statusText}`;
-    try {
-      const errorJson = JSON.parse(errorText);
-      errorMessage += ` - ${JSON.stringify(errorJson)}`;
-    } catch {
-      errorMessage += ` - ${errorText}`;
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errorMessage = `Falha no upload: ${response.status} ${response.statusText}`;
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage += ` - ${JSON.stringify(errorJson)}`;
+      } catch {
+        errorMessage += ` - ${errorText}`;
+      }
+      throw new Error(errorMessage);
     }
-    throw new Error(errorMessage);
-  }
 
-  const data = await response.json();
-  return data;
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (error.message.includes('Falha no upload')) {
+      throw error;
+    }
+    throw new Error(`Erro ao fazer upload: ${error.message}`);
+  }
 }
 
 /**
@@ -171,12 +188,22 @@ async function main() {
     checkDistBoot();
     console.log('✅ Diretório dist-boot encontrado\n');
 
+    // Verificar variáveis de ambiente
+    console.log('🔐 Verificando configuração...');
+    if (PINATA_JWT_SECRET) {
+      console.log('✅ PINATA_JWT_SECRET encontrado');
+    } else if (PINATA_API_KEY && PINATA_API_SECRET) {
+      console.log('✅ PINATA_API_KEY e PINATA_API_SECRET encontrados');
+    } else {
+      throw new Error('Configuração incompleta: Configure PINATA_JWT_SECRET ou (PINATA_API_KEY + PINATA_API_SECRET) no .env');
+    }
+
     // Obter token de autenticação
     console.log('🔐 Preparando autenticação Pinata...');
     const auth = await getAuthToken();
     console.log('✅ Autenticação configurada\n');
 
-    // Criar ZIP do diretório
+    // Criar ZIP do diretório (mais confiável que enviar múltiplos arquivos)
     console.log('📦 Criando arquivo ZIP...');
     const zipPath = await createZip(DIST_BOOT_DIR);
     
@@ -190,18 +217,27 @@ async function main() {
       console.log('🧹 Arquivo ZIP temporário removido\n');
 
       console.log('\n✅ Upload concluído com sucesso!\n');
-    console.log('📋 Informações do upload:');
-    console.log(`   CID: ${result.IpfsHash}`);
-    console.log(`   Tamanho: ${result.PinSize} bytes`);
-    console.log(`   Timestamp: ${result.Timestamp}\n`);
+      console.log('📋 Informações do upload:');
+      console.log(`   CID: ${result.IpfsHash}`);
+      console.log(`   Tamanho: ${result.PinSize} bytes`);
+      console.log(`   Timestamp: ${result.Timestamp}\n`);
 
-    console.log('🌐 URLs de acesso:');
-    console.log(`   IPFS Gateway: https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`);
-    console.log(`   IPFS.io: https://ipfs.io/ipfs/${result.IpfsHash}`);
-    console.log(`   Cloudflare: https://cloudflare-ipfs.com/ipfs/${result.IpfsHash}\n`);
+      console.log('🌐 URLs de acesso:');
+      // Gateway dedicado da Pinata (se configurado) ou público
+      const gatewayUrl = PINATA_GATEWAY && PINATA_GATEWAY !== 'gateway.pinata.cloud'
+        ? `https://${PINATA_GATEWAY}/ipfs/${result.IpfsHash}`
+        : `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`;
+      
+      if (PINATA_GATEWAY && PINATA_GATEWAY !== 'gateway.pinata.cloud') {
+        console.log(`   Pinata Gateway (Dedicado): ${gatewayUrl}`);
+      } else {
+        console.log(`   Pinata Gateway (Público): ${gatewayUrl}`);
+      }
+      console.log(`   IPFS.io: https://ipfs.io/ipfs/${result.IpfsHash}`);
+      console.log(`   Cloudflare: https://cloudflare-ipfs.com/ipfs/${result.IpfsHash}\n`);
 
-    console.log('📝 Para configurar no ENS:');
-    console.log(`   contenthash: ipfs://${result.IpfsHash}\n`);
+      console.log('📝 Para configurar no ENS:');
+      console.log(`   contenthash: ipfs://${result.IpfsHash}\n`);
 
       // Salvar CID em arquivo para referência
       const cidFile = join(__dirname, '..', '.pinata-cid');
@@ -210,7 +246,7 @@ async function main() {
     } catch (error) {
       // Limpar ZIP em caso de erro
       try {
-        unlinkSync(zipPath);
+        if (zipPath) unlinkSync(zipPath);
       } catch (e) {
         // Ignorar erro ao remover
       }

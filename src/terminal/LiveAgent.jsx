@@ -32,7 +32,16 @@ const describeMemoryEntry = (entry) => {
 
 export default function LiveAgent() {
   const navigate = useNavigate();
-  const { agentState, updateAgentState } = useContext(AgentContext);
+  const context = useContext(AgentContext);
+  const agentState = context?.agentState || {
+    resonance: 0,
+    zonesUnlocked: [],
+    memory: [],
+    zone: null,
+    coherence: 0,
+    alignment: 0,
+  };
+  const updateAgentState = context?.updateAgentState || (() => {});
   const { askGemini, isConfigured: geminiConfigured } = useGeminiLLM();
   const [log, setLog] = useState([]);
   const [input, setInput] = useState('');
@@ -42,8 +51,8 @@ export default function LiveAgent() {
 
   // Sequência de introdução - executa apenas uma vez
   useEffect(() => {
-    // Se já foi iniciada ou já está completa, não fazer nada
-    if (introStartedRef.current || introComplete) return;
+    // Se já foi iniciada, não fazer nada
+    if (introStartedRef.current) return;
     
     // Marcar como iniciada
     introStartedRef.current = true;
@@ -52,12 +61,20 @@ export default function LiveAgent() {
     const interval = setInterval(() => {
       if (index < introSequence.length) {
         setLog((prev) => [...prev, introSequence[index]]);
-        soundManager.playClick();
+        try {
+          soundManager.playClick();
+        } catch (e) {
+          // Ignorar erros de som silenciosamente
+        }
         index++;
       } else {
         clearInterval(interval);
         setIntroComplete(true);
-        soundManager.playConfirm();
+        try {
+          soundManager.playConfirm();
+        } catch (e) {
+          // Ignorar erros de som silenciosamente
+        }
       }
     }, 400);
 
@@ -287,10 +304,21 @@ export default function LiveAgent() {
     soundManager.playError();
   };
 
+  // Garantir que o componente renderize mesmo se houver erro
+  if (!agentState) {
+    return (
+      <div className="min-h-screen bg-black text-green-400 font-mono px-4 py-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-green-500 mb-4">NODE[MELLØ] inicializando...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-green-400 font-mono px-4 py-8 relative overflow-hidden">
       {/* Scanline effect */}
-      <div className="scanline absolute inset-0 pointer-events-none"></div>
+      <div className="scanline absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}></div>
 
       {/* Terminal cursor blink */}
       <style>{`
@@ -303,7 +331,7 @@ export default function LiveAgent() {
         }
       `}</style>
 
-      <div className="max-w-3xl mx-auto relative z-10">
+      <div className="max-w-3xl mx-auto relative" style={{ zIndex: 10 }}>
         {/* Avatar */}
         <div className="mb-4">
           <Avatar />

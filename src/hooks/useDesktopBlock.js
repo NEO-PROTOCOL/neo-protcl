@@ -2,18 +2,23 @@ import { useEffect } from 'react';
 
 /**
  * Hook para bloquear acesso de dispositivos desktop
+ * DESABILITADO: Agora temos versões separadas para desktop e mobile
  * Redireciona para desktop-redirect.html se detectar desktop
+ * 
+ * @deprecated Este hook foi desabilitado pois agora temos suporte a desktop
+ * com versões separadas da interface. Mantido para compatibilidade.
  */
 export function useDesktopBlock() {
   useEffect(() => {
-    // Detectar se é desktop
-    const isDesktop = window.innerWidth > 768 || (!('ontouchstart' in window) && navigator.maxTouchPoints === 0);
+    // DESABILITADO: Não redireciona mais usuários desktop
+    // O sistema agora detecta automaticamente o dispositivo e renderiza
+    // a versão apropriada (mobile ou desktop)
     
-    if (isDesktop) {
-      // Redirecionar para página alternativa com links randômicos
-      // Usar caminho absoluto para funcionar em qualquer rota do React Router
-      window.location.href = '/desktop-redirect.html';
-    }
+    // Código antigo comentado:
+    // const isDesktop = window.innerWidth > 768 || (!('ontouchstart' in window) && navigator.maxTouchPoints === 0);
+    // if (isDesktop) {
+    //   window.location.href = '/desktop-redirect.html';
+    // }
   }, []);
 }
 

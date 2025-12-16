@@ -8,10 +8,15 @@ import { readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fetch from 'node-fetch';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
+
+// Carregar variáveis de ambiente
+dotenv.config({ path: join(rootDir, '.env') });
+const PINATA_GATEWAY = process.env.PINATA_GATEWAY || 'gateway.pinata.cloud';
 
 async function checkENSStatus() {
   const domain = 'neoprotocol.eth';
@@ -89,6 +94,10 @@ async function checkENSStatus() {
           }
           
           console.log(`\n🔗 Teste os links diretos do IPFS:`);
+          const pinataGatewayUrl = PINATA_GATEWAY && PINATA_GATEWAY !== 'gateway.pinata.cloud'
+            ? `https://${PINATA_GATEWAY}/ipfs/${cid}`
+            : `https://gateway.pinata.cloud/ipfs/${cid}`;
+          console.log(`   Pinata Gateway: ${pinataGatewayUrl}`);
           console.log(`   https://gateway.lighthouse.storage/ipfs/${cid}`);
           console.log(`   https://ipfs.io/ipfs/${cid}`);
           console.log(`   https://cloudflare-ipfs.com/ipfs/${cid}`);

@@ -2,7 +2,13 @@ import { useContext, useEffect, useState } from 'react';
 import { AgentContext } from './AgentContext';
 
 export default function Avatar() {
-  const { agentState } = useContext(AgentContext);
+  const context = useContext(AgentContext);
+  const agentState = context?.agentState || {
+    resonance: 0,
+    zonesUnlocked: [],
+    zone: null,
+    coherence: 0,
+  };
   const [animationState, setAnimationState] = useState('idle');
 
   useEffect(() => {

@@ -17,7 +17,7 @@ const rootDir = join(__dirname, '..');
 // Carregar variáveis de ambiente
 dotenv.config({ path: join(rootDir, '.env') });
 
-// Aceita tanto IPFS_API_KEY (legado) quanto VITE_LIGHTHOUSE_API_KEY
+// Aceita tanto \ (legado) quanto VITE_LIGHTHOUSE_API_KEY
 const LIGHTHOUSE_API_KEY = process.env.VITE_LIGHTHOUSE_API_KEY || process.env.IPFS_API_KEY;
 
 if (!LIGHTHOUSE_API_KEY) {

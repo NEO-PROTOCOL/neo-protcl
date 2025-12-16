@@ -1,4 +1,4 @@
-.PHONY: help install dev dev-boot build build-boot clean preview start deploy-pinata deploy-boot deploy-lighthouse publish-ipns deploy-full check-env
+.PHONY: help install dev dev-boot build build-boot build-release build-release-minor build-release-major clean clean-all clean-build clean-unused check-unused preview start deploy-pinata deploy-boot deploy-lighthouse publish-ipns deploy-full deploy-release deploy-release-minor deploy-release-major version-bump version-patch version-minor version-major check-env
 
 # Cores para output
 CYAN := \033[0;36m
@@ -11,6 +11,12 @@ RESET := \033[0m
 NODE_MODULES := node_modules
 DIST := dist
 DIST_BOOT := dist-boot
+DIST_SSR := dist-ssr
+VITE_CACHE := .vite
+PINATA_CID := .pinata-cid
+IPFS_CID := .ipfs-cid
+BUILD_ZIP := dist-boot-for-upload.zip
+AUDIT_REPORT := audit-report.json
 
 ##@ Geral
 
@@ -24,7 +30,7 @@ help: ## Mostra esta mensagem de ajuda
 
 ##@ Desenvolvimento
 
-install: ## Instala dependências do projeto
+install: ## Instala dependências do projeto (limpa e reinstala)
 	@echo "$(CYAN)📦 Instalando dependências...$(RESET)"
 	@if [ -d "$(NODE_MODULES)" ]; then \
 		echo "$(YELLOW)🧹 Removendo node_modules antigo...$(RESET)"; \
@@ -34,8 +40,13 @@ install: ## Instala dependências do projeto
 		echo "$(YELLOW)🧹 Removendo package-lock.json antigo...$(RESET)"; \
 		rm -f package-lock.json; \
 	fi
+	@if [ -d "$(VITE_CACHE)" ]; then \
+		echo "$(YELLOW)🧹 Limpando cache do Vite...$(RESET)"; \
+		rm -rf $(VITE_CACHE); \
+	fi
 	@npm install
 	@echo "$(GREEN)✅ Dependências instaladas com sucesso!$(RESET)"
+	@echo "$(CYAN)💡 Execute 'make build' para construir o projeto$(RESET)"
 
 dev: ## Inicia servidor de desenvolvimento (app principal)
 	@echo "$(CYAN)🚀 Iniciando nó local (modo desenvolvimento)...$(RESET)"
@@ -56,6 +67,15 @@ build-boot: ## Constrói o boot ritual para produção
 	@echo "$(CYAN)🔨 Construindo boot ritual...$(RESET)"
 	@npm run build:boot
 	@echo "$(GREEN)✅ Build concluído em $(DIST_BOOT)/$(RESET)"
+
+build-release: version-patch build ## Build com atualização automática de versão (patch)
+	@echo "$(GREEN)✅ Build de release concluído$(RESET)"
+
+build-release-minor: version-minor build ## Build com atualização automática de versão (minor)
+	@echo "$(GREEN)✅ Build de release concluído$(RESET)"
+
+build-release-major: version-major build ## Build com atualização automática de versão (major)
+	@echo "$(GREEN)✅ Build de release concluído$(RESET)"
 
 ##@ Deploy
 
@@ -91,12 +111,52 @@ publish-ipns: ## Publica dist-boot no IPNS
 deploy-full: build-boot deploy-pinata publish-ipns ## Deploy completo: build + Pinata + IPNS
 	@echo "$(GREEN)✅ Deploy completo concluído!$(RESET)"
 
+deploy-release: version-patch build-boot deploy-pinata publish-ipns ## Deploy completo com atualização de versão (patch) + commit
+	@echo "$(GREEN)✅ Deploy de release concluído!$(RESET)"
+	@echo "$(CYAN)💡 Execute 'git push' para enviar as mudanças ao repositório remoto$(RESET)"
+
+deploy-release-minor: version-minor build-boot deploy-pinata publish-ipns ## Deploy completo com atualização de versão (minor) + commit
+	@echo "$(GREEN)✅ Deploy de release concluído!$(RESET)"
+	@echo "$(CYAN)💡 Execute 'git push' para enviar as mudanças ao repositório remoto$(RESET)"
+
+deploy-release-major: version-major build-boot deploy-pinata publish-ipns ## Deploy completo com atualização de versão (major) + commit
+	@echo "$(GREEN)✅ Deploy de release concluído!$(RESET)"
+	@echo "$(CYAN)💡 Execute 'git push' para enviar as mudanças ao repositório remoto$(RESET)"
+
+##@ Limpeza e Análise
+
+check-unused: ## Verifica arquivos não utilizados no projeto
+	@echo "$(CYAN)🔍 Verificando arquivos não utilizados...$(RESET)"
+	@chmod +x scripts/check-unused-files.js
+	@node scripts/check-unused-files.js
+
+clean-unused: ## Remove arquivos obsoletos identificados (use com cuidado!)
+	@echo "$(YELLOW)⚠️  Removendo arquivos obsoletos...$(RESET)"
+	@if [ -f "src/components/Layout/MainLayout.jsx" ]; then \
+		echo "$(YELLOW)🗑️  Removendo MainLayout não usado...$(RESET)"; \
+		rm -f src/components/Layout/MainLayout.jsx; \
+		if [ -z "$$(ls -A src/components/Layout 2>/dev/null)" ]; then \
+			rmdir src/components/Layout; \
+		fi; \
+		echo "$(GREEN)✅ MainLayout removido$(RESET)"; \
+	fi
+	@echo "$(GREEN)✅ Limpeza de arquivos obsoletos concluída$(RESET)"
+	@echo "$(CYAN)💡 Execute 'make check-unused' para verificar outros arquivos$(RESET)"
+
 ##@ Utilitários
 
-clean: ## Remove diretórios de build e node_modules
+clean: ## Remove diretórios de build, cache e arquivos gerados
 	@echo "$(YELLOW)🧹 Limpando arquivos gerados...$(RESET)"
-	@rm -rf $(DIST) $(DIST_BOOT) $(NODE_MODULES)
-	@echo "$(GREEN)✅ Limpeza concluída$(RESET)"
+	@rm -rf $(DIST) $(DIST_BOOT) $(DIST_SSR) $(VITE_CACHE)
+	@rm -f $(PINATA_CID) $(IPFS_CID) $(BUILD_ZIP) $(AUDIT_REPORT)
+	@echo "$(GREEN)✅ Limpeza concluída (builds, cache e arquivos temporários removidos)$(RESET)"
+
+clean-all: clean ## Remove tudo incluindo node_modules (limpeza completa)
+	@echo "$(YELLOW)🧹 Limpeza completa (incluindo node_modules)...$(RESET)"
+	@rm -rf $(NODE_MODULES)
+	@rm -f package-lock.json yarn.lock
+	@echo "$(GREEN)✅ Limpeza completa concluída$(RESET)"
+	@echo "$(CYAN)💡 Execute 'make install' para reinstalar dependências$(RESET)"
 
 clean-build: ## Remove apenas diretórios de build
 	@echo "$(YELLOW)🧹 Limpando builds...$(RESET)"
@@ -128,6 +188,58 @@ check-env: ## Verifica se variáveis de ambiente estão configuradas
 		echo "$(YELLOW)💡 Para x402 Payments, configure VITE_THIRDWEB_SECRET_KEY e VITE_X402_SERVER_WALLET_ADDRESS$(RESET)"; \
 	else \
 		echo "$(RED)❌ Variáveis de ambiente não configuradas corretamente$(RESET)"; \
+		exit 1; \
+	fi
+
+##@ Versionamento
+
+version-bump: ## Atualiza versão do PWA (patch) - sem commit
+	@echo "$(CYAN)📦 Atualizando versão (patch)...$(RESET)"
+	@chmod +x scripts/bump-version.js
+	@node scripts/bump-version.js patch
+
+version-patch: ## Atualiza versão (patch) + commit + push
+	@echo "$(CYAN)📦 Atualizando versão (patch) e fazendo commit...$(RESET)"
+	@chmod +x scripts/bump-version.js
+	@VERSION=$$(node scripts/bump-version.js patch 2>&1 | grep "VERSION:" | cut -d: -f2 | tr -d ' '); \
+	if [ -n "$$VERSION" ]; then \
+		echo "$(CYAN)📝 Fazendo commit da versão $$VERSION...$(RESET)"; \
+		git add package.json public/manifest.json public/service-worker.js vite.config.js; \
+		git commit -m "chore: bump version to $$VERSION" || echo "$(YELLOW)⚠️  Nenhuma mudança para commitar$(RESET)"; \
+		echo "$(GREEN)✅ Versão atualizada e commitada$(RESET)"; \
+		echo "$(CYAN)💡 Execute 'git push' para enviar ao repositório remoto$(RESET)"; \
+	else \
+		echo "$(RED)❌ Erro ao obter versão$(RESET)"; \
+		exit 1; \
+	fi
+
+version-minor: ## Atualiza versão (minor) + commit + push
+	@echo "$(CYAN)📦 Atualizando versão (minor) e fazendo commit...$(RESET)"
+	@chmod +x scripts/bump-version.js
+	@VERSION=$$(node scripts/bump-version.js minor 2>&1 | grep "VERSION:" | cut -d: -f2 | tr -d ' '); \
+	if [ -n "$$VERSION" ]; then \
+		echo "$(CYAN)📝 Fazendo commit da versão $$VERSION...$(RESET)"; \
+		git add package.json public/manifest.json public/service-worker.js vite.config.js; \
+		git commit -m "chore: bump version to $$VERSION" || echo "$(YELLOW)⚠️  Nenhuma mudança para commitar$(RESET)"; \
+		echo "$(GREEN)✅ Versão atualizada e commitada$(RESET)"; \
+		echo "$(CYAN)💡 Execute 'git push' para enviar ao repositório remoto$(RESET)"; \
+	else \
+		echo "$(RED)❌ Erro ao obter versão$(RESET)"; \
+		exit 1; \
+	fi
+
+version-major: ## Atualiza versão (major) + commit + push
+	@echo "$(CYAN)📦 Atualizando versão (major) e fazendo commit...$(RESET)"
+	@chmod +x scripts/bump-version.js
+	@VERSION=$$(node scripts/bump-version.js major 2>&1 | grep "VERSION:" | cut -d: -f2 | tr -d ' '); \
+	if [ -n "$$VERSION" ]; then \
+		echo "$(CYAN)📝 Fazendo commit da versão $$VERSION...$(RESET)"; \
+		git add package.json public/manifest.json public/service-worker.js vite.config.js; \
+		git commit -m "chore: bump version to $$VERSION" || echo "$(YELLOW)⚠️  Nenhuma mudança para commitar$(RESET)"; \
+		echo "$(GREEN)✅ Versão atualizada e commitada$(RESET)"; \
+		echo "$(CYAN)💡 Execute 'git push' para enviar ao repositório remoto$(RESET)"; \
+	else \
+		echo "$(RED)❌ Erro ao obter versão$(RESET)"; \
 		exit 1; \
 	fi
 
