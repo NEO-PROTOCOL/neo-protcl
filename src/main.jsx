@@ -17,7 +17,7 @@ globalThis.global = globalThis;
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, errorInfo: null };
   }
 
   static getDerivedStateFromError(error) {
@@ -26,10 +26,14 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    this.setState({ errorInfo });
   }
 
   render() {
     if (this.state.hasError) {
+      const errorMessage = this.state.error?.message || 'Erro desconhecido';
+      const isClientIdError = errorMessage.includes('clientId');
+      
       return (
         <div style={{ 
           padding: '2rem', 
@@ -39,12 +43,30 @@ class ErrorBoundary extends React.Component {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          textAlign: 'center'
         }}>
-          <h1>Erro ao carregar aplicação</h1>
-          <p style={{ marginTop: '1rem', color: '#888' }}>
-            {this.state.error?.message || 'Erro desconhecido'}
+          <h1 style={{ marginBottom: '1rem' }}>Erro ao carregar aplicação</h1>
+          <p style={{ marginTop: '1rem', color: '#888', maxWidth: '600px' }}>
+            {errorMessage}
           </p>
+          {isClientIdError && (
+            <div style={{ 
+              marginTop: '1.5rem', 
+              padding: '1rem', 
+              background: '#1a1a1a', 
+              borderRadius: '0.5rem',
+              maxWidth: '600px'
+            }}>
+              <p style={{ color: '#ffa500', marginBottom: '0.5rem' }}>
+                💡 Dica: Este erro geralmente ocorre quando o Thirdweb Client ID não está configurado.
+              </p>
+              <p style={{ color: '#888', fontSize: '0.9rem' }}>
+                O app funciona sem o Client ID, mas com funcionalidades limitadas. 
+                Configure VITE_THIRDWEB_CLIENT_ID no .env se precisar de Embedded Wallets.
+              </p>
+            </div>
+          )}
           <button 
             onClick={() => window.location.reload()}
             style={{
@@ -54,7 +76,8 @@ class ErrorBoundary extends React.Component {
               color: '#fff',
               border: 'none',
               borderRadius: '0.5rem',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              fontSize: '1rem'
             }}
           >
             Recarregar Página
