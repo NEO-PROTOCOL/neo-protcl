@@ -113,7 +113,7 @@ export default function NeoProtocolMobile() {
                      boxShadow: '0 0 40px rgba(0, 255, 255, 0.2), inset 0 0 30px rgba(0, 255, 255, 0.05)'
                    }}>
                 <img
-                  src="https://cloudflare-ipfs.com/ipfs/k51qzi5uqu5dgvzgb38nc8v46ae82sczzv1iqo42pybk0idgafw1ze4mdzb7un"
+                  src="https://cloudflare-ipfs.com/ipfs/bafybeicwktbd4bpuey7w5efaqqzgtrul43hlwn4ison5l4vn37b3cklzdi"
                   alt="NΞØ Protocol Symbol"
                   className="w-full h-full object-cover"
                   loading="eager"

@@ -6,8 +6,8 @@ Todas as imagens do projeto agora usam URLs do IPFS via Lighthouse Storage:
 
 ### 1. Símbolo Circular (Favicon + Hero)
 
-- **CID**: `k51qzi5uqu5dgvzgb38nc8v46ae82sczzv1iqo42pybk0idgafw1ze4mdzb7un`
-- **URL**: `https://cloudflare-ipfs.com/ipfs/k51qzi5uqu5dgvzgb38nc8v46ae82sczzv1iqo42pybk0idgafw1ze4mdzb7un`
+- **CID**: `bafybeicwktbd4bpuey7w5efaqqzgtrul43hlwn4ison5l4vn37b3cklzdi`
+- **URL**: `https://cloudflare-ipfs.com/ipfs/bafybeicwktbd4bpuey7w5efaqqzgtrul43hlwn4ison5l4vn37b3cklzdi`
 - **Uso**:
   - Favicon no `index.html`
   - Logo principal no Hero section (`NeoProtocol.jsx`)
@@ -55,14 +55,14 @@ Novos estilos em `src/index.css`:
 ### index.html
 
 ```html
-<link rel="icon" type="image/png" href="https://cloudflare-ipfs.com/ipfs/k51qzi5uqu5dgvzgb38nc8v46ae82sczzv1iqo42pybk0idgafw1ze4mdzb7un" />
+<link rel="icon" type="image/png" href="https://cloudflare-ipfs.com/ipfs/bafybeicwktbd4bpuey7w5efaqqzgtrul43hlwn4ison5l4vn37b3cklzdi" />
 ```
 
 ### NeoProtocol.jsx (Hero)
 
 ```jsx
 <img
-  src="https://cloudflare-ipfs.com/ipfs/k51qzi5uqu5dgvzgb38nc8v46ae82sczzv1iqo42pybk0idgafw1ze4mdzb7un"
+  src="https://cloudflare-ipfs.com/ipfs/bafybeicwktbd4bpuey7w5efaqqzgtrul43hlwn4ison5l4vn37b3cklzdi"
   alt="NΞØ Protocol Symbol"
 />
 ```
