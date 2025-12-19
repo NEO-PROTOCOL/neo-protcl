@@ -97,6 +97,7 @@ O status `VALIDATED` pode ser consumido para:
 ### **Quando PRIORIDADE 3 (Admissão/defesa) estiver completa:**
 
 O status `VALIDATED` pode ser consumido para:
+
 - Elegibilidade para admissão (revisões validadas = competência comprovada)
 - Criar edge no Identity Graph: `reviewed_by`
 - Validar intenção antes de criar node
