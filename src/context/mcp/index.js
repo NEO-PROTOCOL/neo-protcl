@@ -1,12 +1,17 @@
 // MCP Router - Model Context Protocol
 // Leitura de nodes, estado global das interações, lógica de persistência
 
+import { getIdentityGraph } from './identityGraph';
+
 let mcpNodes = [];
 let mcpState = {
   connected: false,
   activeNodes: [],
   interactions: []
 };
+
+// Instância do Identity Graph (PRIORIDADE ZERO)
+const identityGraph = getIdentityGraph();
 
 // Inicializar MCP
 export function initMCP() {
@@ -27,6 +32,14 @@ export function acknowledgeNodeOffChain(nodeId, nodeData) {
   };
   mcpNodes.push(node);
   mcpState.activeNodes.push(nodeId);
+  
+  // PRIORIDADE ZERO: Adiciona nó ao Identity Graph
+  identityGraph.addNode(nodeId, {
+    address: nodeData.address || null,
+    domain: nodeData.domain || null,
+    metadata: nodeData
+  });
+  
   return node;
 }
 
@@ -48,10 +61,31 @@ export function getMCPState() {
 
 // Registrar interação
 export function registerInteraction(interaction) {
-  mcpState.interactions.push({
+  const interactionData = {
     ...interaction,
     timestamp: Date.now()
-  });
+  };
+  mcpState.interactions.push(interactionData);
+  
+  // PRIORIDADE ZERO: Cria relacionamento no Identity Graph se houver from/to
+  if (interaction.from && interaction.to && interaction.from !== interaction.to) {
+    try {
+      identityGraph.addEdge(
+        interaction.from,
+        interaction.to,
+        interaction.type || 'interaction',
+        {
+          actionHash: interaction.actionHash,
+          impact: interaction.impact,
+          ...interaction.metadata
+        },
+        interaction.weight || 0.5
+      );
+    } catch (error) {
+      console.warn('[MCP] Failed to create graph edge:', error);
+    }
+  }
+  
   return mcpState.interactions;
 }
 
@@ -72,10 +106,17 @@ export function loadMCPState() {
     const savedNodes = localStorage.getItem('mcp_nodes');
     if (savedState) mcpState = JSON.parse(savedState);
     if (savedNodes) mcpNodes = JSON.parse(savedNodes);
+    
+    // PRIORIDADE ZERO: Carrega Identity Graph
+    identityGraph.load();
+    
     return { state: mcpState, nodes: mcpNodes };
   } catch (error) {
     console.error('[MCP] Load error:', error);
     return { state: mcpState, nodes: mcpNodes };
   }
 }
+
+// PRIORIDADE ZERO: Exporta funções do Identity Graph
+export { getIdentityGraph } from './identityGraph';
 

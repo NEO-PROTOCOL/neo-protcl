@@ -164,11 +164,8 @@ export async function saveIntentToIPFS(intentData, walletAddress = null, complet
       complete: anonymizedData.complete || false
     });
 
-    // Garantir polyfill do Buffer para o SDK no browser (Vite externaliza o módulo nativo)
-    if (typeof globalThis.Buffer === 'undefined') {
-      const { Buffer } = await import('buffer');
-      globalThis.Buffer = Buffer;
-    }
+    // Buffer já está disponível globalmente via main.jsx
+    // Não é necessário import dinâmico aqui
 
     // Importar SDK do Lighthouse
     const lighthouse = await import('@lighthouse-web3/sdk');
