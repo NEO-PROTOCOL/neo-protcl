@@ -14,6 +14,34 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     rollupOptions: {
+      output: {
+        // Agrupar imagens do Thirdweb em chunks maiores para reduzir número de arquivos
+        // Reduz de 459 arquivos pequenos para alguns chunks maiores
+        manualChunks: (id) => {
+          if (id.includes('node_modules/thirdweb')) {
+            // Agrupar TODAS as imagens do Thirdweb em um único chunk grande
+            // Identificar arquivos de imagem por padrão no nome
+            if (id.includes('image-') && id.endsWith('.js')) {
+              return 'thirdweb-images';
+            }
+            // Biblioteca Thirdweb principal (sem imagens)
+            return 'thirdweb';
+          }
+          // Agrupar outras dependências grandes
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+            if (id.includes('ethers')) {
+              return 'ethers-vendor';
+            }
+            // Outras dependências em vendor comum
+            return 'vendor';
+          }
+        },
+        // Limitar número de chunks para evitar muitos arquivos pequenos
+        chunkSizeWarningLimit: 1000,
+      },
       onwarn(warning, warn) {
         // Suprimir avisos conhecidos do Lighthouse SDK sobre eval()
         if (warning.code === 'EVAL' && warning.id?.includes('@lighthouse-web3')) {
@@ -37,6 +65,10 @@ export default defineConfig(({ mode }) => ({
   },
   optimizeDeps: {
     include: ['buffer', '@lighthouse-web3/sdk'],
+    exclude: [
+      // Excluir wallets não usadas do Thirdweb para reduzir bundle
+      // Manter apenas o que é necessário (Embedded Wallets)
+    ],
     esbuildOptions: {
       define: {
         global: 'globalThis',
@@ -103,8 +135,8 @@ export default defineConfig(({ mode }) => ({
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
-        // Aumentar limite para permitir bundles grandes (Thirdweb gera bundles de ~2.6MB)
-        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3 MB
+        // Aumentar limite para permitir bundles grandes (Thirdweb + vendor podem ser ~6MB)
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024, // 6 MB
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
