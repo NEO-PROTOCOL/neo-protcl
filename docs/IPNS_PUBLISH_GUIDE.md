@@ -32,9 +32,11 @@ Atualizar o IPNS para apontar para o novo CID após fazer upload do `dist-boot` 
 
 ```bash
 # Navegar para o diretório do projeto
+
 cd /Users/nettomello/CODIGOS/neo-protocol-landing
 
 # Fazer upload do dist-boot
+
 ipfs add -r dist-boot
 ```
 
@@ -84,6 +86,7 @@ Published to k51qzi5uqu5dla3pz2kb3xc2w51x2k8jbnxhp4p02dxj28qfwnpmp8zk6wo4kz: /ip
 
 ```bash
 # Verificar se o IPNS está resolvendo corretamente
+
 ipfs name resolve k51qzi5uqu5dla3pz2kb3xc2w51x2k8jbnxhp4p02dxj28qfwnpmp8zk6wo4kz
 ```
 
@@ -127,10 +130,12 @@ ipfs name resolve --recursive k51qzi5uqu5dla3pz2kb3xc2w51x2k8jbnxhp4p02dxj28qfwn
 **Solução:**
 ```bash
 # Instalar IPFS no macOS
+
 brew install ipfs
 
 # Ou baixar manualmente:
 # https://dist.ipfs.tech/#ipfs-update
+
 ```
 
 ### Erro: "daemon is not running"
@@ -138,9 +143,11 @@ brew install ipfs
 **Solução:**
 ```bash
 # Iniciar IPFS daemon em um terminal separado
+
 ipfs daemon
 
 # Deixe rodando enquanto faz o publish
+
 ```
 
 ### Erro: "context deadline exceeded"
@@ -158,25 +165,31 @@ ipfs daemon
 
 ```bash
 # 1. Navegar para o projeto
+
 cd /Users/nettomello/CODIGOS/neo-protocol-landing
 
 # 2. Fazer build (já cria index.html)
+
 npm run build:boot
 
 # 3. Upload para IPFS
+
 ipfs add -r dist-boot
 
 # 4. Copiar o CID do diretório (última linha)
 # Exemplo: Qmar2He46w4Muwen5qdYzu45gypGbZBMw6MYhLpqA4heX1
 
 # 5. Publicar no IPNS
+
 ipfs name publish /ipfs/Qmar2He46w4Muwen5qdYzu45gypGbZBMw6MYhLpqA4heX1
 
 # 6. Verificar
+
 ipfs name resolve k51qzi5uqu5dla3pz2kb3xc2w51x2k8jbnxhp4p02dxj28qfwnpmp8zk6wo4kz
 
 # 7. Testar no navegador
 # https://ipfs.io/ipns/k51qzi5uqu5dla3pz2kb3xc2w51x2k8jbnxhp4p02dxj28qfwnpmp8zk6wo4kz
+
 ```
 
 ## 🎯 Resultado Final

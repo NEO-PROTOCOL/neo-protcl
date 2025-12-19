@@ -16,11 +16,13 @@ Implementação completa das **Embedded Wallets** do Thirdweb v5 no NΞØ Protoc
 ### 1. **Providers Atualizados**
 
 #### `src/providers/X402Provider.jsx`
+
 - ✅ Reativado com `createThirdwebClient`
 - ✅ Configuração de x402 Facilitator
 - ✅ Exporta `thirdwebClient` para uso global
 
 #### `src/providers/ThirdwebProvider.jsx`
+
 - ✅ Configurado com `ThirdwebProvider` do v5
 - ✅ Embedded Wallets com múltiplas opções:
   - Email (código de verificação)
@@ -33,6 +35,7 @@ Implementação completa das **Embedded Wallets** do Thirdweb v5 no NΞØ Protoc
 ### 2. **Componente ConnectButton**
 
 #### `src/components/WalletConnect/ConnectButton.jsx`
+
 - ✅ Usa `ConnectButton` do Thirdweb v5
 - ✅ Suporta `useActiveAccount` e `useDisconnect`
 - ✅ Fix de acessibilidade (DialogTitle)
@@ -41,6 +44,7 @@ Implementação completa das **Embedded Wallets** do Thirdweb v5 no NΞØ Protoc
 ### 3. **Integração no App**
 
 #### `src/main.jsx`
+
 - ✅ `TWProvider` envolvendo toda a aplicação
 - ✅ Hierarquia: `TWProvider` → `X402Provider` → `App`
 
@@ -52,9 +56,11 @@ Implementação completa das **Embedded Wallets** do Thirdweb v5 no NΞØ Protoc
 
 ```bash
 # Obrigatório para Embedded Wallets
+
 VITE_THIRDWEB_CLIENT_ID=223d53b50916d72d63cc00ceaaba7ec0
 
 # Opcional (para x402 Payments)
+
 VITE_THIRDWEB_SECRET_KEY=kjIHSKgLZDGHhQRu0ynvOIrRpWbuAUlLjArJBpITCo9nq249oNH1yZRpfzYdUxFcfNzLjZeCTiXo11blWgshWw
 VITE_X402_SERVER_WALLET_ADDRESS=0x765B22a98F101a82c071D4C36980B51213B98d4C
 ```
@@ -162,6 +168,7 @@ useActiveAccount() → Retorna account.address
 
 ```bash
 # Verificar se variáveis estão no .env
+
 cat .env | grep THIRDWEB
 ```
 
@@ -200,16 +207,19 @@ npm run dev
 ## 🚀 Próximos Passos
 
 ### Fase 1 — MVP (Atual)
+
 - ✅ Embedded Wallets funcionando
 - ✅ x402 Payments configurado
 - ✅ Account Abstraction ativo
 
 ### Fase 2 — Integração com Protocolo
+
 - [ ] Integrar com NodeRegistry.sol
 - [ ] Permitir registro de nós via wallet conectada
 - [ ] Proof of Intention com NFT mint
 
 ### Fase 3 — Tokenomics
+
 - [ ] Deploy de token $NEO
 - [ ] Airdrop para nós registrados
 - [ ] Staking e governança

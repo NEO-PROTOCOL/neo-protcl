@@ -1,6 +1,7 @@
 # 📁 Images - NΞØ Protocol
 
 ## 🌐 ENS Domain
+
 **neoprotocol.eth**
 
 ## 📁 Estrutura de Pastas
@@ -17,24 +18,28 @@ images/
 ## 📝 Tipos de Imagens
 
 ### Hero Images
+
 - **Localização**: `images/hero/`
 - **Uso**: Imagens principais da seção hero
 - **Formato**: WebP (preferencial) ou PNG/JPG
 - **Tamanho**: Otimizado para web (máx 500KB)
 
 ### Section Images
+
 - **Localização**: `images/sections/`
 - **Uso**: Imagens para seções específicas (Manifesto, Como Funciona, Token)
 - **Formato**: WebP ou PNG/JPG
 - **Tamanho**: Otimizado para web
 
 ### Backgrounds
+
 - **Localização**: `images/backgrounds/`
 - **Uso**: Imagens de fundo, padrões, texturas
 - **Formato**: WebP ou PNG/JPG
 - **Tamanho**: Otimizado, considerar lazy loading
 
 ### Illustrations
+
 - **Localização**: `images/illustrations/`
 - **Uso**: Ilustrações, diagramas, gráficos
 - **Formato**: SVG (preferencial) ou PNG

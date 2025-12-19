@@ -7,18 +7,21 @@ O **Thirdweb SDK** é uma biblioteca JavaScript/TypeScript que permite interagir
 ## 🎯 Funcionalidades Principais
 
 ### 1. **Interação com Contratos Inteligentes**
+
 - Ler dados de contratos (funções `view`)
 - Executar funções de contratos (transações)
 - Preparar e enviar transações
 - Escutar eventos de contratos
 
 ### 2. **Gestão de NFTs**
+
 - Mint de NFTs
 - Transferência de NFTs
 - Consulta de propriedade
 - Metadados de NFTs
 
 ### 3. **Transações Blockchain**
+
 - Enviar transações na rede Base (e outras)
 - Preparar transações complexas
 - Gerenciar gas e nonces
@@ -111,9 +114,11 @@ const receipt = await sendTransaction({ transaction });
 
 ```env
 # Opção 1: Secret Key (recomendado para server-side)
+
 VITE_THIRDWEB_SECRET_KEY=your_secret_key_here
 
 # Opção 2: Client ID (para client-side)
+
 VITE_THIRDWEB_CLIENT_ID=your_client_id_here
 ```
 

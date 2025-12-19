@@ -49,19 +49,23 @@ ipns://k51qzi5uqu5d...
 
 ```bash
 # Gerar uma nova chave IPNS
+
 ipfs key gen neo-protocol-key
 
 # Ou usar a chave padrão (self)
 # A chave padrão já existe: self
+
 ```
 
 ### Passo 2: Publicar CID no IPNS
 
 ```bash
 # Publicar o CID no IPNS usando a chave gerada
+
 ipfs name publish --key=neo-protocol-key /ipfs/Qmar2He46w4Muwen5qdYzu45gypGbZBMw6MYhLpqA4heX1
 
 # Ou usando a chave padrão (self)
+
 ipfs name publish /ipfs/Qmar2He46w4Muwen5qdYzu45gypGbZBMw6MYhLpqA4heX1
 ```
 
@@ -74,10 +78,12 @@ Published to k51qzi5uqu5d...: /ipfs/Qmar2He46w4Muwen5qdYzu45gypGbZBMw6MYhLpqA4he
 
 ```bash
 # Verificar o IPNS
+
 ipfs name resolve k51qzi5uqu5d...
 
 # Deve retornar:
 # /ipfs/Qmar2He46w4Muwen5qdYzu45gypGbZBMw6MYhLpqA4heX1
+
 ```
 
 ### Passo 4: Configurar no ENS
@@ -93,12 +99,15 @@ Quando você atualizar o conteúdo e gerar um novo CID:
 
 ```bash
 # 1. Fazer build
+
 npm run build:boot
 
 # 2. Adicionar ao IPFS (se ainda não estiver)
+
 ipfs add -r dist-boot
 
 # 3. Publicar novo CID no IPNS
+
 ipfs name publish --key=neo-protocol-key /ipfs/NOVO_CID_AQUI
 ```
 

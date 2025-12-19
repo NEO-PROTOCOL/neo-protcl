@@ -5,7 +5,7 @@ export default function Footer() {
 
   return (
     <footer 
-      className="relative z-10 border-t border-gray-900 py-6 mt-8"
+      className="relative z-10 border-t border-gray-900 py-6 mt-8 w-full"
       style={isMobile ? { marginBottom: '80px' } : {}}
     >
       <div className="container mx-auto px-4">

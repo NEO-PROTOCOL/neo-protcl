@@ -3,6 +3,7 @@
 ## 🔍 **Dados Atualmente Capturados**
 
 ### **1. Dados do Usuário (localStorage)**
+
 ```javascript
 // Armazenado em: localStorage.getItem('neo_agent_state')
 {
@@ -15,6 +16,7 @@
 ```
 
 ### **2. Dados do Mapeamento (estado React)**
+
 ```javascript
 // Gerado em: handleGenerateMap()
 {
@@ -37,6 +39,7 @@
 ```
 
 ### **3. Respostas de Texto Livre**
+
 ```javascript
 // Armazenado em: responses[dimensionId]
 {
@@ -270,12 +273,14 @@ export async function saveIntentToBackend(intentData, consent) {
 ## 🛡️ **Privacidade e Consentimento**
 
 ### **Princípios:**
+
 1. **Opt-in explícito** - Usuário deve consentir
 2. **Anonimização** - Nunca salvar texto livre sem consentimento
 3. **Transparência** - Mostrar claramente o que será salvo
 4. **LGPD/GDPR compliant** - Permitir exclusão de dados
 
 ### **Componente de Consentimento:**
+
 ```jsx
 // src/components/IntentConsent.jsx
 function IntentConsent({ onConsent }) {
@@ -308,16 +313,19 @@ function IntentConsent({ onConsent }) {
 ## 📋 **Recomendação de Implementação**
 
 ### **Fase 1: IPFS (Imediato)**
+
 - ✅ Mais alinhado com Web3
 - ✅ Descentralizado
 - ✅ Já tem infraestrutura (Lighthouse)
 
 ### **Fase 2: Analytics Agregado**
+
 - ✅ Entender uso
 - ✅ Melhorar UX
 - ✅ Sem dados pessoais
 
 ### **Fase 3: Smart Contract (Futuro)**
+
 - ✅ NFT como certificado
 - ✅ Integração com $NEO token
 - ✅ On-chain, imutável
@@ -328,17 +336,21 @@ function IntentConsent({ onConsent }) {
 
 ```env
 # IPFS (Lighthouse)
+
 VITE_LIGHTHOUSE_API_KEY=your_api_key
 
 # Thirdweb (já configurado)
+
 VITE_THIRDWEB_SECRET_KEY=your_secret_key
 VITE_THIRDWEB_CLIENT_ID=your_client_id
 
 # Analytics (opcional)
+
 VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 VITE_PLAUSIBLE_DOMAIN=neoprotocol.eth
 
 # Backend (opcional)
+
 VITE_BACKEND_API_URL=https://api.neoprotocol.eth
 ```
 

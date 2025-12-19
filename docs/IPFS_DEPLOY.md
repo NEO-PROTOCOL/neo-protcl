@@ -15,19 +15,23 @@ Guia para fazer deploy do IntelligenceBoot no IPFS e configurar o ENS.
 
 ```bash
 # Build de produção completo
+
 npm run build
 
 # O build será gerado em ./dist
+
 ```
 
 ### Opção B: Build Apenas da Página de Boot (Recomendado para ENS)
 
 ```bash
 # Build apenas da página de boot (mais leve, ideal para ENS)
+
 npm run build:boot
 
 # O build será gerado em ./dist-boot
 # Este build contém apenas a página IntelligenceBoot
+
 ```
 
 **Recomendação**: Use `build:boot` para o deploy no ENS, pois é mais leve e focado no ritual de entrada.
@@ -41,6 +45,7 @@ npm run build:boot
 ```env
 PINATA_JWT_SECRET=seu_jwt_token_aqui
 # OU
+
 PINATA_API_KEY=sua_api_key
 PINATA_API_SECRET=sua_api_secret
 ```
@@ -49,9 +54,11 @@ PINATA_API_SECRET=sua_api_secret
 
 ```bash
 # Build + Upload em um comando
+
 npm run deploy:boot
 
 # Ou separadamente:
+
 npm run build:boot
 npm run deploy:pinata
 ```
@@ -72,18 +79,22 @@ O script irá:
 # Linux: https://docs.ipfs.tech/install/command-line/
 
 # Iniciar IPFS local (se necessário)
+
 ipfs daemon
 
 # Adicionar diretório ao IPFS
 # Para build completo:
+
 ipfs add -r dist
 
 # Para build apenas boot (recomendado):
+
 ipfs add -r dist-boot
 
 # Você receberá um hash como:
 # QmXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # Copie o hash do diretório (última linha)
+
 ```
 
 ### Opção C: Usando Pinata (Interface Web)
@@ -96,6 +107,7 @@ ipfs add -r dist-boot
 
 ```bash
 # Se já tem Lighthouse configurado
+
 npx lighthouse upload dist --apiKey YOUR_API_KEY
 ```
 

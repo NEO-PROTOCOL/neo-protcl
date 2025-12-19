@@ -19,16 +19,20 @@ Remover todas as dependências e usos do Thirdweb, pois não está sendo usado e
 ### 2. Arquivos Modificados
 
 #### Providers
+
 - ✅ `src/providers/ThirdwebProvider.jsx` - Desabilitado (código comentado)
 - ✅ `src/providers/X402Provider.jsx` - Desabilitado (código comentado)
 
 #### Services
+
 - ✅ `src/services/thirdwebSDK.js` - Desabilitado (código comentado)
 
 #### Hooks
+
 - ✅ `src/hooks/useThirdwebSDK.js` - Desabilitado (código comentado)
 
 #### Core
+
 - ✅ `src/main.jsx` - Removido `TWProvider`
 - ✅ `src/App.jsx` - Rotas `/x402-example` e `/sdk-example` comentadas
 
@@ -90,11 +94,13 @@ npm run build      # Deve compilar sem erros
 ## 📊 Impacto
 
 ### Antes
+
 - 36 vulnerabilidades (7 critical, 17 high, 3 moderate, 9 low)
 - 2337 pacotes instalados
 - Dependências do Thirdweb causando problemas
 
 ### Depois
+
 - ✅ **0 vulnerabilidades**
 - ✅ **790 pacotes** (redução de 66%)
 - ✅ Projeto mais limpo e seguro

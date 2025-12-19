@@ -307,10 +307,10 @@ export default function NeoProtocolMobile() {
           <div className="h-4"></div>
 
         </main>
-      </div>
 
-      {/* Footer */}
-      <Footer />
+        {/* Footer */}
+        <Footer />
+      </div>
 
       {/* Bottom Navigation */}
       <BottomNavigation />

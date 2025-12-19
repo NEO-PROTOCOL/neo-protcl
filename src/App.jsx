@@ -1,12 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import NeoProtocol from './pages/home/NeoProtocol';
-// import MCPConsole from './pages/mcp-console'; // Comentado - será instruído depois
 import ManifestoPage from './pages/manifesto/ManifestoPage';
 import NosPage from './pages/nos/NosPage';
 import IntelligenceBoot from './pages/boot/IntelligenceBoot';
-// import X402Example from './pages/x402-example'; // Removido - Thirdweb não está em uso
-// import SDKExample from './pages/sdk-example'; // Removido - Thirdweb não está em uso
 import IntentSystemPage from './pages/intent/IntentSystemPage';
 import DocumentationPage from './pages/docs/DocumentationPage';
 import ProjectPage from './pages/project/ProjectPage';
@@ -45,9 +42,6 @@ function App() {
         <Route path="/docs" element={<DocumentationPage />} />
         <Route path="/documentacao" element={<DocumentationPage />} />
         <Route path="/project" element={<ProjectPage />} />
-        {/* <Route path="/x402-example" element={<X402Example />} /> Removido - Thirdweb não está em uso */}
-        {/* <Route path="/sdk-example" element={<SDKExample />} /> Removido - Thirdweb não está em uso */}
-        {/* <Route path="/mcp" element={<MCPConsole />} /> Comentado - será instruído depois */}
       </Routes>
       {/* PWA Update Prompt - aparece quando há nova versão */}
       <PWAUpdatePrompt />

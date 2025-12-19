@@ -5,11 +5,13 @@
 ### 1. **Design System iOS-like**
 
 #### Glassmorphism / Blur Effects
+
 - `.ios-glass` - Efeito de vidro com blur
 - `.ios-glass-dark` - Versão escura com blur
 - `.ios-card` - Cards com glassmorphism e sombras iOS
 
 #### Componentes iOS
+
 - **Bottom Navigation** - Navegação inferior estilo iOS
 - **Navbar** - Barra superior com blur e safe area
 - **Buttons** - Botões com estilo iOS nativo
@@ -57,6 +59,7 @@ Classes de tipografia seguindo Human Interface Guidelines:
 ## 🎨 Classes CSS Disponíveis
 
 ### Cards
+
 ```jsx
 <div className="ios-card">
   {/* Card com glassmorphism */}
@@ -64,6 +67,7 @@ Classes de tipografia seguindo Human Interface Guidelines:
 ```
 
 ### Buttons
+
 ```jsx
 <button className="ios-button">
   {/* Botão primário iOS */}
@@ -75,6 +79,7 @@ Classes de tipografia seguindo Human Interface Guidelines:
 ```
 
 ### Navigation
+
 ```jsx
 <nav className="ios-navbar">
   {/* Navbar com blur */}
@@ -86,6 +91,7 @@ Classes de tipografia seguindo Human Interface Guidelines:
 ```
 
 ### Shadows
+
 ```jsx
 <div className="ios-shadow-sm">  {/* Sombra pequena */}
 <div className="ios-shadow-md">  {/* Sombra média */}
@@ -95,6 +101,7 @@ Classes de tipografia seguindo Human Interface Guidelines:
 ## 📱 Componentes Criados
 
 ### `BottomNavigation.jsx`
+
 Navegação inferior estilo iOS com:
 - Ícones e labels
 - Estado ativo visual
@@ -102,15 +109,18 @@ Navegação inferior estilo iOS com:
 - Touch feedback
 
 ### `Navbar.jsx` (Atualizado)
+
 Navbar com:
 - Glassmorphism
 - Safe area support
 - Typography iOS
 
 ### `TokenSection.jsx` (Removido)
+
 Seção de token foi removida do projeto.
 
 ### `NeoProtocol.jsx` (Atualizado)
+
 Página principal com:
 - Pull to refresh
 - Cards iOS em todas as seções
@@ -120,12 +130,14 @@ Página principal com:
 ## 🔧 Configurações PWA
 
 ### `index.html`
+
 - Meta tags iOS otimizadas
 - Status bar style: `black-translucent`
 - Viewport com `viewport-fit=cover`
 - Prevenção de bounce/overscroll
 
 ### `manifest.json`
+
 - `display: "standalone"`
 - `display_override` para melhor controle
 - `orientation: "portrait-primary"`
@@ -133,6 +145,7 @@ Página principal com:
 ## 📐 Layout Mobile-First
 
 ### Estrutura
+
 ```
 ┌─────────────────────┐
 │  Status Bar Spacer  │

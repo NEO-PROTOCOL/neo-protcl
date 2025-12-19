@@ -57,9 +57,11 @@ O `--force` quebraria o projeto com downgrades incompatíveis.
 
 ```bash
 # Verificar se há atualizações disponíveis
+
 npm outdated
 
 # Atualizar apenas dependências diretas (sem breaking changes)
+
 npm update @thirdweb-dev/react @thirdweb-dev/sdk thirdweb
 ```
 

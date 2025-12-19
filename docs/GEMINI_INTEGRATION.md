@@ -71,12 +71,14 @@ quanto mais intensa a emissão, mais ela molda a forma futura da rede.
 ## 📁 Arquivos Criados
 
 ### `src/services/geminiLLM.js`
+
 Serviço principal de integração:
 - `generateResponse(prompt, context)` - Gera resposta usando Gemini
 - `isGeminiConfigured()` - Verifica se API está configurada
 - `geminiConfig` - Configuração exportada
 
 ### `src/hooks/useGeminiLLM.js`
+
 Hook React para usar Gemini:
 - `askGemini(prompt, agentState)` - Faz pergunta ao Gemini
 - `loading` - Estado de carregamento
@@ -84,6 +86,7 @@ Hook React para usar Gemini:
 - `isConfigured` - Se Gemini está configurado
 
 ### Integração no `LiveAgent.jsx`
+
 - Importa `useGeminiLLM`
 - Usa Gemini quando comando não é reconhecido
 - Mostra indicador `[LLM]` quando Gemini está ativo
@@ -118,6 +121,7 @@ Hook React para usar Gemini:
 
 ```bash
 # No terminal do LiveAgent
+
 $ o que significa ressonância?
 → processando sinal com campo simbólico...
 

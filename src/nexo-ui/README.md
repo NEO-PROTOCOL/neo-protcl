@@ -75,6 +75,7 @@ particles.neo       // NΞØ
 ## 🎨 Cores
 
 ### Cores Principais
+
 - `bg-void` / `text-void` - Preto absoluto
 - `bg-depth` / `text-depth` - Cinza escuro (#0B0D10)
 - `bg-carbon` / `text-carbon` - Cinza médio (#13161A)
@@ -83,6 +84,7 @@ particles.neo       // NΞØ
 - `bg-signal` / `text-signal` - Violeta (#7B5DFF)
 
 ### Variantes Glassmorphism
+
 - `bg-anomaly-glass` - Azul com opacity
 - `bg-glitch-glass` - Ciano com opacity
 - `bg-signal-glass` - Violeta com opacity

@@ -19,6 +19,7 @@
 
 ```markdown
 ### 1. **Título da Seção** ✅ STATUS
+
 - **Campo**: Valor
 - **Outro campo**: Outro valor
 ```

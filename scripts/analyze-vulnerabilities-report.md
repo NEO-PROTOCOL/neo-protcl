@@ -116,6 +116,7 @@ Após a remoção de `@safe-global/safe-core-sdk-types`, foram identificadas 36 
 
 ```bash
 # Corrigir apenas vulnerabilidades que não requerem breaking changes
+
 npm audit fix
 ```
 
@@ -125,6 +126,7 @@ npm audit fix
 
 ```bash
 # Corrigir todas as vulnerabilidades (requer downgrade do Thirdweb)
+
 npm audit fix --force
 ```
 

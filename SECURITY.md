@@ -1,14 +1,17 @@
 # Relatório de Segurança - Vulnerabilidades de Dependências
 
 ## Status Atual
+
 Após revisão e atualização das dependências, restam **33 vulnerabilidades** (9 low, 17 high, 7 critical).
 
 ## Análise
 
 ### Vulnerabilidades Corrigidas
+
 - ✅ **elliptic** - Corrigido via `npm audit fix` (era critical, agora resolvido)
 
 ### Vulnerabilidades Restantes
+
 A maioria das vulnerabilidades restantes são de **dependências transitivas** (dependências de dependências) do ecossistema Thirdweb SDK:
 
 1. **@coinbase/wallet-sdk** (high) - Dependência transitiva do Thirdweb SDK

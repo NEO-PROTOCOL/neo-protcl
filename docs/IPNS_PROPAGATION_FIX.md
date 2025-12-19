@@ -45,9 +45,11 @@ Se após 10 minutos ainda não funcionar:
 
 ```bash
 # Verificar o que está publicado localmente
+
 ipfs name resolve k51qzi5uqu5dla3pz2kb3xc2w51x2k8jbnxhp4p02dxj28qfwnpmp8zk6wo4kz
 
 # Se estiver correto localmente, forçar republicação
+
 ipfs name publish /ipfs/QmfRs5FhutMznspDEHiUAjaKwrXW2aQ5MfBGn2wB2jrXmQ
 ```
 

@@ -109,6 +109,7 @@ Para uma solução mais limpa, crie um `index.html` que redireciona:
 ```bash
 npm run build:boot
 # Depois fazer upload do dist-boot para IPFS
+
 ```
 
 3. **Configurar ENS com novo CID (sem /boot.html):**

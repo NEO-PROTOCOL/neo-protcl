@@ -426,12 +426,14 @@ const principles = {
 ## 🛠️ IMPLEMENTAÇÃO FASEADA
 
 ### Fase 1: Fundação (Semana 1-2)
+
 - [ ] Criar `<OntologicalLayer />`
 - [ ] Criar design system (cores, componentes base)
 - [ ] Expandir `<NetworkGraph3D />` com tipos de nós
 - [ ] Criar `/principles` page
 
 ### Fase 2: MCP Interface (Semana 3-4)
+
 - [ ] Criar `<MCPDashboard />`
 - [ ] Criar `<ContextGuard />`
 - [ ] Criar `<IntentRouter />`
@@ -440,24 +442,28 @@ const principles = {
 - [ ] Expandir `/mcp` page
 
 ### Fase 3: Executores (Semana 5-6)
+
 - [ ] Criar `<ExecutorsDashboard />`
 - [ ] Criar cada executor individual
 - [ ] Criar `/executors` page
 - [ ] Integrar com APIs existentes
 
 ### Fase 4: Consciência (Semana 7-8)
+
 - [ ] Criar componentes de consciência
 - [ ] Expandir Network Graph com novos tipos
 - [ ] Criar `/consciousness` page
 - [ ] Implementar animações de conexão
 
 ### Fase 5: Transparência (Semana 9-10)
+
 - [ ] Criar `/transparency` page
 - [ ] Implementar WebSocket para logs em tempo real
 - [ ] Criar sistema de filtros
 - [ ] Implementar exportação
 
 ### Fase 6: Fluxos (Semana 11-12)
+
 - [ ] Criar `<NodeFlows />`
 - [ ] Criar `/flows` page
 - [ ] Implementar animações de fluxo
@@ -468,21 +474,25 @@ const principles = {
 ## 🎯 PRINCÍPIOS DE DESIGN
 
 ### 1. Descentralização Visual
+
 - Sem hierarquia visual central
 - Grid layouts distribuídos
 - Múltiplos pontos focais
 
 ### 2. Self-Custodial Visual
+
 - Chaves sempre visíveis (quando aplicável)
 - Indicadores de auto-custódia
 - Sem dependência visual de terceiros
 
 ### 3. Transparência Visual
+
 - Glassmorphism
 - Logs sempre acessíveis
 - Zero blackbox (tudo visível)
 
 ### 4. Interconexão Visual
+
 - Conexões animadas
 - Fluxos claros
 - Co-participação destacada

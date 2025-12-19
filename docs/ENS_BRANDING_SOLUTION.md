@@ -49,14 +49,17 @@ ipfs://QmXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ```bash
 # 1. Fazer build (cria branding.html e boot.html)
+
 npm run build:boot
 
 # 2. Publicar no IPNS (faz upload e publica automaticamente)
+
 npm run publish:ipns
 
 # 3. Configurar ENS
 # Acesse app.ens.domains → neoprotocol.eth → Records → Content
 # Cole: ipns://k51qzi5uqu5dla3pz2kb3xc2w51x2k8jbnxhp4p02dxj28qfwnpmp8zk6wo4kz
+
 ```
 
 ## 🎨 Página de Branding

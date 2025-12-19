@@ -61,6 +61,7 @@ Este documento identifica arquivos obsoletos, não utilizados ou que precisam de
 - ✅ `src/terminal/*` - Sistema de terminal completo (LiveAgent, etc)
 
 ### Scripts Ativos
+
 - ✅ `scripts/bump-version.js` - Versionamento
 - ✅ `scripts/upload-to-pinata.js` - Upload Pinata
 - ✅ `scripts/upload-to-lighthouse.js` - Upload Lighthouse
@@ -202,15 +203,19 @@ Este documento identifica arquivos obsoletos, não utilizados ou que precisam de
 
 ```bash
 # Verificar arquivos não utilizados
+
 make check-unused
 
 # Remover arquivos obsoletos identificados
+
 make clean-unused
 
 # Limpeza completa (builds + cache)
+
 make clean
 
 # Limpeza total (inclui node_modules)
+
 make clean-all
 ```
 
@@ -219,13 +224,16 @@ make clean-all
 ## ✅ Resumo Final
 
 ### Arquivos para REMOVER (Confirmados)
+
 1. ❌ `src/components/Layout/MainLayout.jsx` - Nunca usado
 
 ### Arquivos para VERIFICAR
+
 1. ❓ `src/components/UI/Button.jsx` - Possível duplicação
 2. ❓ `src/pages/mcp-console.jsx` - Desabilitado, decidir se ativa ou remove
 
 ### Arquivos para MANTER
+
 - ✅ Todos os HTMLs na raiz (necessários para build-boot)
 - ✅ `src/nexo-ui/` - Sistema de design tokens em uso
 - ✅ Todos os scripts (úteis para deploy e debug)

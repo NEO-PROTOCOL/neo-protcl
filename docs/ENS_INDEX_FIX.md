@@ -33,11 +33,14 @@ Se você fizer um novo upload do IPFS, renomeie `boot.html` para `index.html`:
 
 ```bash
 # No diretório dist-boot
+
 mv boot.html index.html
 
 # Fazer novo upload
+
 npm run build:boot
 # Depois fazer upload manual ou via script
+
 ```
 
 Então configure o Content Hash como:

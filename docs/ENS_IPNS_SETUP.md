@@ -33,15 +33,18 @@ Após fazer o build com caminhos relativos:
 
 ```bash
 # 1. Fazer build (já cria index.html automaticamente)
+
 npm run build:boot
 
 # 2. Upload para IPFS (via Pinata ou IPFS local)
 # Pegue o novo CID do upload
 
 # 3. Publicar no IPNS
+
 ipfs name publish /ipfs/NOVO_CID
 
 # Ou se você tem uma chave específica:
+
 ipfs name publish --key=neo-protocol-key /ipfs/NOVO_CID
 ```
 
@@ -82,12 +85,14 @@ npm run deploy:pinata
 ```bash
 ipfs add -r dist-boot
 # Copie o CID do diretório (última linha)
+
 ```
 
 ### 4. Publicar no IPNS
 
 ```bash
 # Substitua NOVO_CID pelo CID do upload
+
 ipfs name publish /ipfs/NOVO_CID
 ```
 
@@ -117,9 +122,11 @@ Antes de fazer upload, teste localmente:
 
 ```bash
 # Servir dist-boot localmente
+
 cd dist-boot
 python3 -m http.server 8080
 # ou
+
 npx serve -s . -l 8080
 ```
 

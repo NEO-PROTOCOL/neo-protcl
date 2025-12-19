@@ -32,6 +32,7 @@ O Cursor lê automaticamente o `.cursorrules` na raiz do projeto. Este arquivo r
 Conteúdo aqui.
 
 ### ❌ Incorreto
+
 Conteúdo aqui.
 ```
 

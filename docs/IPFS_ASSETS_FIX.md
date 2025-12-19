@@ -22,9 +22,11 @@ O IPFS automaticamente procura `index.html` quando você acessa um diretório.
 
 ```bash
 # Após fazer build
+
 npm run build:boot
 
 # Renomear boot.html para index.html
+
 cd dist-boot
 mv boot.html index.html
 ```
@@ -71,6 +73,7 @@ mv boot.html index.html
 ```bash
 # Via Pinata (interface web ou script)
 # Ou via IPFS local
+
 ipfs add -r dist-boot
 ```
 
@@ -78,9 +81,11 @@ ipfs add -r dist-boot
 
 ```bash
 # Pegue o novo CID do upload
+
 ipfs name publish /ipfs/NOVO_CID
 
 # Ou atualize o IPNS existente
+
 ipfs name publish --key=neo-protocol-key /ipfs/NOVO_CID
 ```
 

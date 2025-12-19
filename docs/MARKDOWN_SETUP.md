@@ -19,10 +19,12 @@ O projeto agora inclui os seguintes arquivos de configuração:
 O `.editorconfig` funciona automaticamente na maioria dos editores. Para garantir suporte:
 
 #### VS Code / Cursor
+
 - Instale a extensão: **EditorConfig for VS Code**
 - Já deve estar instalada por padrão no Cursor
 
 #### Outros Editores
+
 - **Sublime Text**: Instale `EditorConfig` via Package Control
 - **Atom**: Instale `editorconfig`
 - **Vim/Neovim**: Use plugin `editorconfig-vim`
@@ -33,9 +35,11 @@ O `.editorconfig` funciona automaticamente na maioria dos editores. Para garanti
 
 ```bash
 # Instalar Prettier globalmente (opcional)
+
 npm install -g prettier
 
 # Ou usar localmente no projeto
+
 npm install --save-dev prettier
 ```
 
@@ -59,9 +63,11 @@ npm install --save-dev prettier
 
 ```bash
 # Formatar todos os arquivos Markdown
+
 prettier --write "**/*.md"
 
 # Verificar formatação
+
 prettier --check "**/*.md"
 ```
 
@@ -82,9 +88,11 @@ npm install -g markdownlint-cli
 
 ```bash
 # Validar todos os arquivos Markdown
+
 markdownlint "**/*.md"
 
 # Corrigir automaticamente
+
 markdownlint --fix "**/*.md"
 ```
 
@@ -126,6 +134,7 @@ Ao criar ou editar arquivos Markdown, siga estas regras:
 
 ```markdown
 ### 1. **Título** ✅ STATUS
+
 - Conteúdo aqui
 ```
 

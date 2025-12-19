@@ -24,12 +24,14 @@ localhost:5173
 Adicione o domínio onde seu app será hospedado:
 
 #### Domínio Principal:
+
 ```
 neoprotocol.space
 www.neoprotocol.space
 ```
 
 #### Se usar Vercel (previews e branches):
+
 ```
 neo-protcl.vercel.app
 neo-protcl-*.vercel.app
@@ -39,12 +41,14 @@ neo-protcl-*.vercel.app
 **Nota**: A Vercel gera automaticamente o domínio `neo-protcl.vercel.app` ou `neo-protcl-kauntdewn1.vercel.app` quando você conecta o repositório [kauntdewn1/neo-protcl](https://github.com/kauntdewn1/neo-protcl.git). Você também pode usar `*.vercel.app` para cobrir todos os previews e branches.
 
 #### Se usar Netlify:
+
 ```
 seu-app.netlify.app
 seu-app--*.netlify.app
 ```
 
 #### Se usar ENS Domain (neoprotocol.eth):
+
 ```
 neoprotocol.eth
 ```

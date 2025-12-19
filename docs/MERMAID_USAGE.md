@@ -81,6 +81,7 @@ O componente `MermaidDiagram` já está configurado com o tema escuro do NΞØ P
 O Mermaid suporta vários tipos de diagramas:
 
 ### Graph (Fluxograma)
+
 ```mermaid
 graph TD
     A[Início] --> B[Processo]
@@ -88,6 +89,7 @@ graph TD
 ```
 
 ### Sequence Diagram (Diagrama de Sequência)
+
 ```mermaid
 sequenceDiagram
     A->>B: Mensagem
@@ -95,6 +97,7 @@ sequenceDiagram
 ```
 
 ### Class Diagram (Diagrama de Classes)
+
 ```mermaid
 classDiagram
     class Node {
@@ -104,6 +107,7 @@ classDiagram
 ```
 
 ### State Diagram (Diagrama de Estados)
+
 ```mermaid
 stateDiagram-v2
     [*] --> Idle

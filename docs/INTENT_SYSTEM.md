@@ -95,6 +95,7 @@ O sistema opera através de três dimensões fundamentais de operação no campo
 Quando múltiplas dimensões ressoam juntas, emergem **padrões integrados** — sinergias que revelam arquiteturas estratégicas únicas.
 
 ### **Alquimista-Costureiro-Agricultor**
+
 **Nome:** Narrador de Comunidades  
 **Intenção:** Cultivar significado compartilhado. Histórias que nutrem tecido social.  
 **Potência:** Coesão Profunda. Pertencimento visceral.  
@@ -102,6 +103,7 @@ Quando múltiplas dimensões ressoam juntas, emergem **padrões integrados** —
 **Metáfora:** Um guardião de mitos, plantando histórias que colhem culturas.
 
 ### **Artesão da Jaula-Costureiro-Visionário**
+
 **Nome:** Arquiteto de Futuros Comunitários  
 **Intenção:** Projetar espaços onde visão e comunidade convergem com precisão estrutural.  
 **Potência:** Materializa utopias com plantas baixas. Concreto + Comunidade.  
@@ -109,6 +111,7 @@ Quando múltiplas dimensões ressoam juntas, emergem **padrões integrados** —
 **Metáfora:** Um engenheiro de templos sociais, traçando o futuro em código e consciência.
 
 ### **Artesão da Jaula-Estrategista-Engenheiro**
+
 **Nome:** Arquiteto de Sistemas Vivos  
 **Intenção:** Projetar estruturas que evoluem sob restrição. Ordem que respira.  
 **Potência:** Eficiência Adaptativa. Rigidez + Espontaneidade.  
@@ -116,6 +119,7 @@ Quando múltiplas dimensões ressoam juntas, emergem **padrões integrados** —
 **Metáfora:** Um engenheiro de ecossistemas dançando dentro da própria arquitetura.
 
 ### **Explosivo-Catalisador-Cirurgião**
+
 **Nome:** Agente de Choque Transformacional  
 **Intenção:** Forçar rupturas que regeneram. Destruição como criação.  
 **Potência:** Mudança Radical. Transforma em semanas o que levaria anos.  
@@ -123,6 +127,7 @@ Quando múltiplas dimensões ressoam juntas, emergem **padrões integrados** —
 **Metáfora:** Um cirurgião de campo em crise, cortando com uma mão e iluminando com a outra.
 
 ### **Visionário-Guardião-Jardineiro**
+
 **Nome:** Custódio do Futuro Vislumbrado  
 **Intenção:** Proteger e nutrir visão de longo prazo até maturação.  
 **Potência:** Visão Sustentável. Futuro desejável materializado.  
@@ -130,6 +135,7 @@ Quando múltiplas dimensões ressoam juntas, emergem **padrões integrados** —
 **Metáfora:** Um profeta pragmático, construindo o jardim do amanhã com vigilância terna.
 
 ### **Padrão Único Emergente**
+
 Quando a combinação não está catalogada, emerge um padrão raro:  
 **Intenção:** Uma combinação rara que revela arquitetura estratégica singular.  
 **Potência:** Criatividade em intersecção. Opera onde ninguém mais consegue.  
@@ -172,6 +178,7 @@ Resultado: Engenheiro (problem_solving) + sinergia personalizada via seed.
 O Sistema de Intenção não opera isoladamente. Ele se integra com:
 
 ### **Memória Morfológica**
+
 As intenções registradas podem ser armazenadas via:
 
 ```bash
@@ -181,6 +188,7 @@ $ log --intent "minha intenção revelada"
 ```
 
 ### **Ressonância e Coerência**
+
 Cada mapeamento aumenta a **ressonância** do nó:
 
 ```bash
@@ -191,6 +199,7 @@ $ field
 ```
 
 ### **Token $NEO como Vestígio**
+
 Quando uma intenção é mapeada com alta coerência, o sistema pode emitir um pulso simbólico:
 
 ```text
@@ -200,6 +209,7 @@ Quando uma intenção é mapeada com alta coerência, o sistema pode emitir um p
 ```
 
 ### **Zonas Desbloqueáveis**
+
 Padrões integrados raros podem desbloquear zonas:
 ```
 → PADRÃO INTEGRADO DETECTADO: [Nome]

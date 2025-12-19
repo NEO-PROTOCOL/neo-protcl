@@ -38,12 +38,15 @@
 
 ```bash
 # Testar desenvolvimento
+
 npm run dev
 
 # Testar build
+
 npm run build
 
 # Testar build boot
+
 npm run build:boot
 ```
 
@@ -94,6 +97,7 @@ npm run monitor:vulns
 
 ```bash
 # Restaurar versões anteriores
+
 npm install @thirdweb-dev/react@^4.9.4 @thirdweb-dev/sdk@^4.0.99 vite@^5.0.8 vite-plugin-pwa@^0.17.4
 ```
 

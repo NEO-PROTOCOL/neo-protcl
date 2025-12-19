@@ -57,7 +57,7 @@ export default function Navbar() {
               <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div>
               <span className="text-[10px] font-medium text-green-400 uppercase tracking-wide">Synced</span>
             </div>
-            <div className="hidden md:block">
+            <div className="flex items-center">
               <ConnectButton compact={true} />
             </div>
           </div>

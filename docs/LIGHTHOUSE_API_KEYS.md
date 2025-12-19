@@ -20,9 +20,11 @@ O NΞØ Protocol usa o **Lighthouse** para fazer upload de arquivos no IPFS. Exi
 
 ```env
 # Chave principal (frontend + scripts)
+
 VITE_LIGHTHOUSE_API_KEY=sua_api_key_aqui
 
 # Chave legada (scripts Node.js - aceita VITE_LIGHTHOUSE_API_KEY também)
+
 IPFS_API_KEY=sua_api_key_aqui
 ```
 
@@ -30,6 +32,7 @@ IPFS_API_KEY=sua_api_key_aqui
 
 ```env
 # Uma única chave (scripts aceitam VITE_LIGHTHOUSE_API_KEY também)
+
 VITE_LIGHTHOUSE_API_KEY=sua_api_key_aqui
 ```
 
@@ -44,12 +47,14 @@ VITE_LIGHTHOUSE_API_KEY=sua_api_key_aqui
 ## 📝 **Onde Cada Chave é Usada**
 
 ### Frontend (Browser)
+
 - **Arquivo**: `src/services/intentDataCapture.js`
 - **Função**: `saveIntentToIPFS()`
 - **Uso**: Upload de dados anonimizados do Intent System
 - **Variável**: `VITE_LIGHTHOUSE_API_KEY`
 
 ### Scripts Node.js
+
 - **Arquivo**: `scripts/upload-to-lighthouse.js`
 - **Função**: Upload de builds completos para IPFS
 - **Variável**: `VITE_LIGHTHOUSE_API_KEY` ou `IPFS_API_KEY` (compatibilidade)
@@ -57,14 +62,17 @@ VITE_LIGHTHOUSE_API_KEY=sua_api_key_aqui
 ## ⚠️ **Problemas Comuns**
 
 ### Erro: "VITE_LIGHTHOUSE_API_KEY não configurada"
+
 - **Causa**: Chave não está no `.env` ou não tem o prefixo `VITE_`
 - **Solução**: Adicione `VITE_LIGHTHOUSE_API_KEY=sua_chave` no `.env`
 
 ### Erro: "CID não encontrado na resposta do Lighthouse"
+
 - **Causa**: API Key inválida ou expirada
 - **Solução**: Verifique a chave em https://lighthouse.storage/ e gere uma nova se necessário
 
 ### Erro: "401 Unauthorized"
+
 - **Causa**: API Key inválida ou sem permissões
 - **Solução**: Verifique se a chave está correta e ativa
 

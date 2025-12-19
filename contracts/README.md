@@ -39,9 +39,11 @@ npx hardhat compile
 
 ```bash
 # Deploy em Base
+
 npx hardhat run scripts/deploy.js --network base
 
 # Deploy em Polygon
+
 npx hardhat run scripts/deploy.js --network polygon
 ```
 
