@@ -46,3 +46,11 @@ Thumbs.db
 .pinata-cid
 dist-boot.zip
 
+# Hardhat
+cache
+artifacts
+coverage
+coverage.json
+typechain
+typechain-types
+

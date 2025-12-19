@@ -7,6 +7,7 @@ import IntelligenceBoot from './pages/boot/IntelligenceBoot';
 import IntentSystemPage from './pages/intent/IntentSystemPage';
 import DocumentationPage from './pages/docs/DocumentationPage';
 import ProjectPage from './pages/project/ProjectPage';
+import ReviewPage from './pages/review/ReviewPage';
 import { soundManager } from './utils/sounds';
 import PWAUpdatePrompt from './components/PWAUpdatePrompt';
 
@@ -42,6 +43,7 @@ function App() {
         <Route path="/docs" element={<DocumentationPage />} />
         <Route path="/documentacao" element={<DocumentationPage />} />
         <Route path="/project" element={<ProjectPage />} />
+        <Route path="/review" element={<ReviewPage />} />
       </Routes>
       {/* PWA Update Prompt - aparece quando há nova versão */}
       <PWAUpdatePrompt />
