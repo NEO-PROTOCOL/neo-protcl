@@ -5,7 +5,6 @@ pragma solidity ^0.8.20;
 /// @author MELLØ
 /// @notice Governs design/system review missions prior to node admission
 /// @dev This contract is PRE-NODE, CONDITIONAL, AUDITABLE, and FOUNDATION-LOCKED
-/// @repository github.com/neomello/neoprotocol
 
 contract NodeDesignerReview {
 
@@ -13,8 +12,8 @@ contract NodeDesignerReview {
     // Protocol Anchors
     // =============================
 
-    string public constant PROTOCOL = "NEØ Protocol";
-    bytes32 public constant PROTOCOL_ID = keccak256("NEØ_PROTOCOL_CORE");
+    string public constant PROTOCOL = unicode"NEØ Protocol";
+    bytes32 public constant PROTOCOL_ID = keccak256(unicode"NEØ_PROTOCOL_CORE");
     string public constant MODULE = "NodeDesignerReview";
 
     address public architect;

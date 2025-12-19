@@ -13,8 +13,8 @@ contract ReputationBootstrap {
     // Protocol Anchors
     // =============================
 
-    string public constant PROTOCOL = "NEØ Protocol";
-    bytes32 public constant PROTOCOL_ID = keccak256("NEØ_PROTOCOL_CORE");
+    string public constant PROTOCOL = unicode"NEØ Protocol";
+    bytes32 public constant PROTOCOL_ID = keccak256(unicode"NEØ_PROTOCOL_CORE");
     string public constant MODULE = "ReputationBootstrap";
 
     address public architect;
