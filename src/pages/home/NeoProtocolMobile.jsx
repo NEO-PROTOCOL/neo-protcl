@@ -5,11 +5,12 @@ import BottomNavigation from '../../components/BottomNavigation';
 import Footer from '../../components/Footer';
 import CommandInput from '../../components/CommandInput';
 import { getMCPState, initMCP } from '../../context/mcp';
-import { thirdwebClient } from '../../providers/X402Provider';
+import { thirdwebClient, x402Config } from '../../providers/X402Provider';
+import { processCommand } from '../../utils/commandProcessor';
 
 /**
  * NeoProtocolMobile - Protocol Shell Frame
- * Fase 2: Estado e Telemetria
+ * Fase 3: Ciclo de Intenção e Feedback
  * Alvo: Home Mobile
  */
 export default function NeoProtocolMobile() {
@@ -29,12 +30,27 @@ export default function NeoProtocolMobile() {
   }, []);
 
   const handleCommand = (cmd) => {
-    const timestamp = new Date().toLocaleTimeString();
-    setEvents(prev => [
-      ...prev,
+    const context = {
+      mcpConnected: mcp.connected,
+      identity: account ? 'AUTHENTICATED' : 'ANONYMOUS',
+      address: account?.address,
+      hasClient: !!thirdwebClient,
+      x402Ready: x402Config.isConfigured
+    };
+
+    const result = processCommand(cmd, context);
+    
+    if (result.type === 'CLEAR') {
+      setEvents([]);
+      return;
+    }
+
+    const newEvents = [
       { id: Date.now(), text: `CMD: ${cmd.toUpperCase()}` },
-      { id: Date.now() + 1, text: `SYS: [${timestamp}] NOT_IMPLEMENTED` }
-    ]);
+      ...result.messages.map((msg, i) => ({ id: Date.now() + i + 1, text: msg }))
+    ];
+    
+    setEvents(prev => [...prev, ...newEvents]);
   };
 
   const networkStatus = thirdwebClient ? 'OK' : 'OFF';
