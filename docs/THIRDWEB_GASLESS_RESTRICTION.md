@@ -153,7 +153,7 @@ Quando os contratos forem deployados, adicione os endereços:
 ❌ 0x[ENDEREÇO_REPUTATION_BOOTSTRAP]
 ```
 
-**Nota:** Todos os contratos estão na rede **Base** (chainId: 8453) ou **Base Sepolia** (chainId: 84532) para testes.
+**Nota:** Todos os contratos estão na rede **Base Mainnet** (chainId: 8453). O projeto faz deploy direto em produção, com planejamento e decisões bem fundamentadas.
 
 ---
 
@@ -169,7 +169,7 @@ Quando os contratos forem deployados, adicione os endereços:
 ### **Se Não Funcionar:**
 
 - ✅ Verifique se o endereço do contrato está correto
-- ✅ Verifique se está na rede correta (Base/Base Sepolia)
+- ✅ Verifique se está na rede correta (Base Mainnet - chainId: 8453)
 - ✅ Verifique se há crédito disponível no Dashboard
 - ✅ Verifique se `sponsorGas: true` está no código
 

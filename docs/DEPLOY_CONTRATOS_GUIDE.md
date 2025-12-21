@@ -14,12 +14,11 @@
 # 1. Compilar contratos
 npx hardhat compile
 
-# 2. Deploy em Base Sepolia (testnet)
-npx hardhat run scripts/deploy.js --network baseSepolia
-
-# 3. Deploy em Base (mainnet) - quando estiver pronto
+# 2. Deploy em Base (mainnet)
 npx hardhat run scripts/deploy.js --network base
 ```
+
+**Nota:** O projeto faz deploy direto em mainnet (Base), com planejamento e decisões bem fundamentadas. Não usamos testnet.
 
 #### **Opção B: Usando Remix ou Outra Ferramenta**
 
@@ -48,7 +47,7 @@ Deploying NodeRegistry...
 NodeRegistry deployed to: 0x1111111111111111111111111111111111111111
 ```
 
-**Copie esses endereços!**
+**⚠️ IMPORTANTE:** Esses são endereços em **Base Mainnet** (produção). Copie e guarde com segurança!
 
 ---
 
@@ -94,7 +93,7 @@ NodeRegistry deployed to: 0x1111111111111111111111111111111111111111
 ## 📝 Checklist
 
 - [ ] Contratos compilados? (`npx hardhat compile`)
-- [ ] Contratos deployados? (Base Sepolia ou Base)
+- [ ] Contratos deployados? (Base Mainnet)
 - [ ] Endereços dos contratos copiados?
 - [ ] Restrição habilitada no Dashboard?
 - [ ] **Endereços REAIS adicionados** (não placeholders)?
@@ -109,6 +108,7 @@ NodeRegistry deployed to: 0x1111111111111111111111111111111111111111
 **Causa:** Você adicionou um placeholder ou endereço inválido.
 
 **Solução:**
+
 - Remova placeholders como `0x[ENDEREÇO_...]`
 - Use apenas endereços reais no formato `0x` + 40 caracteres hex
 
@@ -118,7 +118,7 @@ NodeRegistry deployed to: 0x1111111111111111111111111111111111111111
 
 **Solução:**
 - Verifique se o endereço está correto no Dashboard
-- Verifique se está na rede correta (Base/Base Sepolia)
+- Verifique se está na rede correta (Base Mainnet - chainId: 8453)
 - Adicione o endereço se estiver faltando
 
 ---
@@ -130,7 +130,8 @@ NodeRegistry deployed to: 0x1111111111111111111111111111111111111111
 Crie um arquivo `.env.local` (não commitar no git):
 
 ```bash
-# Contratos Deployados (Base Sepolia)
+# Contratos Deployados (Base Mainnet - PRODUÇÃO)
+# Deploy direto em mainnet com planejamento e decisões fundamentadas
 NODE_DESIGNER_REVIEW_ADDRESS=0x1234567890123456789012345678901234567890
 REPUTATION_BOOTSTRAP_ADDRESS=0xabcdefabcdefabcdefabcdefabcdefabcdefabcd
 NODE_ADMISSION_ADDRESS=0x9876543210987654321098765432109876543210

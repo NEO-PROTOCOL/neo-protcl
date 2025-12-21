@@ -51,15 +51,17 @@ PROOF_OF_INTENT="NEØ::NodeDesigner::AndreMainart::Review::PoI"
 **Executado por você (architect):**
 
 ```bash
-npx hardhat run scripts/inviteReviewer.js --network polygon
+npx hardhat run scripts/inviteReviewer.js --network base
 ```
 
 **Ou com variáveis inline:**
 
 ```bash
 REVIEWER_ADDRESS=0x... DEADLINE_DAYS=7 \
-npx hardhat run scripts/inviteReviewer.js --network polygon
+npx hardhat run scripts/inviteReviewer.js --network base
 ```
+
+**Nota:** O projeto faz deploy direto em **Base Mainnet** (não testnet), com planejamento e decisões fundamentadas.
 
 ---
 
@@ -68,8 +70,10 @@ npx hardhat run scripts/inviteReviewer.js --network polygon
 **Executado pelo revisor:**
 
 ```bash
-npx hardhat run scripts/acceptReview.js --network polygon
+npx hardhat run scripts/acceptReview.js --network base
 ```
+
+**Nota:** Deploy direto em **Base Mainnet** (produção).
 
 **O script verifica automaticamente:**
 - ✅ Se está conectado

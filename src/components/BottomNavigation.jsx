@@ -20,6 +20,7 @@ export default function BottomNavigation() {
     { path: '/', particle: '⟡', label: 'HOME', accent: '#34E1FF' }, // Glitch.Cyan - núcleo/essência
     { path: '/nos', particle: '⦾', label: 'NODES', accent: '#1A9AF7' }, // Anomaly.Blue - foco/presença ativa
     { path: '/manifesto', particle: '⦙', label: 'DOCS', accent: '#7B5DFF' }, // Signal.Violet - divisor singular
+    { path: '/register', particle: '◉', label: 'CADASTRO', accent: '#22C55E' }, // Green - registro/cadastro
     { path: '/boot', particle: '⊘', label: 'TERM', accent: '#34E1FF' }, // Glitch.Cyan - LiveTerminal
   ];
 

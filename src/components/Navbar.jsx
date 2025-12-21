@@ -51,6 +51,13 @@ export default function Navbar() {
             >
               Project
             </Link>
+            <Link 
+              to="/register" 
+              onClick={() => soundManager.playNavigate()}
+              className="ios-button-secondary ios-compact-xs text-xs haptic-light"
+            >
+              Cadastro
+            </Link>
           </div>
           <div className="flex items-center gap-2">
             <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-green-500/10 border border-green-500/20">

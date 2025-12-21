@@ -13,7 +13,7 @@
 
 **Uso:**
 ```bash
-npx hardhat run scripts/inviteReviewer.js --network polygon
+npx hardhat run scripts/inviteReviewer.js --network base
 ```
 
 **Variáveis de ambiente (.env):**
@@ -24,8 +24,10 @@ REVIEW_SCOPE="Identity & Visual Coherence"
 DEADLINE_DAYS=7
 PROOF_OF_INTENT="NEØ::NodeDesigner::AndreMainart::Review::PoI"
 PRIVATE_KEY=0x...
-POLYGON_RPC_URL=https://polygon-rpc.com
+BASE_RPC_URL=https://mainnet.base.org
 ```
+
+**Nota:** Deploy direto em **Base Mainnet** (produção), com planejamento e decisões fundamentadas.
 
 ---
 
@@ -35,15 +37,17 @@ POLYGON_RPC_URL=https://polygon-rpc.com
 
 **Uso:**
 ```bash
-npx hardhat run scripts/acceptReview.js --network polygon
+npx hardhat run scripts/acceptReview.js --network base
 ```
 
 **Variáveis de ambiente (.env):**
 ```bash
 NODE_DESIGNER_REVIEW_ADDRESS=0x...
 PRIVATE_KEY=0x... # Private key do revisor
-POLYGON_RPC_URL=https://polygon-rpc.com
+BASE_RPC_URL=https://mainnet.base.org
 ```
+
+**Nota:** Deploy direto em **Base Mainnet** (produção).
 
 **O que faz:**
 - Verifica se está em status `INVITED`
@@ -64,10 +68,8 @@ npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox
 ### **2. Configurar `.env`**
 
 ```bash
-# Network RPC
-POLYGON_RPC_URL=https://polygon-rpc.com
+# Network RPC (Base Mainnet)
 BASE_RPC_URL=https://mainnet.base.org
-BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
 
 # Private Keys (NUNCA commitar no git)
 PRIVATE_KEY=0x...
@@ -82,11 +84,13 @@ DEADLINE_DAYS=7
 PROOF_OF_INTENT="NEØ::NodeDesigner::AndreMainart::Review::PoI"
 ```
 
+**Nota:** O projeto faz deploy direto em **Base Mainnet** (produção), com planejamento e decisões fundamentadas. Não usamos testnet.
+
 ### **3. Deploy do Contrato (se necessário)**
 
 ```bash
 npx hardhat compile
-npx hardhat run scripts/deploy.js --network polygon
+npx hardhat run scripts/deploy.js --network base
 ```
 
 ---
@@ -101,7 +105,7 @@ export REVIEWER_ADDRESS=0xAndreAddress
 export DEADLINE_DAYS=7
 
 # Executar
-npx hardhat run scripts/inviteReviewer.js --network polygon
+npx hardhat run scripts/inviteReviewer.js --network base
 ```
 
 **Output:**
@@ -130,7 +134,7 @@ Waiting for confirmation...
 export PRIVATE_KEY=0x... # Private key do revisor
 
 # Executar
-npx hardhat run scripts/acceptReview.js --network polygon
+npx hardhat run scripts/acceptReview.js --network base
 ```
 
 **Output:**

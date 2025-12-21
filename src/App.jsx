@@ -8,6 +8,7 @@ import IntentSystemPage from './pages/intent/IntentSystemPage';
 import DocumentationPage from './pages/docs/DocumentationPage';
 import ProjectPage from './pages/project/ProjectPage';
 import ReviewPage from './pages/review/ReviewPage';
+import RegisterNodePage from './pages/register/RegisterNodePage';
 import { soundManager } from './utils/sounds';
 import PWAUpdatePrompt from './components/PWAUpdatePrompt';
 
@@ -44,6 +45,8 @@ function App() {
         <Route path="/documentacao" element={<DocumentationPage />} />
         <Route path="/project" element={<ProjectPage />} />
         <Route path="/review" element={<ReviewPage />} />
+        <Route path="/register" element={<RegisterNodePage />} />
+        <Route path="/cadastro" element={<RegisterNodePage />} />
       </Routes>
       {/* PWA Update Prompt - aparece quando há nova versão */}
       <PWAUpdatePrompt />
