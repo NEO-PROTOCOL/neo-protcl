@@ -24,32 +24,36 @@ export default defineConfig(({ mode }) => ({
     },
     rollupOptions: {
       output: {
-        // Agrupar imagens do Thirdweb em chunks maiores para reduzir número de arquivos
-        // Reduz de 459 arquivos pequenos para alguns chunks maiores
+        // Agrupar dependências para reduzir o número de arquivos e evitar erros de carregamento
         manualChunks: (id) => {
-          if (id.includes('node_modules/thirdweb')) {
-            // Agrupar TODAS as imagens do Thirdweb em um único chunk grande
-            // Identificar arquivos de imagem por padrão no nome
-            if (id.includes('image-') && id.endsWith('.js')) {
+          if (id.includes('node_modules')) {
+            // Imagens do Thirdweb (muitos arquivos pequenos)
+            if (id.includes('node_modules/thirdweb') && id.includes('image-') && id.endsWith('.js')) {
               return 'thirdweb-images';
             }
-            // Biblioteca Thirdweb principal (sem imagens)
-            return 'thirdweb';
-          }
-          // Agrupar outras dependências grandes
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'react-vendor';
+            
+            // Agrupar React e Thirdweb no mesmo chunk para evitar erros de createContext undefined
+            // Isso garante que o React esteja disponível quando o Thirdweb for inicializado
+            if (
+              id.includes('node_modules/react/') || 
+              id.includes('node_modules/react-dom/') || 
+              id.includes('node_modules/thirdweb/') ||
+              id.includes('node_modules/scheduler/')
+            ) {
+              return 'vendor-core';
             }
-            if (id.includes('ethers')) {
+            
+            // Ethers em seu próprio chunk
+            if (id.includes('node_modules/ethers') || id.includes('node_modules/@ethersproject')) {
               return 'ethers-vendor';
             }
+            
             // Outras dependências em vendor comum
             return 'vendor';
           }
         },
         // Limitar número de chunks para evitar muitos arquivos pequenos
-        chunkSizeWarningLimit: 1000,
+        chunkSizeWarningLimit: 2000,
         // Otimizar nomes de arquivos CSS
         assetFileNames: (assetInfo) => {
           if (assetInfo.name && assetInfo.name.endsWith('.css')) {
