@@ -1,5 +1,5 @@
+import React, { useEffect } from "react";
 import { ConnectButton as ThirdwebConnectButton, useActiveAccount, useActiveWallet, useDisconnect } from "thirdweb/react";
-import { useEffect } from "react";
 import { useThirdwebClient } from "../../providers/X402Provider";
 
 /**

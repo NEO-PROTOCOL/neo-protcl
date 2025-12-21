@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { soundManager } from '../utils/sounds';
 import { useDeviceDetection } from '../hooks/useDeviceDetection';

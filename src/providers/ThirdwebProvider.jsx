@@ -1,3 +1,4 @@
+import React from "react";
 import { ThirdwebProvider } from "thirdweb/react";
 import { base } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";

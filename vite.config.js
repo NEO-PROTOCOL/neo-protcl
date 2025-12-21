@@ -20,6 +20,11 @@ export default defineConfig(({ mode }) => ({
       compress: {
         drop_console: false,
         drop_debugger: true,
+        pure_funcs: ['console.debug', 'console.trace'], // Remove console.debug e console.trace
+        passes: 2, // Múltiplas passadas para melhor compressão
+      },
+      mangle: {
+        safari10: true, // Compatibilidade Safari 10+
       },
     },
     rollupOptions: {
@@ -32,20 +37,49 @@ export default defineConfig(({ mode }) => ({
               return 'thirdweb-images';
             }
             
-            // Agrupar React e Thirdweb no mesmo chunk para evitar erros de createContext undefined
-            // Isso garante que o React esteja disponível quando o Thirdweb for inicializado
+            // React e React-DOM juntos (pequenos, sempre usados juntos)
             if (
               id.includes('node_modules/react/') || 
               id.includes('node_modules/react-dom/') || 
-              id.includes('node_modules/thirdweb/') ||
               id.includes('node_modules/scheduler/')
             ) {
-              return 'vendor-core';
+              return 'vendor-react';
+            }
+            
+            // Thirdweb em chunk separado (muito grande, ~115MB no node_modules)
+            // O Rollup garantirá que vendor-react seja carregado antes via dependências
+            if (id.includes('node_modules/thirdweb/')) {
+              return 'vendor-thirdweb';
             }
             
             // Ethers em seu próprio chunk
             if (id.includes('node_modules/ethers') || id.includes('node_modules/@ethersproject')) {
-              return 'ethers-vendor';
+              return 'vendor-ethers';
+            }
+            
+            // Mermaid (biblioteca de diagramas - grande)
+            if (id.includes('node_modules/mermaid')) {
+              return 'vendor-mermaid';
+            }
+            
+            // QR code library
+            if (id.includes('node_modules/qr')) {
+              return 'vendor-qr';
+            }
+            
+            // Workbox (service worker - grande)
+            if (id.includes('node_modules/workbox')) {
+              return 'vendor-workbox';
+            }
+            
+            // Lucide icons (pode ser grande)
+            if (id.includes('node_modules/lucide-react')) {
+              return 'vendor-icons';
+            }
+            
+            // React Router
+            if (id.includes('node_modules/react-router')) {
+              return 'vendor-router';
             }
             
             // Outras dependências em vendor comum
@@ -84,7 +118,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    include: ['buffer', '@lighthouse-web3/sdk'],
+    include: ['buffer', '@lighthouse-web3/sdk', 'react', 'react-dom'],
     exclude: [
       // Excluir wallets não usadas do Thirdweb para reduzir bundle
       // Manter apenas o que é necessário (Embedded Wallets)

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useActiveAccount } from 'thirdweb/react';
 import { DEFAULT_SWAP_PAIR, CHAINS } from '../../config/tokens';
 import { thirdwebClient } from '../../providers/X402Provider';

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useActiveAccount } from 'thirdweb/react';
 import { acknowledgeNodeOffChain, readNodes, persistMCPState } from '../../context/mcp';
 import { identityGraph } from '../../context/mcp/identityGraph';
