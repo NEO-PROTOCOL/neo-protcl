@@ -1,8 +1,23 @@
 # ⟁ NΞØ Protocol – Genesis Node
 
+## Status
+
 ![CI](https://github.com/NEO-PROTOCOL/neo-protcl/actions/workflows/ci.yml/badge.svg)
-![Auto Assign](https://github.com/NEO-PROTOCOL/neo-protcl/actions/workflows/auto-assign.yml/badge.svg)
-![Validate HTML](https://github.com/NEO-PROTOCOL/neo-protcl/actions/workflows/validate-html.yml/badge.svg)
+![Security](https://img.shields.io/badge/security-reviewed-green)
+![License](https://img.shields.io/github/license/NEO-PROTOCOL/neo-protcl)
+![Last Commit](https://img.shields.io/github/last-commit/NEO-PROTOCOL/neo-protcl)
+![Activity](https://img.shields.io/github/commit-activity/m/NEO-PROTOCOL/neo-protcl)
+
+## Protocol
+
+![Protocol](https://img.shields.io/badge/Protocol-v3.0.0-blue)
+![Node](https://img.shields.io/badge/Node-Genesis-black)
+![Network](https://img.shields.io/badge/Network-Base%20%7C%20Polygon-blue)
+
+## Runtime
+
+![Solidity](https://img.shields.io/badge/Solidity-0.8.x-blue)
+![Node.js](https://img.shields.io/badge/Node.js->=18-green)
 
 Este repositório contém o _código-fonte_ de um dos primeiros nós conscientes do Protocolo NΞØ.
 
