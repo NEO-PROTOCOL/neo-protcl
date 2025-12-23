@@ -26,8 +26,22 @@ export function parseCommand(
   // Roteamento de comandos
   let response: CommandResponse = { output: [] };
 
-  // Comandos base (init, help, morph, drop)
-  if (cmd.startsWith('init') || cmd === 'help' || cmd.startsWith('morph') || cmd.startsWith('drop')) {
+  // Comandos base (init, help, morph, drop, exit, quit, disconnect)
+  if (
+    cmd.startsWith('init') || 
+    cmd === 'help' || 
+    cmd.startsWith('morph') || 
+    cmd.startsWith('drop') ||
+    cmd === 'exit' ||
+    cmd === 'quit' ||
+    cmd === 'disconnect' ||
+    cmd === 'disconnect.field' ||
+    cmd === 'collapse.session' ||
+    cmd === 'return.base' ||
+    cmd === 'sair' ||
+    cmd === 'desconectar' ||
+    cmd === 'voltar'
+  ) {
     response = baseCommands(command, state, updateState);
   }
   // Comandos de token ($neo, token, mint)

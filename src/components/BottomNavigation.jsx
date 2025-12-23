@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { soundManager } from '../utils/sounds';
 import { useDeviceDetection } from '../hooks/useDeviceDetection';
@@ -11,14 +11,46 @@ export default function BottomNavigation() {
   const { isMobile } = useDeviceDetection();
   const account = useActiveAccount();
   const wallet = useActiveWallet();
-  const disconnect = useDisconnect();
+  const disconnectHook = useDisconnect();
   const client = useThirdwebClient();
   
+  // Verificar se disconnect é uma função (pode ser undefined em alguns casos)
+  const disconnect = typeof disconnectHook === 'function' ? disconnectHook : null;
+  const [showWalletMenu, setShowWalletMenu] = useState(false);
+  const menuRef = useRef(null);
+  
   const handleDisconnect = () => {
-    if (wallet) {
-      disconnect(wallet);
+    if (wallet && disconnect && typeof disconnect === 'function') {
+      soundManager.playClick();
+      try {
+        disconnect(wallet);
+        setShowWalletMenu(false);
+      } catch (error) {
+        console.error('Erro ao desconectar wallet:', error);
+      }
+    } else {
+      console.warn('Disconnect não disponível ou wallet não encontrada');
     }
   };
+
+  // Fechar menu ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowWalletMenu(false);
+      }
+    };
+
+    if (showWalletMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [showWalletMenu]);
   
   // Não renderizar em desktop
   if (!isMobile) {
@@ -132,49 +164,79 @@ export default function BottomNavigation() {
         })}
         
         {/* Wallet Button - Compacto para BottomNavigation */}
-        <div className="flex items-center flex-1">
+        <div className="flex items-center flex-1" ref={menuRef}>
           <div className="relative flex flex-col items-center justify-center w-full transition-all" style={{ paddingTop: '6px', paddingBottom: '6px' }}>
             {account ? (
-              // Conectado: mostrar ícone de wallet conectada (clicável para desconectar)
-              <button
-                onClick={handleDisconnect}
-                className="flex flex-col items-center w-full"
-                style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
-              >
-                <span 
-                  className="mb-3"
-                  style={{
-                    fontSize: '18px',
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 600,
-                    color: '#22C55E', // Green quando conectado
-                    transition: 'color 0.2s linear',
+              // Conectado: mostrar menu com opção de desconectar
+              <>
+                <button
+                  onClick={() => {
+                    setShowWalletMenu(!showWalletMenu);
+                    soundManager.playClick();
                   }}
+                  className="flex flex-col items-center w-full"
+                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
                 >
-                  ●
-                </span>
-                <span 
-                  className="uppercase"
-                  style={{
-                    fontSize: '9px',
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 500,
-                    letterSpacing: '0.05em',
-                    color: '#22C55E',
-                  }}
-                >
-                  WALLET
-                </span>
-                <div 
-                  className="absolute -top-0 left-1/2 transform -translate-x-1/2"
-                  style={{
-                    width: '24px',
-                    height: '1px',
-                    background: '#22C55E',
-                    opacity: 0.6,
-                  }}
-                ></div>
-              </button>
+                  <span 
+                    className="mb-3"
+                    style={{
+                      fontSize: '18px',
+                      fontFamily: 'Inter, sans-serif',
+                      fontWeight: 600,
+                      color: '#22C55E', // Green quando conectado
+                      transition: 'color 0.2s linear',
+                    }}
+                  >
+                    ●
+                  </span>
+                  <span 
+                    className="uppercase"
+                    style={{
+                      fontSize: '9px',
+                      fontFamily: 'Inter, sans-serif',
+                      fontWeight: 500,
+                      letterSpacing: '0.05em',
+                      color: '#22C55E',
+                    }}
+                  >
+                    WALLET
+                  </span>
+                  <div 
+                    className="absolute -top-0 left-1/2 transform -translate-x-1/2"
+                    style={{
+                      width: '24px',
+                      height: '1px',
+                      background: '#22C55E',
+                      opacity: 0.6,
+                    }}
+                  ></div>
+                </button>
+                
+                {/* Menu de desconexão */}
+                {showWalletMenu && (
+                  <div 
+                    className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-56 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50"
+                    style={{
+                      backdropFilter: 'blur(8px)',
+                      boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)',
+                    }}
+                  >
+                    <div className="p-3 border-b border-gray-700">
+                      <div className="text-[10px] text-gray-400 mb-1 uppercase tracking-wider">WALLET CONECTADA</div>
+                      <div className="font-mono text-xs text-green-400 break-all">
+                        {account.address.slice(0, 8)}...{account.address.slice(-6)}
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleDisconnect}
+                      className="w-full px-4 py-3 text-left text-xs text-red-400 hover:bg-red-500/10 transition-colors font-mono flex items-center gap-2 border-t border-gray-700"
+                    >
+                      <span className="text-base">✕</span>
+                      <span>DESCONECTAR</span>
+                    </button>
+                  </div>
+                )}
+              </>
             ) : client ? (
               // Desconectado: ícone minimalista que abre modal
               <div className="flex flex-col items-center w-full">

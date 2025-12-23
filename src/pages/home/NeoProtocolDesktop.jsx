@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useActiveAccount } from 'thirdweb/react';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
@@ -22,6 +22,9 @@ export default function NeoProtocolDesktop() {
       { id: 2, text: 'Protocol shell active.' }
     ];
   });
+  const eventsContainerRef = useRef(null);
+  const isUserScrollingRef = useRef(false);
+  const autoScrollEnabledRef = useRef(true);
 
   useEffect(() => {
     localStorage.setItem('neo_shell_events', JSON.stringify(events));
@@ -31,6 +34,37 @@ export default function NeoProtocolDesktop() {
     const state = initMCP();
     setMcp({ ...state });
   }, []);
+
+  // Auto-scroll para a última linha quando novos eventos são adicionados
+  useEffect(() => {
+    if (eventsContainerRef.current) {
+      const container = eventsContainerRef.current;
+      // Usar requestAnimationFrame para garantir que o DOM foi atualizado
+      requestAnimationFrame(() => {
+        if (autoScrollEnabledRef.current && !isUserScrollingRef.current) {
+          container.scrollTop = container.scrollHeight;
+        }
+      });
+    }
+  }, [events]);
+
+  // Detectar quando o usuário está rolando manualmente
+  const handleScroll = () => {
+    if (!eventsContainerRef.current) return;
+    
+    const container = eventsContainerRef.current;
+    const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 5;
+    
+    // Se o usuário está no final, reativar auto-scroll
+    if (isAtBottom) {
+      autoScrollEnabledRef.current = true;
+      isUserScrollingRef.current = false;
+    } else {
+      // Se o usuário está rolando para cima, desabilitar auto-scroll
+      autoScrollEnabledRef.current = false;
+      isUserScrollingRef.current = true;
+    }
+  };
 
   const handleCommand = (cmd) => {
     const context = {
@@ -53,6 +87,10 @@ export default function NeoProtocolDesktop() {
       ...result.messages.map((msg, i) => ({ id: Date.now() + i + 1, text: msg }))
     ];
     
+    // Garantir que auto-scroll está ativo quando o usuário executa um comando
+    autoScrollEnabledRef.current = true;
+    isUserScrollingRef.current = false;
+    
     setEvents(prev => [...prev, ...newEvents]);
   };
 
@@ -63,11 +101,11 @@ export default function NeoProtocolDesktop() {
   return (
     <div className="min-h-screen bg-black text-gray-100 overflow-hidden relative font-mono">
       {/* Background Layer: Infrastructure Grid */}
-      <div className="fixed inset-0 z-0 opacity-[0.15] pointer-events-none">
+      <div className="fixed inset-0 z-0 opacity-[0.25] pointer-events-none">
         <div className="absolute inset-0" style={{ 
           backgroundImage: `
-            linear-gradient(to right, #333 1px, transparent 1px),
-            linear-gradient(to bottom, #333 1px, transparent 1px)
+            linear-gradient(to right, #444 1px, transparent 1px),
+            linear-gradient(to bottom, #444 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px' 
         }}></div>
@@ -81,27 +119,27 @@ export default function NeoProtocolDesktop() {
         <main className="flex-1 flex flex-col p-6 overflow-hidden">
           
           {/* Top Telemetry Bar */}
-          <div className="flex justify-between items-start mb-8 text-[10px] uppercase tracking-widest text-gray-500">
+          <div className="flex justify-between items-start mb-8 text-[10px] uppercase tracking-widest text-gray-400">
             <div className="flex gap-10">
               <div className="flex flex-col">
-                <span className="text-gray-700 mb-1">network_status</span>
-                <span className={thirdwebClient ? "text-cyan-500" : "text-red-900"}>{networkStatus}</span>
+                <span className="text-gray-300 mb-1">network_status</span>
+                <span className={thirdwebClient ? "text-cyan-400" : "text-red-400"}>{networkStatus}</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-gray-700 mb-1">mcp_status</span>
-                <span className={mcp.connected ? "text-cyan-500" : "text-gray-800"}>{mcpStatus}</span>
+                <span className="text-gray-300 mb-1">mcp_status</span>
+                <span className={mcp.connected ? "text-cyan-400" : "text-gray-500"}>{mcpStatus}</span>
               </div>
             </div>
             <div className="text-right flex flex-col">
-              <span className="text-gray-700 mb-1">local_identity_state</span>
-              <span className={account ? "text-cyan-500" : "text-gray-800"}>{identityStatus}</span>
+              <span className="text-gray-300 mb-1">local_identity_state</span>
+              <span className={account ? "text-cyan-400" : "text-gray-500"}>{identityStatus}</span>
             </div>
           </div>
 
           {/* Central Action Area (Protocol Input) */}
           <div className="flex-1 flex items-center justify-center">
-            <div className="max-w-2xl w-full border border-gray-800 p-8 bg-gray-900/20 backdrop-blur-sm">
-              <div className="mb-4 text-xs text-gray-600 uppercase tracking-widest">
+            <div className="max-w-2xl w-full border border-gray-700 p-8 bg-gray-900/30 backdrop-blur-sm">
+              <div className="mb-4 text-xs text-gray-300 uppercase tracking-widest">
                 [SYSTEM READY] - INPUT REQUIRED
               </div>
               <CommandInput onCommand={handleCommand} />
@@ -109,17 +147,50 @@ export default function NeoProtocolDesktop() {
           </div>
 
           {/* Bottom Event Stream */}
-          <div className="mt-8 border-t border-gray-900 pt-4">
+          <div className="mt-8 border-t border-gray-800 pt-4">
             <div className="flex justify-between items-center mb-2">
-              <div className="text-[10px] text-gray-700 uppercase tracking-[0.2em]">System Events</div>
-              <div className="text-[10px] text-gray-800 uppercase tracking-[0.1em]">
-                last_event: <span className="text-gray-600">{events[events.length - 1]?.text.slice(0, 30)}...</span>
+              <div className="text-[10px] text-gray-300 uppercase tracking-[0.2em]">System Events</div>
+              <div className="flex items-center gap-3">
+                {!autoScrollEnabledRef.current && (
+                  <button
+                    onClick={() => {
+                      autoScrollEnabledRef.current = true;
+                      isUserScrollingRef.current = false;
+                      if (eventsContainerRef.current) {
+                        eventsContainerRef.current.scrollTop = eventsContainerRef.current.scrollHeight;
+                      }
+                    }}
+                    className="text-[9px] text-cyan-400 hover:text-cyan-300 uppercase tracking-wider transition-colors"
+                    title="Voltar para última linha"
+                  >
+                    [↓ FOLLOW]
+                  </button>
+                )}
+                <div className="text-[10px] text-gray-400 uppercase tracking-[0.1em]">
+                  last_event: <span className="text-gray-300">{events[events.length - 1]?.text.slice(0, 30)}...</span>
+                </div>
               </div>
             </div>
-            <div className="space-y-1 font-mono text-[11px] text-gray-600 h-24 overflow-y-auto">
-              {events.map(event => (
-                <div key={event.id}>&gt; {event.text}</div>
-              ))}
+            <div 
+              ref={eventsContainerRef}
+              onScroll={handleScroll}
+              className="space-y-1 font-mono text-[11px] h-40 overflow-y-auto scroll-smooth"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(52, 225, 255, 0.3) transparent'
+              }}
+            >
+              {events.map(event => {
+                const isUserCommand = event.text.startsWith('CMD:');
+                return (
+                  <div 
+                    key={event.id}
+                    className={isUserCommand ? 'text-cyan-400' : 'text-gray-400'}
+                  >
+                    &gt; {event.text}
+                  </div>
+                );
+              })}
             </div>
           </div>
 

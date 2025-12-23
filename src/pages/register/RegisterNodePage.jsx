@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useActiveAccount } from 'thirdweb/react';
+import { useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react';
 import { acknowledgeNodeOffChain, readNodes, persistMCPState } from '../../context/mcp';
 import { identityGraph } from '../../context/mcp/identityGraph';
 import Navbar from '../../components/Navbar';
 import BottomNavigation from '../../components/BottomNavigation';
 import Footer from '../../components/Footer';
 import ConnectButton from '../../components/WalletConnect/ConnectButton';
+import { soundManager } from '../../utils/sounds';
 
 /**
  * Página de Cadastro de Nós - NΞØ Protocol
@@ -15,12 +16,21 @@ import ConnectButton from '../../components/WalletConnect/ConnectButton';
  */
 export default function RegisterNodePage() {
   const account = useActiveAccount();
+  const wallet = useActiveWallet();
+  const disconnect = useDisconnect();
   const [domain, setDomain] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [registeredNodes, setRegisteredNodes] = useState([]);
+
+  const handleDisconnect = () => {
+    if (wallet) {
+      soundManager.playClick();
+      disconnect(wallet);
+    }
+  };
 
   // Carregar nós já registrados
   useEffect(() => {
@@ -133,9 +143,22 @@ export default function RegisterNodePage() {
             ) : (
               <form onSubmit={handleRegister} className="space-y-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">
-                    Endereço da Wallet
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm text-gray-400">
+                      Endereço da Wallet
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleDisconnect}
+                      className="px-3 py-1 border border-red-400/50 bg-gray-800/50 hover:bg-gray-800/70 hover:border-red-400 text-red-300 font-mono text-xs transition-all rounded-lg"
+                      style={{
+                        textShadow: '0 0 3px rgba(239, 68, 68, 0.4)',
+                        boxShadow: '0 0 8px rgba(239, 68, 68, 0.15)'
+                      }}
+                    >
+                      ✕ DESCONECTAR
+                    </button>
+                  </div>
                   <div className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 font-mono text-sm">
                     {account.address}
                   </div>

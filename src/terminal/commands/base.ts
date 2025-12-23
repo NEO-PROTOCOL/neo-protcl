@@ -34,6 +34,8 @@ export const baseCommands: CommandHandler = (command, state, updateState) => {
         '  field             - Status do campo simbólico',
         '  morph             - Transformar identidade',
         '  drop --identity   - Descartar identidade',
+        '  exit / quit       - Desconectar do terminal',
+        '  disconnect.field  - Retornar à home',
         '  help              - Mostrar esta ajuda',
         '',
         '→ "Não há ajuda. Há desbloqueio."',
@@ -82,6 +84,34 @@ export const baseCommands: CommandHandler = (command, state, updateState) => {
       ],
       sound: 'confirm',
       updateState: { resonance: 0, zone: null },
+    };
+  }
+
+  // Comandos de saída - desconectar do terminal
+  if (
+    cmd === 'exit' || 
+    cmd === 'quit' || 
+    cmd === 'disconnect' ||
+    cmd === 'disconnect.field' ||
+    cmd === 'collapse.session' ||
+    cmd === 'return.base' ||
+    cmd === 'sair' ||
+    cmd === 'desconectar' ||
+    cmd === 'voltar'
+  ) {
+    return {
+      output: [
+        '→ DESCONECTANDO DO CAMPO SIMBÓLICO...',
+        '→ Sessão terminal encerrada',
+        '',
+        '→ "O terminal não fecha. Ele apenas retorna ao silêncio."',
+        '→ "Você não sai do protocolo. Você apenas muda de camada."',
+        '',
+        '→ Retornando à home...',
+        '→ USE: Navegue manualmente para / ou pressione ESC',
+      ],
+      sound: 'pulse',
+      navigate: '/', // Flag para navegação (será tratado pelo componente)
     };
   }
 

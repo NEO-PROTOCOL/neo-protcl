@@ -8,6 +8,7 @@ export type CommandResponse = {
   triggerZone?: string;
   sound?: "confirm" | "error" | "access" | "pulse";
   updateState?: Partial<AgentState>;
+  navigate?: string; // Rota para navegar após o comando
 };
 
 export type AgentMemoryEntry = {

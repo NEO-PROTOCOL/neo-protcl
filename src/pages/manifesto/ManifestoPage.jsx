@@ -12,38 +12,57 @@ export default function ManifestoPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Diagrama Mermaid do PoI
+  // Diagrama Mermaid do NEØ (NMVL v1)
   const poiDiagram = `
 flowchart TD
-    A["Consciência Latente"] -->|Incomodação| B["Contra o Sistema"]
-    B -->|Atrito Real| C{"Intenção Verificável?"}
+%% NEØ · Diagram
+%% Language: NMVL v1
+%% Intent: Transform human intent into irreversible system state
 
-    C -->|Não| D["Ruído / Consumo Passivo"]
-    D -->|Loop Infinito| B
+%% ───────── ENTITIES ─────────
+Ø((Ø))
+H>Human Interface]
+D{Intent Valid?}
+A[[NEØ Agent]]
+P[Execute Protocol Action]
+M[(On-chain Memory)]
+S((System State))
+X(Event)
 
-    C -->|Sim| E["Prova de Ação"]
-    E --> F["PoI Reconhecido<br/>(NHIP-000 · MCP Context Guard)"]
+%% ───────── FLOW ─────────
+H -->|intent| D
+D ==> |validated| A
+D -.-> |rejected| X
+A ==> |act| P
+P --> M
+M --> S
 
-    F -->|Ancoragem de Estado| G["Registro de Nó<br/>On-Chain<br/>(NHIP-001)"]
+%% ───────── NMVL COLORS (SEMANTIC) ─────────
+%% Core (Ø / states) = black + cyan edge
+classDef core fill:#000000,stroke:#00F0FF,color:#00F0FF,stroke-width:2px
 
-    G --> H["Identidade Reputacional"]
-    H --> I["Entrada como Nó NΞØ"]
-    I --> J["Execução Distribuída"]
-    J -->|Impacto Gerado| H
+%% Flow (process / interface) = deep-cyan field
+classDef flow fill:#001F22,stroke:#00F0FF,color:#00F0FF,stroke-width:2px
 
-    style A fill:#1e293b,stroke:#64748b,color:#cbd5e1
-    style B fill:#7c3aed,stroke:#a78bfa,color:#fff
-    style C fill:#0ea5e9,stroke:#38bdf8,color:#fff
-    style D fill:#ef4444,stroke:#f87171,color:#fff
+%% Decision (rupture) = dark-magenta field
+classDef decision fill:#1A0014,stroke:#FF2ED1,color:#FF2ED1,stroke-width:2px
 
-    style E fill:#10b981,stroke:#34d399,color:#fff
-    style F fill:#22c55e,stroke:#4ade80,color:#0A0A0A,font-weight:bold
+%% Agent (autonomy) = deep-green field
+classDef agent fill:#001A10,stroke:#00FF85,color:#00FF85,stroke-width:2px
 
-    style G fill:#00CFFF,stroke:#00FF99,color:#0A0A0A,font-weight:bold
+%% Memory (ledger/persistence) = dark + yellow edge
+classDef memory fill:#111111,stroke:#FFD400,color:#FFD400,stroke-width:2px
 
-    style H fill:#00FF99,stroke:#00CFFF,color:#0A0A0A
-    style I fill:#7c3aed,stroke:#00FF99,stroke-width:2px,color:#fff
-    style J fill:#0ea5e9,stroke:#00CFFF,color:#fff
+%% Danger (failure/critical) = dark-red field
+classDef danger fill:#1A0000,stroke:#FF0033,color:#FF0033,stroke-width:2px
+
+%% ───────── APPLY CLASSES ─────────
+class Ø,S core
+class H,P flow
+class D decision
+class A agent
+class M memory
+class X danger
 `;
 
   // Os 8 Nós do Protocolo

@@ -37,7 +37,7 @@ export default function CommandInput({ onCommand, placeholder = "ENTER COMMAND..
       className="w-full font-mono cursor-text group"
     >
       <form onSubmit={handleSubmit} className="flex items-center">
-        <span className="text-cyan-500 mr-2 opacity-80 group-focus-within:opacity-100 transition-opacity font-bold">
+        <span className="text-cyan-400 mr-2 opacity-90 group-focus-within:opacity-100 transition-opacity font-bold">
           &gt;
         </span>
         <input
@@ -46,13 +46,13 @@ export default function CommandInput({ onCommand, placeholder = "ENTER COMMAND..
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder}
-          className="flex-1 bg-transparent border-none outline-none text-gray-200 placeholder-gray-800 focus:ring-0 p-0 text-lg md:text-xl uppercase tracking-wider"
+          className="flex-1 bg-transparent border-none outline-none text-gray-100 placeholder-gray-500 focus:ring-0 p-0 text-lg md:text-xl uppercase tracking-wider"
           autoFocus
           spellCheck="false"
           autoComplete="off"
         />
         {value.length === 0 && (
-          <span className="w-2 h-5 bg-cyan-500/50 animate-pulse ml-1"></span>
+          <span className="w-2 h-5 bg-cyan-400/60 animate-pulse ml-1"></span>
         )}
       </form>
     </div>

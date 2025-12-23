@@ -30,6 +30,9 @@ export default function NeoProtocolMobile() {
   const [pullDistance, setPullDistance] = useState(0);
   const touchStartY = useRef(0);
   const containerRef = useRef(null);
+  const eventsContainerRef = useRef(null);
+  const isUserScrollingRef = useRef(false);
+  const autoScrollEnabledRef = useRef(true);
 
   useEffect(() => {
     const state = initMCP();
@@ -57,7 +60,42 @@ export default function NeoProtocolMobile() {
       ...result.messages.map((msg, i) => ({ id: Date.now() + i + 1, text: msg }))
     ];
     
+    // Garantir que auto-scroll está ativo quando o usuário executa um comando
+    autoScrollEnabledRef.current = true;
+    isUserScrollingRef.current = false;
+    
     setEvents(prev => [...prev, ...newEvents]);
+  };
+
+  // Auto-scroll para a última linha quando novos eventos são adicionados
+  useEffect(() => {
+    if (eventsContainerRef.current) {
+      const container = eventsContainerRef.current;
+      // Usar requestAnimationFrame para garantir que o DOM foi atualizado
+      requestAnimationFrame(() => {
+        if (autoScrollEnabledRef.current && !isUserScrollingRef.current) {
+          container.scrollTop = container.scrollHeight;
+        }
+      });
+    }
+  }, [events]);
+
+  // Detectar quando o usuário está rolando manualmente
+  const handleScroll = () => {
+    if (!eventsContainerRef.current) return;
+    
+    const container = eventsContainerRef.current;
+    const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 5;
+    
+    // Se o usuário está no final, reativar auto-scroll
+    if (isAtBottom) {
+      autoScrollEnabledRef.current = true;
+      isUserScrollingRef.current = false;
+    } else {
+      // Se o usuário está rolando para cima, desabilitar auto-scroll
+      autoScrollEnabledRef.current = false;
+      isUserScrollingRef.current = true;
+    }
   };
 
   const networkStatus = thirdwebClient ? 'OK' : 'OFF';
@@ -110,11 +148,11 @@ export default function NeoProtocolMobile() {
       style={{ paddingBottom: `calc(80px + env(safe-area-inset-bottom))` }}
     >
       {/* Background Layer: Infrastructure Grid */}
-      <div className="fixed inset-0 z-0 opacity-[0.12] pointer-events-none">
+      <div className="fixed inset-0 z-0 opacity-[0.20] pointer-events-none">
         <div className="absolute inset-0" style={{ 
           backgroundImage: `
-            linear-gradient(to right, #444 1px, transparent 1px),
-            linear-gradient(to bottom, #444 1px, transparent 1px)
+            linear-gradient(to right, #555 1px, transparent 1px),
+            linear-gradient(to bottom, #555 1px, transparent 1px)
           `,
           backgroundSize: '30px 30px' 
         }}></div>
@@ -129,29 +167,29 @@ export default function NeoProtocolMobile() {
         <main className="flex-1 flex flex-col p-4 pt-safe overflow-hidden">
           
           {/* Mobile Telemetry Grid */}
-          <div className="grid grid-cols-2 gap-4 mb-6 text-[9px] uppercase tracking-widest text-gray-500">
-            <div className="flex flex-col border-l border-gray-800 pl-2">
-              <span className="text-gray-700 mb-0.5">network</span>
-              <span className={thirdwebClient ? "text-cyan-500" : "text-red-900"}>{networkStatus}</span>
+          <div className="grid grid-cols-2 gap-4 mb-6 text-[9px] uppercase tracking-widest text-gray-400">
+            <div className="flex flex-col border-l border-gray-700 pl-2">
+              <span className="text-gray-300 mb-0.5">network</span>
+              <span className={thirdwebClient ? "text-cyan-400" : "text-red-400"}>{networkStatus}</span>
             </div>
-            <div className="flex flex-col border-l border-gray-800 pl-2">
-              <span className="text-gray-700 mb-0.5">mcp</span>
-              <span className={mcp.connected ? "text-cyan-500" : "text-gray-800"}>{mcpStatus}</span>
+            <div className="flex flex-col border-l border-gray-700 pl-2">
+              <span className="text-gray-300 mb-0.5">mcp</span>
+              <span className={mcp.connected ? "text-cyan-400" : "text-gray-500"}>{mcpStatus}</span>
             </div>
-            <div className="flex flex-col border-l border-gray-800 pl-2">
-              <span className="text-gray-700 mb-0.5">identity</span>
-              <span className={account ? "text-cyan-500" : "text-gray-800"}>{identityStatus}</span>
+            <div className="flex flex-col border-l border-gray-700 pl-2">
+              <span className="text-gray-300 mb-0.5">identity</span>
+              <span className={account ? "text-cyan-400" : "text-gray-500"}>{identityStatus}</span>
             </div>
-            <div className="flex flex-col border-l border-gray-800 pl-2">
-              <span className="text-gray-700 mb-0.5">events</span>
-              <span className="text-gray-600">{events.length}</span>
+            <div className="flex flex-col border-l border-gray-700 pl-2">
+              <span className="text-gray-300 mb-0.5">events</span>
+              <span className="text-gray-400">{events.length}</span>
             </div>
           </div>
 
           {/* Central Action Area (Touch Optimized) */}
           <div className="flex-1 flex items-center justify-center py-4">
-            <div className="w-full border border-gray-800 p-6 bg-gray-900/20 backdrop-blur-sm">
-              <div className="mb-3 text-[10px] text-gray-600 uppercase tracking-widest">
+            <div className="w-full border border-gray-700 p-6 bg-gray-900/30 backdrop-blur-sm">
+              <div className="mb-3 text-[10px] text-gray-300 uppercase tracking-widest">
                 [SYSTEM READY] - COMMAND REQUIRED
               </div>
               <CommandInput onCommand={handleCommand} placeholder="COMMAND..." />
@@ -159,17 +197,50 @@ export default function NeoProtocolMobile() {
           </div>
 
           {/* Bottom Event Log */}
-          <div className="mt-6 border-t border-gray-900 pt-3 mb-4">
+          <div className="mt-6 border-t border-gray-800 pt-3 mb-4">
             <div className="flex justify-between items-center mb-2">
-              <div className="text-[9px] text-gray-700 uppercase tracking-[0.15em]">System Stream</div>
-              <div className="text-[8px] text-gray-800 uppercase">
-                last: {events[events.length - 1]?.text.slice(0, 15)}..
+              <div className="text-[9px] text-gray-300 uppercase tracking-[0.15em]">System Stream</div>
+              <div className="flex items-center gap-2">
+                {!autoScrollEnabledRef.current && (
+                  <button
+                    onClick={() => {
+                      autoScrollEnabledRef.current = true;
+                      isUserScrollingRef.current = false;
+                      if (eventsContainerRef.current) {
+                        eventsContainerRef.current.scrollTop = eventsContainerRef.current.scrollHeight;
+                      }
+                    }}
+                    className="text-[8px] text-cyan-400 hover:text-cyan-300 uppercase tracking-wider transition-colors px-2 py-0.5 border border-cyan-400/30 rounded"
+                    title="Voltar para última linha"
+                  >
+                    ↓
+                  </button>
+                )}
+                <div className="text-[8px] text-gray-400 uppercase">
+                  last: {events[events.length - 1]?.text.slice(0, 15)}..
+                </div>
               </div>
             </div>
-            <div className="space-y-1 text-[10px] text-gray-600 h-20 overflow-y-auto">
-              {events.map(event => (
-                <div key={event.id}>&gt; {event.text}</div>
-              ))}
+            <div 
+              ref={eventsContainerRef}
+              onScroll={handleScroll}
+              className="space-y-1 text-[10px] h-32 overflow-y-auto scroll-smooth"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(52, 225, 255, 0.3) transparent'
+              }}
+            >
+              {events.map(event => {
+                const isUserCommand = event.text.startsWith('CMD:');
+                return (
+                  <div 
+                    key={event.id}
+                    className={isUserCommand ? 'text-cyan-400' : 'text-gray-400'}
+                  >
+                    &gt; {event.text}
+                  </div>
+                );
+              })}
             </div>
           </div>
 

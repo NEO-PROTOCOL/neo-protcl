@@ -119,13 +119,30 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <ErrorBoundary>
-      <TWProvider>
-        <App />
-      </TWProvider>
-    </ErrorBoundary>
-  </React.StrictMode>
-);
+// Verificar se o elemento root existe
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  console.error('❌ Elemento #root não encontrado no DOM!');
+  document.body.innerHTML = '<div style="padding: 2rem; color: white; background: red; font-family: monospace;">ERRO: Elemento #root não encontrado no DOM!</div>';
+} else {
+  console.log('✅ Elemento #root encontrado, iniciando renderização...');
+  try {
+    ReactDOM.createRoot(rootElement).render(
+      <React.StrictMode>
+        <ErrorBoundary>
+          <TWProvider>
+            <App />
+          </TWProvider>
+        </ErrorBoundary>
+      </React.StrictMode>
+    );
+    console.log('✅ React renderizado com sucesso!');
+  } catch (error) {
+    console.error('❌ Erro ao renderizar React:', error);
+    rootElement.innerHTML = `<div style="padding: 2rem; color: white; background: red; font-family: monospace;">
+      <h1>Erro ao renderizar React</h1>
+      <pre>${error.message}\n${error.stack}</pre>
+    </div>`;
+  }
+}
 

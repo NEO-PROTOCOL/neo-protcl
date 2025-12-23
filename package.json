@@ -17,9 +17,10 @@
     "analyze": "node scripts/analyze-code.js",
     "monitor:vulns": "node scripts/monitor-vulnerabilities.js",
     "preview": "vite preview",
-    "start": "serve -s dist -l 10000"
+    "start": "serve -s dist -l 5073"
   },
   "dependencies": {
+    "buffer": "^6.0.3",
     "ethers": "^5.7.2",
     "lucide-react": "^0.555.0",
     "qr": "^0.5.3",
@@ -37,7 +38,6 @@
     "@vitejs/plugin-react": "^4.2.1",
     "archiver": "^7.0.1",
     "autoprefixer": "^10.4.16",
-    "buffer": "^6.0.3",
     "dotenv": "^17.2.3",
     "form-data": "^4.0.5",
     "hardhat": "^2.19.0",

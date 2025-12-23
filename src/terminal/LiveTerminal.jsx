@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { parseCommand } from './CommandParserEngine';
 import { soundManager } from '../utils/sounds';
 import { AgentContext } from './AgentContext';
@@ -6,6 +7,7 @@ import Avatar from './Avatar';
 import { zones } from './zones';
 
 export default function LiveTerminal() {
+  const navigate = useNavigate();
   const [history, setHistory] = useState([]);
   const [input, setInput] = useState('');
   const { agentState, updateAgentState } = useContext(AgentContext);
@@ -39,6 +41,11 @@ export default function LiveTerminal() {
 
       if (result.sound) {
         soundManager.play(result.sound);
+      }
+
+      // Navegar se o comando retornar uma rota
+      if (result.navigate) {
+        setTimeout(() => navigate(result.navigate), 1500);
       }
     }
   };

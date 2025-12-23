@@ -16,12 +16,21 @@ import { useThirdwebClient } from "../../providers/X402Provider";
 export default function ConnectButton({ compact = false }) {
   const account = useActiveAccount();
   const wallet = useActiveWallet();
-  const disconnect = useDisconnect();
+  const disconnectHook = useDisconnect();
   const client = useThirdwebClient();
+  
+  // Verificar se disconnect é uma função (pode ser undefined em alguns casos)
+  const disconnect = typeof disconnectHook === 'function' ? disconnectHook : null;
 
   const handleDisconnect = () => {
-    if (wallet) {
-      disconnect(wallet);
+    if (wallet && disconnect && typeof disconnect === 'function') {
+      try {
+        disconnect(wallet);
+      } catch (error) {
+        console.error('Erro ao desconectar wallet:', error);
+      }
+    } else {
+      console.warn('Disconnect não disponível ou wallet não encontrada');
     }
   };
 

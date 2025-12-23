@@ -15,42 +15,58 @@ class SoundManager {
   init() {
     // Inicializar AudioContext apenas quando necessário (após interação do usuário)
     if (typeof window !== 'undefined' && window.AudioContext) {
-      // Criar contexto após qualquer interação
-      const initContext = async () => {
-        if (!this.audioContext) {
-          this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-          this.userInteracted = true; // Marcar que o usuário interagiu
-          // Tentar resumir imediatamente após criação (se suspenso)
-          if (this.audioContext.state === 'suspended') {
-            try {
+      // Criar contexto após qualquer interação REAL do usuário
+      const initContext = async (event) => {
+        // Só criar se ainda não foi criado e se for uma interação real
+        if (!this.audioContext && event && event.isTrusted) {
+          try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.userInteracted = true; // Marcar que o usuário interagiu
+            
+            // Tentar resumir imediatamente após criação (se suspenso)
+            if (this.audioContext.state === 'suspended') {
               await this.audioContext.resume();
-            } catch (e) {
-              // Ignorar erro silenciosamente
             }
+          } catch (e) {
+            // Ignorar erro silenciosamente - AudioContext será criado na próxima interação
+            console.debug('AudioContext initialization deferred:', e.message);
           }
         }
       };
       
       // Tentar múltiplos eventos para garantir inicialização
-      document.addEventListener('click', initContext, { once: true });
-      document.addEventListener('touchstart', initContext, { once: true });
-      document.addEventListener('keydown', initContext, { once: true });
+      // Usar { once: true } para garantir que só cria uma vez
+      document.addEventListener('click', initContext, { once: true, passive: true });
+      document.addEventListener('touchstart', initContext, { once: true, passive: true });
+      document.addEventListener('keydown', initContext, { once: true, passive: true });
+      document.addEventListener('mousedown', initContext, { once: true, passive: true });
     }
   }
 
   ensureContext() {
     // Não criar AudioContext aqui - só usar se já foi criado por interação do usuário
     if (!this.audioContext) {
-      return false; // Contexto não disponível ainda
+      // Tentar criar se ainda não foi criado (mas só se já houve interação)
+      if (this.userInteracted) {
+        try {
+          this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+          return false; // Falha ao criar contexto
+        }
+      } else {
+        return false; // Contexto não disponível ainda - aguardando interação do usuário
+      }
     }
+    
     // Só tentar resumir se já foi interagido com a página
     if (this.audioContext.state === 'suspended') {
       // Tentar resumir silenciosamente, mas não mostrar erro se falhar
       this.audioContext.resume().catch(() => {
-        // AudioContext será resumido na primeira interação do usuário
+        // AudioContext será resumido na próxima interação do usuário
       });
     }
-    return true; // Contexto disponível
+    
+    return this.audioContext.state === 'running'; // Só retornar true se estiver rodando
   }
 
   // Gerar tom beep estilo terminal/retro (mais suave)
@@ -108,8 +124,20 @@ class SoundManager {
   // Som de página carregada (beep único suave)
   // Só toca se AudioContext já foi ativado por interação do usuário
   playPageLoad() {
-    // Só tocar se o usuário já interagiu e o contexto está rodando
-    if (this.userInteracted && this.audioContext && this.audioContext.state === 'running') {
+    // Só tocar se o usuário já interagiu e o contexto está disponível e rodando
+    if (!this.userInteracted || !this.audioContext) {
+      return; // Aguardar interação do usuário
+    }
+    
+    // Garantir que o contexto está rodando antes de tocar
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume().then(() => {
+        // Tocar após resumir
+        this.playBeep(400, 50, 'sine');
+      }).catch(() => {
+        // Silenciosamente ignorar se não conseguir resumir
+      });
+    } else if (this.audioContext.state === 'running') {
       this.playBeep(400, 50, 'sine');
     }
   }

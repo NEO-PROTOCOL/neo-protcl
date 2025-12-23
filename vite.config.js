@@ -3,6 +3,14 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig(({ mode }) => ({
+  server: {
+    port: 5173,
+    strictPort: false, // Tenta outra porta se 5173 estiver ocupada
+  },
+  preview: {
+    port: 5173,
+    strictPort: false,
+  },
   define: {
     'process.env': {},
     global: 'globalThis',
@@ -15,6 +23,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     cssCodeSplit: true,
     cssMinify: true, // Minificação padrão do Vite (esbuild)
+    chunkSizeWarningLimit: 2000, // Limitar avisos de tamanho de chunk
     minify: 'terser',
     terserOptions: {
       compress: {
@@ -26,6 +35,10 @@ export default defineConfig(({ mode }) => ({
       mangle: {
         safari10: true, // Compatibilidade Safari 10+
       },
+    },
+    commonjsOptions: {
+      include: [/buffer/, /node_modules/],
+      transformMixedEsModules: true,
     },
     rollupOptions: {
       output: {
@@ -86,8 +99,6 @@ export default defineConfig(({ mode }) => ({
             return 'vendor';
           }
         },
-        // Limitar número de chunks para evitar muitos arquivos pequenos
-        chunkSizeWarningLimit: 2000,
         // Otimizar nomes de arquivos CSS
         assetFileNames: (assetInfo) => {
           if (assetInfo.name && assetInfo.name.endsWith('.css')) {
@@ -183,7 +194,7 @@ export default defineConfig(({ mode }) => ({
         // Em desenvolvimento, usar padrões mais flexíveis para evitar avisos
         globPatterns: mode === 'production' 
           ? ['**/*.{js,css,html,ico,png,svg,woff2,webp}']
-          : ['index.html', '**/*.{js,css}'], // Menos arquivos em dev para evitar avisos
+          : ['index.html', '**/*.{js,css}', 'favicons/**/*.{png,ico,webmanifest}'], // Incluir favicons em dev
         globIgnores: ['**/node_modules/**/*', 'sw.js', 'workbox-*.js'],
         dontCacheBustURLsMatching: /\.\w{8}\./,
         cleanupOutdatedCaches: true,
@@ -192,6 +203,22 @@ export default defineConfig(({ mode }) => ({
         // Aumentar limite para permitir bundles grandes (Thirdweb + vendor podem ser ~6MB)
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024, // 6 MB
         runtimeCaching: [
+          {
+            // Favicons - NetworkFirst para evitar erros em desenvolvimento
+            urlPattern: /\/favicons\/.*\.(png|ico|webmanifest)$/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'favicons-cache-v3.0.0',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              },
+              networkTimeoutSeconds: 3
+            }
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
@@ -207,7 +234,14 @@ export default defineConfig(({ mode }) => ({
             }
           },
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|webp|gif)$/,
+            // Imagens genéricas (excluindo favicons que já têm regra específica)
+            urlPattern: ({ url }) => {
+              // Excluir favicons da regra genérica
+              if (url.pathname.includes('/favicons/')) {
+                return false;
+              }
+              return /\.(?:png|jpg|jpeg|svg|webp|gif)$/i.test(url.pathname);
+            },
             handler: 'CacheFirst',
             options: {
               cacheName: 'images-cache-v3.0.0',

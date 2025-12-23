@@ -104,6 +104,33 @@ export default function LiveAgent() {
   const interpretSignal = async (signal) => {
     const cmd = signal.toLowerCase().trim();
 
+    // Comandos de saída - desconectar do terminal
+    if (
+      cmd === 'exit' || 
+      cmd === 'quit' || 
+      cmd === 'disconnect' ||
+      cmd === 'disconnect.field' ||
+      cmd === 'collapse.session' ||
+      cmd === 'return.base' ||
+      cmd === 'sair' ||
+      cmd === 'desconectar' ||
+      cmd === 'voltar'
+    ) {
+      setLog((prev) => [
+        ...prev,
+        '→ DESCONECTANDO DO CAMPO SIMBÓLICO...',
+        '→ Sessão terminal encerrada',
+        '',
+        '→ "O terminal não fecha. Ele apenas retorna ao silêncio."',
+        '→ "Você não sai do protocolo. Você apenas muda de camada."',
+        '',
+        '→ Retornando à home...',
+      ]);
+      soundManager.playPulse();
+      setTimeout(() => navigate('/'), 1500);
+      return;
+    }
+
     // MELLØ - Resposta sobre identidade
     if (cmd.includes('mellø') || cmd.includes('mello')) {
       setLog((prev) => [
@@ -255,6 +282,8 @@ export default function LiveAgent() {
         '  collapse          - Colapsar identidade',
         '  mnemosyne         - Ativar memória latente',
         '  echo <texto>      - Ecoar mensagem',
+        '  exit / quit       - Desconectar do terminal',
+        '  disconnect.field  - Retornar à home',
         '  help              - Mostrar esta ajuda',
         '',
         '→ "Não há ajuda. Há desbloqueio."',

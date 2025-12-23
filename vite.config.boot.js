@@ -26,7 +26,10 @@ export default defineConfig({
   },
   server: {
     open: '/branding.html',
-    port: 5173
+    port: 5073
+  },
+  preview: {
+    port: 5073
   }
 })
 
