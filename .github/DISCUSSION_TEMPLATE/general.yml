@@ -1,0 +1,35 @@
+title: "💬 Discussão Geral"
+labels: ["discussion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use esta discussão para conversas gerais sobre o NΞØ Protocol.
+        
+  - type: textarea
+    id: topic
+    attributes:
+      label: "Tópico da Discussão"
+      description: "Sobre o que você quer discutir?"
+      placeholder: "Descreva o tópico..."
+    validations:
+      required: true
+      
+  - type: textarea
+    id: context
+    attributes:
+      label: "Contexto Adicional"
+      description: "Qualquer informação adicional relevante"
+      placeholder: "Adicione contexto, links, referências..."
+      
+  - type: checkboxes
+    id: tags
+    attributes:
+      label: "Categorias"
+      options:
+        - label: "Arquitetura"
+        - label: "Protocolo"
+        - label: "Desenvolvimento"
+        - label: "Comunidade"
+        - label: "Outro"
+

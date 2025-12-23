@@ -1,0 +1,31 @@
+title: "❓ Pergunta"
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Faça uma pergunta sobre o NΞØ Protocol.
+        
+  - type: textarea
+    id: question
+    attributes:
+      label: "Sua Pergunta"
+      description: "O que você gostaria de saber?"
+      placeholder: "Descreva sua pergunta..."
+    validations:
+      required: true
+      
+  - type: textarea
+    id: context
+    attributes:
+      label: "Contexto"
+      description: "Contexto adicional que pode ajudar a responder"
+      placeholder: "Adicione contexto, exemplos, links..."
+      
+  - type: checkboxes
+    id: answered
+    attributes:
+      label: "Status"
+      options:
+        - label: "Já tentei pesquisar/documentação antes de perguntar"
+

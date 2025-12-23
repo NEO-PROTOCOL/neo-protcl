@@ -1,0 +1,38 @@
+title: "💡 Ideia"
+labels: ["idea"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Compartilhe uma ideia para o NΞØ Protocol.
+        
+  - type: textarea
+    id: idea
+    attributes:
+      label: "Sua Ideia"
+      description: "Descreva sua ideia em detalhes"
+      placeholder: "Descreva a ideia..."
+    validations:
+      required: true
+      
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Problema que Resolve"
+      description: "Qual problema esta ideia resolve?"
+      placeholder: "Descreva o problema..."
+      
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Solução Proposta"
+      description: "Como você imagina que isso funcionaria?"
+      placeholder: "Descreva a solução..."
+      
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternativas Consideradas"
+      description: "Outras abordagens que você considerou"
+      placeholder: "Descreva alternativas..."
+

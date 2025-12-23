@@ -1,0 +1,24 @@
+# NEO-PROTOCOL Code Owners
+# Este arquivo define quem precisa aprovar mudanças em diferentes partes do código
+
+# Owners padrão - todos os arquivos requerem aprovação
+* @NEO-PROTOCOL/owners
+
+# Contratos Solidity - requer revisão especializada
+/contracts/ @NEO-PROTOCOL/owners
+
+# Documentação - pode ser mais flexível
+/docs/ @NEO-PROTOCOL/owners
+
+# Configurações críticas - sempre requer aprovação
+/.github/ @NEO-PROTOCOL/owners
+/vite.config.js @NEO-PROTOCOL/owners
+/package.json @NEO-PROTOCOL/owners
+/.env.example @NEO-PROTOCOL/owners
+
+# Frontend principal
+/src/ @NEO-PROTOCOL/owners
+
+# Scripts de build e deploy
+/scripts/ @NEO-PROTOCOL/owners
+

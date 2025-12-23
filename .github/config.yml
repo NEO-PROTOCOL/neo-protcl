@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ⧖ Discussions
+    url: https://github.com/NEO-PROTOCOL/neo-protcl/discussions
+    about: Pergunte e discuta sobre o projeto
+
+  - name: ◭ Email de Segurança
+    url: https://neoprotocol.space/security-email
+    about: Reporte vulnerabilidades de segurança
+
