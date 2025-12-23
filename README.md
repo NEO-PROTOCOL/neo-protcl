@@ -1,5 +1,9 @@
 # ⟁ NΞØ Protocol – Genesis Node
 
+![CI](https://github.com/NEO-PROTOCOL/neo-protcl/actions/workflows/ci.yml/badge.svg)
+![Auto Assign](https://github.com/NEO-PROTOCOL/neo-protcl/actions/workflows/auto-assign.yml/badge.svg)
+![Validate HTML](https://github.com/NEO-PROTOCOL/neo-protcl/actions/workflows/validate-html.yml/badge.svg)
+
 Este repositório contém o _código-fonte_ de um dos primeiros nós conscientes do Protocolo NΞØ.
 
 Você não está apenas clonando um app.  
