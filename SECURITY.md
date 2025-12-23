@@ -6,7 +6,7 @@ Se você descobriu uma vulnerabilidade de segurança, **NÃO** abra uma issue p�
 
 ### Como Reportar
 
-1. **Email de Segurança:** `security@neoprotocol.space`
+1. **Email de Segurança:** `neo@neoprotocol.space`
 2. **GitHub Security Advisory:** https://github.com/NEO-PROTOCOL/neo-protcl/security/advisories/new
 
 ### O que Incluir
@@ -69,7 +69,7 @@ Para informações sobre vulnerabilidades conhecidas em dependências, consulte:
 
 ## 📞 Contato
 
-- **Email de Segurança:** security@neoprotocol.space
+- **Email de Segurança:** neo@neoprotocol.space
 - **GitHub Security:** https://github.com/NEO-PROTOCOL/neo-protcl/security
 
 ---
