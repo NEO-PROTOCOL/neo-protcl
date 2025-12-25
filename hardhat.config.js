@@ -26,8 +26,8 @@ export default {
       url: process.env.BASE_RPC_URL || 'https://mainnet.base.org',
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
-    baseSepolia: {
-      url: process.env.BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org',
+    monad: {
+      url: process.env.MONAD_RPC_URL || 'https://testnet.monad.xyz',
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
   },

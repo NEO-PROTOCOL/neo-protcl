@@ -9,7 +9,7 @@ export const CHAINS = {
   ETHEREUM: 1,
   POLYGON: 137,
   BASE: 8453,
-  BASE_SEPOLIA: 84532,
+  MONAD: 10143, // Monad testnet (ajuste conforme necessário)
 }
 
 // Endereços de tokens
