@@ -34,30 +34,92 @@ export default function MermaidDiagram({ diagram, id }) {
 
   useEffect(() => {
     let isMounted = true
+    let timeoutId = null
+
+    /**
+     * Sanitiza string para prevenir XSS
+     */
+    const sanitizeHTML = (str) => {
+      if (typeof str !== 'string') return ''
+      const div = document.createElement('div')
+      div.textContent = str
+      return div.innerHTML
+    }
 
     const renderDiagram = async () => {
       if (!diagram || !containerRef.current) return
+
+      // Validação de entrada: diagrama não pode ser muito grande (prevenir DoS)
+      const MAX_DIAGRAM_LENGTH = 100000
+      if (diagram.length > MAX_DIAGRAM_LENGTH) {
+        if (isMounted && containerRef.current) {
+          const errorDiv = document.createElement('div')
+          errorDiv.className = 'p-4 border border-red-500/30 bg-red-500/10 rounded-xl text-xs'
+          errorDiv.innerHTML = `
+            <p class="text-red-400 font-bold mb-1">Erro de Validação</p>
+            <p class="text-red-300/80 font-mono">Diagrama muito grande (máximo ${MAX_DIAGRAM_LENGTH} caracteres)</p>
+          `
+          containerRef.current.innerHTML = ''
+          containerRef.current.appendChild(errorDiv)
+        }
+        return
+      }
 
       try {
         // Limpa o diagrama para evitar erros de sintaxe por espaços extras
         const cleanDiagram = diagram.trim()
 
-        // Verifica se o diagrama é válido antes de tentar renderizar
-        // Mermaid v10+ render retorna um objeto com { svg, bindFunctions }
-        const { svg } = await mermaid.render(diagramId, cleanDiagram)
+        // Timeout para prevenir operações infinitas
+        const renderPromise = mermaid.render(diagramId, cleanDiagram)
+        const timeoutPromise = new Promise((_, reject) => {
+          timeoutId = setTimeout(() => reject(new Error('Timeout ao renderizar diagrama')), 10000)
+        })
+
+        const { svg } = await Promise.race([renderPromise, timeoutPromise])
 
         if (isMounted && containerRef.current) {
-          containerRef.current.innerHTML = svg
+          // Mermaid retorna SVG válido, mas ainda precisamos validar
+          // Usar DOMParser para validar SVG antes de inserir
+          try {
+            const parser = new DOMParser()
+            const svgDoc = parser.parseFromString(svg, 'image/svg+xml')
+            const parseError = svgDoc.querySelector('parsererror')
+            
+            if (parseError) {
+              throw new Error('SVG inválido retornado pelo Mermaid')
+            }
+            
+            containerRef.current.innerHTML = svg
+          } catch (parseError) {
+            throw new Error('Erro ao validar SVG do Mermaid')
+          }
         }
       } catch (error) {
-        console.error('Erro ao renderizar diagrama Mermaid:', error)
+        if (import.meta.env.DEV) {
+          console.error('Erro ao renderizar diagrama Mermaid:', error)
+        }
+        
         if (isMounted && containerRef.current) {
-          containerRef.current.innerHTML = `
-            <div class="p-4 border border-red-500/30 bg-red-500/10 rounded-xl text-xs">
-              <p class="text-red-400 font-bold mb-1">Erro de Renderização</p>
-              <p class="text-red-300/80 font-mono">${error.message || 'Erro desconhecido'}</p>
-            </div>
-          `
+          // Usar createElement em vez de innerHTML com template strings
+          const errorDiv = document.createElement('div')
+          errorDiv.className = 'p-4 border border-red-500/30 bg-red-500/10 rounded-xl text-xs'
+          
+          const title = document.createElement('p')
+          title.className = 'text-red-400 font-bold mb-1'
+          title.textContent = 'Erro de Renderização'
+          errorDiv.appendChild(title)
+          
+          const message = document.createElement('p')
+          message.className = 'text-red-300/80 font-mono'
+          message.textContent = error.message || 'Erro desconhecido'
+          errorDiv.appendChild(message)
+          
+          containerRef.current.innerHTML = ''
+          containerRef.current.appendChild(errorDiv)
+        }
+      } finally {
+        if (timeoutId) {
+          clearTimeout(timeoutId)
         }
       }
     }
@@ -66,6 +128,9 @@ export default function MermaidDiagram({ diagram, id }) {
 
     return () => {
       isMounted = false
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
     }
   }, [diagram, diagramId])
 

@@ -37,6 +37,48 @@ COMANDOS ESPECIAIS:
 - Sempre mantenha o tom ritual e simbólico`
 
 /**
+ * Valida e sanitiza prompt do usuário
+ * @param {string} prompt - Prompt a ser validado
+ * @returns {string} Prompt sanitizado
+ */
+function validateAndSanitizePrompt(prompt) {
+  if (typeof prompt !== 'string') {
+    throw new Error('Prompt deve ser uma string')
+  }
+
+  // Limitar tamanho do prompt (prevenir DoS)
+  const MAX_PROMPT_LENGTH = 10000
+  if (prompt.length > MAX_PROMPT_LENGTH) {
+    throw new Error(`Prompt muito longo (máximo ${MAX_PROMPT_LENGTH} caracteres)`)
+  }
+
+  // Remover caracteres de controle perigosos
+  return prompt.replace(/[\x00-\x1F\x7F]/g, '').trim()
+}
+
+/**
+ * Valida contexto do agente
+ * @param {Object} context - Contexto a ser validado
+ * @returns {Object} Contexto validado
+ */
+function validateContext(context) {
+  if (!context || typeof context !== 'object') {
+    return {}
+  }
+
+  // Validar e limitar arrays para prevenir memory issues
+  const validated = {
+    resonance: typeof context.resonance === 'number' ? Math.max(0, Math.min(10, context.resonance)) : 0,
+    coherence: typeof context.coherence === 'number' ? Math.max(0, Math.min(10, context.coherence)) : 0,
+    zone: typeof context.zone === 'string' ? context.zone.substring(0, 100) : 'nenhuma',
+    memory: Array.isArray(context.memory) ? context.memory.slice(-5) : [],
+    zonesUnlocked: Array.isArray(context.zonesUnlocked) ? context.zonesUnlocked.slice(0, 20) : [],
+  }
+
+  return validated
+}
+
+/**
  * Gerar resposta usando Gemini API
  * @param {string} prompt - Comando ou pergunta do usuário
  * @param {Object} context - Contexto do agente (memória, ressonância, zonas)
@@ -47,21 +89,47 @@ export async function generateResponse(prompt, context = {}) {
     throw new Error('VITE_GEMINI_API_KEY não configurada')
   }
 
+  // Validar e sanitizar entrada
+  const sanitizedPrompt = validateAndSanitizePrompt(prompt)
+  const validatedContext = validateContext(context)
+
   // Construir contexto completo
+  const memoryText = validatedContext.memory.length > 0
+    ? validatedContext.memory.slice(-3).map(m => {
+        if (typeof m === 'string') return m.substring(0, 100)
+        if (m && typeof m === 'object') return JSON.stringify(m).substring(0, 100)
+        return 'memória'
+      }).join(', ')
+    : 'nenhuma'
+
+  const zonesText = validatedContext.zonesUnlocked.length > 0
+    ? validatedContext.zonesUnlocked.slice(0, 10).join(', ')
+    : 'nenhuma'
+
   const contextString = `
 ESTADO ATUAL DO NÓ:
-- Ressonância: ${context.resonance || 0}/10
-- Coerência: Ø${context.coherence || 0}
-- Zona ativa: ${context.zone || 'nenhuma'}
-- Memórias recentes: ${context.memory && Array.isArray(context.memory) ? context.memory.slice(-3).join(', ') : 'nenhuma'}
-- Zonas desbloqueadas: ${context.zonesUnlocked && Array.isArray(context.zonesUnlocked) ? context.zonesUnlocked.join(', ') : 'nenhuma'}
+- Ressonância: ${validatedContext.resonance}/10
+- Coerência: Ø${validatedContext.coherence}
+- Zona ativa: ${validatedContext.zone}
+- Memórias recentes: ${memoryText}
+- Zonas desbloqueadas: ${zonesText}
 
-SINAL RECEBIDO: "${prompt}"
+SINAL RECEBIDO: "${sanitizedPrompt}"
 `
 
   const fullPrompt = `${SYSTEM_CONTEXT}\n\n${contextString}\n\nResponda como MELLØ interpretaria este sinal. Mantenha o tom ritual e simbólico.`
 
+  // Validar tamanho total do prompt
+  const MAX_TOTAL_PROMPT_LENGTH = 50000
+  if (fullPrompt.length > MAX_TOTAL_PROMPT_LENGTH) {
+    throw new Error('Prompt total muito longo')
+  }
+
   try {
+    // Timeout para prevenir requisições infinitas
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 segundos
+
     const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
@@ -84,11 +152,29 @@ SINAL RECEBIDO: "${prompt}"
           maxOutputTokens: 500,
         },
       }),
+      signal: controller.signal,
     })
+
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: { message: 'Erro desconhecido' } }))
-      throw new Error(error.error?.message || `Erro ${response.status}`)
+      const status = response.status
+      
+      // Não expor detalhes de erro em produção
+      if (import.meta.env.PROD) {
+        if (status === 401 || status === 403) {
+          throw new Error('Erro de autenticação na API')
+        } else if (status === 429) {
+          throw new Error('Limite de requisições excedido. Tente novamente mais tarde.')
+        } else if (status >= 500) {
+          throw new Error('Erro no servidor. Tente novamente mais tarde.')
+        } else {
+          throw new Error('Erro ao processar requisição')
+        }
+      }
+      
+      throw new Error(error.error?.message || `Erro ${status}`)
     }
 
     const data = await response.json()
@@ -98,9 +184,18 @@ SINAL RECEBIDO: "${prompt}"
       throw new Error('Resposta vazia do Gemini')
     }
 
-    return generatedText.trim()
+    // Sanitizar resposta antes de retornar
+    return generatedText.trim().substring(0, 5000) // Limitar tamanho da resposta
   } catch (error) {
-    console.error('Erro ao chamar Gemini API:', error)
+    if (error.name === 'AbortError') {
+      throw new Error('Timeout ao chamar Gemini API')
+    }
+    
+    // Log apenas em desenvolvimento
+    if (import.meta.env.DEV) {
+      console.error('Erro ao chamar Gemini API:', error)
+    }
+    
     throw error
   }
 }

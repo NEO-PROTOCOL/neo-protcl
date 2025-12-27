@@ -65,17 +65,29 @@ export default function LiveAgent() {
     introStartedRef.current = true
 
     let index = 0
-    const interval = setInterval(() => {
+    let intervalId = null
+    let timeoutIds = []
+
+    const scheduleNext = () => {
       if (index < introSequence.length) {
-        setLog(prev => [...prev, introSequence[index]])
+        setLog(prev => {
+          // Prevenir memory leak limitando tamanho do log
+          const maxLogSize = 1000
+          const newLog = [...prev, introSequence[index]]
+          return newLog.length > maxLogSize ? newLog.slice(-maxLogSize) : newLog
+        })
+        
         try {
           soundManager.playClick()
         } catch (e) {
           // Ignorar erros de som silenciosamente
         }
         index++
+        
+        // Usar setTimeout em vez de setInterval para melhor controle
+        const timeoutId = setTimeout(scheduleNext, 400)
+        timeoutIds.push(timeoutId)
       } else {
-        clearInterval(interval)
         setIntroComplete(true)
         try {
           soundManager.playConfirm()
@@ -83,10 +95,19 @@ export default function LiveAgent() {
           // Ignorar erros de som silenciosamente
         }
       }
-    }, 400)
+    }
+
+    // Iniciar sequência
+    const initialTimeout = setTimeout(scheduleNext, 400)
+    timeoutIds.push(initialTimeout)
 
     return () => {
-      clearInterval(interval)
+      // Cleanup: limpar todos os timeouts
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
+      timeoutIds.forEach(id => clearTimeout(id))
+      timeoutIds = []
     }
   }, []) // Array vazio - executa apenas uma vez na montagem
 
@@ -102,7 +123,36 @@ export default function LiveAgent() {
   }
 
   const interpretSignal = async signal => {
-    const cmd = signal.toLowerCase().trim()
+    // Validação de entrada: prevenir comandos maliciosos
+    if (typeof signal !== 'string') {
+      setLog(prev => [...prev, '→ Erro: sinal inválido'])
+      return
+    }
+
+    // Limitar tamanho do comando (prevenir DoS)
+    const MAX_COMMAND_LENGTH = 1000
+    if (signal.length > MAX_COMMAND_LENGTH) {
+      setLog(prev => [...prev, `→ Erro: comando muito longo (máximo ${MAX_COMMAND_LENGTH} caracteres)`])
+      return
+    }
+
+    // Sanitizar entrada: remover caracteres de controle
+    const sanitizedSignal = signal.replace(/[\x00-\x1F\x7F]/g, '').trim()
+    const cmd = sanitizedSignal.toLowerCase()
+
+    // Prevenir comandos perigosos
+    const dangerousPatterns = [
+      /eval\s*\(/i,
+      /function\s*\(/i,
+      /<script/i,
+      /javascript:/i,
+      /on\w+\s*=/i,
+    ]
+
+    if (dangerousPatterns.some(pattern => pattern.test(cmd))) {
+      setLog(prev => [...prev, '→ Erro: comando não permitido'])
+      return
+    }
 
     // Comandos de saída - desconectar do terminal
     if (
@@ -116,19 +166,25 @@ export default function LiveAgent() {
       cmd === 'desconectar' ||
       cmd === 'voltar'
     ) {
-      setLog(prev => [
-        ...prev,
-        '→ DESCONECTANDO DO CAMPO SIMBÓLICO...',
-        '→ Sessão terminal encerrada',
-        '',
-        '→ "O terminal não fecha. Ele apenas retorna ao silêncio."',
-        '→ "Você não sai do protocolo. Você apenas muda de camada."',
-        '',
-        '→ Retornando à home...',
-      ])
+      setLog(prev => {
+        const maxLogSize = 1000
+        const newLog = [
+          ...prev,
+          '→ DESCONECTANDO DO CAMPO SIMBÓLICO...',
+          '→ Sessão terminal encerrada',
+          '',
+          '→ "O terminal não fecha. Ele apenas retorna ao silêncio."',
+          '→ "Você não sai do protocolo. Você apenas muda de camada."',
+          '',
+          '→ Retornando à home...',
+        ]
+        return newLog.length > maxLogSize ? newLog.slice(-maxLogSize) : newLog
+      })
       soundManager.playPulse()
-      setTimeout(() => navigate('/'), 1500)
-      return
+      
+      // Usar ref para garantir que o timeout seja limpo se o componente desmontar
+      const timeoutId = setTimeout(() => navigate('/'), 1500)
+      return () => clearTimeout(timeoutId)
     }
 
     // MELLØ - Resposta sobre identidade
@@ -293,31 +349,72 @@ export default function LiveAgent() {
     // Se Gemini está configurado, tentar interpretar com LLM
     if (geminiConfigured) {
       setIsProcessing(true)
-      setLog(prev => [...prev, '→ processando sinal com campo simbólico...'])
+      setLog(prev => {
+        const maxLogSize = 1000
+        const newLog = [...prev, '→ processando sinal com campo simbólico...']
+        return newLog.length > maxLogSize ? newLog.slice(-maxLogSize) : newLog
+      })
+
+      // Rate limiting: prevenir múltiplas requisições simultâneas
+      if (isProcessing) {
+        setLog(prev => {
+          const maxLogSize = 1000
+          const newLog = [...prev, '→ Aguarde... processamento em andamento']
+          return newLog.length > maxLogSize ? newLog.slice(-maxLogSize) : newLog
+        })
+        return
+      }
 
       try {
-        const geminiResponse = await askGemini(signal, agentState)
-        setLog(prev => [
-          ...prev,
-          '',
-          geminiResponse || '... resposta vazia do campo simbólico ...',
-          '',
+        // Timeout para prevenir requisições infinitas
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Timeout ao processar sinal')), 30000)
+        })
+
+        const geminiResponse = await Promise.race([
+          askGemini(sanitizedSignal, agentState),
+          timeoutPromise,
         ])
+
+        // Sanitizar resposta antes de exibir
+        const sanitizedResponse = typeof geminiResponse === 'string'
+          ? geminiResponse.substring(0, 5000).replace(/[\x00-\x1F\x7F]/g, '')
+          : '... resposta vazia do campo simbólico ...'
+
+        setLog(prev => {
+          const maxLogSize = 1000
+          const newLog = [
+            ...prev,
+            '',
+            sanitizedResponse,
+            '',
+          ]
+          return newLog.length > maxLogSize ? newLog.slice(-maxLogSize) : newLog
+        })
         soundManager.playPulse()
         // Aumentar ressonância quando Gemini responde
         updateAgentState({ resonance: Math.min(agentState.resonance + 1, 10) })
       } catch (err) {
-        setLog(prev => [
-          ...prev,
-          '',
-          '... signal received but not aligned ...',
-          '',
-          '→ "O nó responde a coerência."',
-          '→ "Você quer entender? Provoque o sistema com intenção verdadeira."',
-          '',
-          `→ Erro: ${err.message}`,
-          '→ USE: help para ver comandos disponíveis',
-        ])
+        // Não expor detalhes de erro em produção
+        const errorMessage = import.meta.env.PROD
+          ? 'Erro ao processar sinal'
+          : err.message
+
+        setLog(prev => {
+          const maxLogSize = 1000
+          const newLog = [
+            ...prev,
+            '',
+            '... signal received but not aligned ...',
+            '',
+            '→ "O nó responde a coerência."',
+            '→ "Você quer entender? Provoque o sistema com intenção verdadeira."',
+            '',
+            `→ Erro: ${errorMessage}`,
+            '→ USE: help para ver comandos disponíveis',
+          ]
+          return newLog.length > maxLogSize ? newLog.slice(-maxLogSize) : newLog
+        })
         soundManager.playError()
       } finally {
         setIsProcessing(false)

@@ -148,14 +148,35 @@ class ErrorBoundary extends React.Component {
   }
 }
 
+/**
+ * Sanitiza string para prevenir XSS
+ * @param {string} str - String a ser sanitizada
+ * @returns {string} String sanitizada
+ */
+function sanitizeHTML(str) {
+  if (typeof str !== 'string') return ''
+  const div = document.createElement('div')
+  div.textContent = str
+  return div.innerHTML
+}
+
 // Verificar se o elemento root existe
 const rootElement = document.getElementById('root')
 if (!rootElement) {
-  console.error('❌ Elemento #root não encontrado no DOM!')
-  document.body.innerHTML =
-    '<div style="padding: 2rem; color: white; background: red; font-family: monospace;">ERRO: Elemento #root não encontrado no DOM!</div>'
+  // Usar textContent em vez de innerHTML para prevenir XSS
+  const errorDiv = document.createElement('div')
+  errorDiv.style.cssText = 'padding: 2rem; color: white; background: red; font-family: monospace;'
+  errorDiv.textContent = 'ERRO: Elemento #root não encontrado no DOM!'
+  document.body.appendChild(errorDiv)
+  
+  // Log apenas em desenvolvimento
+  if (import.meta.env.DEV) {
+    console.error('❌ Elemento #root não encontrado no DOM!')
+  }
 } else {
-  console.log('✅ Elemento #root encontrado, iniciando renderização...')
+  if (import.meta.env.DEV) {
+    console.log('✅ Elemento #root encontrado, iniciando renderização...')
+  }
   try {
     ReactDOM.createRoot(rootElement).render(
       <React.StrictMode>
@@ -166,12 +187,28 @@ if (!rootElement) {
         </ErrorBoundary>
       </React.StrictMode>
     )
-    console.log('✅ React renderizado com sucesso!')
+    if (import.meta.env.DEV) {
+      console.log('✅ React renderizado com sucesso!')
+    }
   } catch (error) {
-    console.error('❌ Erro ao renderizar React:', error)
-    rootElement.innerHTML = `<div style="padding: 2rem; color: white; background: red; font-family: monospace;">
-      <h1>Erro ao renderizar React</h1>
-      <pre>${error.message}\n${error.stack}</pre>
-    </div>`
+    // Log apenas em desenvolvimento
+    if (import.meta.env.DEV) {
+      console.error('❌ Erro ao renderizar React:', error)
+    }
+    
+    // Usar textContent e createElement em vez de innerHTML
+    const errorContainer = document.createElement('div')
+    errorContainer.style.cssText = 'padding: 2rem; color: white; background: red; font-family: monospace;'
+    
+    const title = document.createElement('h1')
+    title.textContent = 'Erro ao renderizar React'
+    errorContainer.appendChild(title)
+    
+    const pre = document.createElement('pre')
+    pre.textContent = `${error.message}\n${error.stack || ''}`
+    errorContainer.appendChild(pre)
+    
+    rootElement.innerHTML = ''
+    rootElement.appendChild(errorContainer)
   }
 }

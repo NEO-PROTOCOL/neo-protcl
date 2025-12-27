@@ -19,6 +19,16 @@ export default function TypewriterText({
   const timeoutRef = useRef(null)
 
   useEffect(() => {
+    // Validação de entrada
+    if (typeof text !== 'string') {
+      setDisplayedText('')
+      return
+    }
+
+    // Limitar tamanho do texto para prevenir memory issues
+    const MAX_TEXT_LENGTH = 100000
+    const safeText = text.length > MAX_TEXT_LENGTH ? text.substring(0, MAX_TEXT_LENGTH) : text
+
     // Reset quando o texto mudar
     setDisplayedText('')
     indexRef.current = 0
@@ -27,20 +37,28 @@ export default function TypewriterText({
     // Não iniciar som aqui - será gerenciado pelo componente pai
 
     const typeNextChar = () => {
-      if (indexRef.current < text.length) {
-        setDisplayedText(text.slice(0, indexRef.current + 1))
+      if (indexRef.current < safeText.length) {
+        setDisplayedText(safeText.slice(0, indexRef.current + 1))
         // Tocar som da cabeça da impressora a cada caractere (exceto espaços)
-        const char = text[indexRef.current]
+        const char = safeText[indexRef.current]
         if (char && char !== ' ') {
-          soundManager.playPrinterHead()
+          try {
+            soundManager.playPrinterHead()
+          } catch (e) {
+            // Ignorar erros de som silenciosamente
+          }
         }
         indexRef.current++
         timeoutRef.current = setTimeout(typeNextChar, speed)
       } else {
         // Terminou de digitar
         setIsTyping(false)
-        if (onComplete) {
-          onComplete()
+        if (onComplete && typeof onComplete === 'function') {
+          try {
+            onComplete()
+          } catch (e) {
+            // Ignorar erros no callback
+          }
         }
       }
     }
@@ -52,6 +70,7 @@ export default function TypewriterText({
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
       }
       // Não parar o som no cleanup - será gerenciado pelo componente pai
     }
@@ -77,38 +96,74 @@ export function TypewriterLines({
   className = '',
   renderLine,
 }) {
+  // Validação de entrada
+  if (!Array.isArray(lines)) {
+    return <div className={className}>Erro: lines deve ser um array</div>
+  }
+
+  // Limitar número de linhas para prevenir memory issues
+  const MAX_LINES = 1000
+  const safeLines = lines.slice(0, MAX_LINES)
+
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
   const [lineStates, setLineStates] = useState({})
   const isFirstLine = useRef(true)
 
   useEffect(() => {
-    if (currentLineIndex < lines.length) {
+    if (currentLineIndex < safeLines.length) {
       if (isFirstLine.current) {
-        soundManager.startPrinterSound()
+        try {
+          soundManager.startPrinterSound()
+        } catch (e) {
+          // Ignorar erros de som
+        }
         isFirstLine.current = false
       }
     } else {
-      soundManager.stopPrinterSound()
-      if (onComplete) {
-        onComplete()
+      try {
+        soundManager.stopPrinterSound()
+      } catch (e) {
+        // Ignorar erros de som
+      }
+      if (onComplete && typeof onComplete === 'function') {
+        try {
+          onComplete()
+        } catch (e) {
+          // Ignorar erros no callback
+        }
       }
     }
-  }, [currentLineIndex, lines.length, onComplete])
+  }, [currentLineIndex, safeLines.length, onComplete])
+
+  const timeoutRefs = useRef([])
 
   const handleLineComplete = lineIndex => {
     setLineStates(prev => ({ ...prev, [lineIndex]: 'complete' }))
     if (lineIndex < lines.length - 1) {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setCurrentLineIndex(lineIndex + 1)
       }, lineDelay)
+      timeoutRefs.current.push(timeoutId)
     } else {
-      soundManager.stopPrinterSound()
+      try {
+        soundManager.stopPrinterSound()
+      } catch (e) {
+        // Ignorar erros de som
+      }
     }
   }
 
+  // Cleanup de timeouts
+  useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach(id => clearTimeout(id))
+      timeoutRefs.current = []
+    }
+  }, [])
+
   return (
     <div className={className}>
-      {lines.map((line, index) => {
+      {safeLines.map((line, index) => {
         if (line === '') {
           return <div key={index} className="h-4"></div>
         }

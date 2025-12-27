@@ -327,20 +327,68 @@ export class IdentityGraph {
    */
   persist() {
     try {
+      // Limitar tamanho para prevenir memory issues
+      const MAX_NODES = 10000
+      const MAX_EDGES = 50000
+      
+      const nodesArray = Array.from(this.nodes.entries()).slice(0, MAX_NODES)
+      const edgesArray = Array.from(this.edges.entries()).slice(0, MAX_EDGES)
+      
       const serialized = {
-        nodes: Array.from(this.nodes.entries()),
-        edges: Array.from(this.edges.entries()),
-        adjacencyList: Array.from(this.adjacencyList.entries()).map(([id, set]) => [
-          id,
-          Array.from(set),
-        ]),
+        nodes: nodesArray,
+        edges: edgesArray,
+        adjacencyList: Array.from(this.adjacencyList.entries())
+          .slice(0, MAX_NODES)
+          .map(([id, set]) => [
+            id,
+            Array.from(set).slice(0, 100), // Limitar conexões por nó
+          ]),
         version: '1.0.0',
         persistedAt: Date.now(),
       }
 
-      localStorage.setItem(this.storageKey, JSON.stringify(serialized))
+      const jsonString = JSON.stringify(serialized)
+      
+      // Validar tamanho do JSON (localStorage tem limite de ~5-10MB)
+      const MAX_STORAGE_SIZE = 5 * 1024 * 1024 // 5MB
+      if (jsonString.length > MAX_STORAGE_SIZE) {
+        if (import.meta.env.DEV) {
+          console.warn('[IdentityGraph] Dados muito grandes para persistir, truncando...')
+        }
+        // Truncar nodes e edges se necessário
+        const truncated = {
+          ...serialized,
+          nodes: nodesArray.slice(0, Math.floor(MAX_NODES * 0.8)),
+          edges: edgesArray.slice(0, Math.floor(MAX_EDGES * 0.8)),
+        }
+        localStorage.setItem(this.storageKey, JSON.stringify(truncated))
+      } else {
+        localStorage.setItem(this.storageKey, jsonString)
+      }
     } catch (error) {
-      console.error('[IdentityGraph] Persistence error:', error)
+      // QuotaExceededError ou outros erros de storage
+      if (error.name === 'QuotaExceededError') {
+        if (import.meta.env.DEV) {
+          console.warn('[IdentityGraph] localStorage cheio, limpando dados antigos...')
+        }
+        // Tentar limpar e persistir novamente com menos dados
+        try {
+          const truncated = {
+            nodes: Array.from(this.nodes.entries()).slice(0, 1000),
+            edges: Array.from(this.edges.entries()).slice(0, 5000),
+            adjacencyList: [],
+            version: '1.0.0',
+            persistedAt: Date.now(),
+          }
+          localStorage.setItem(this.storageKey, JSON.stringify(truncated))
+        } catch (e) {
+          if (import.meta.env.DEV) {
+            console.error('[IdentityGraph] Erro ao persistir dados truncados:', e)
+          }
+        }
+      } else if (import.meta.env.DEV) {
+        console.error('[IdentityGraph] Persistence error:', error)
+      }
     }
   }
 
@@ -355,22 +403,53 @@ export class IdentityGraph {
         return false
       }
 
+      // Validar tamanho antes de parsear
+      const MAX_LOAD_SIZE = 10 * 1024 * 1024 // 10MB
+      if (saved.length > MAX_LOAD_SIZE) {
+        if (import.meta.env.DEV) {
+          console.warn('[IdentityGraph] Dados salvos muito grandes, ignorando...')
+        }
+        return false
+      }
+
       const data = JSON.parse(saved)
 
-      // Restaura nodes
-      this.nodes = new Map(data.nodes || [])
+      // Validar estrutura dos dados
+      if (!data || typeof data !== 'object') {
+        return false
+      }
 
-      // Restaura edges
-      this.edges = new Map(data.edges || [])
+      // Limitar tamanho ao carregar para prevenir memory issues
+      const MAX_NODES = 10000
+      const MAX_EDGES = 50000
 
-      // Restaura adjacency list
+      // Restaura nodes com validação
+      const nodesArray = Array.isArray(data.nodes) ? data.nodes.slice(0, MAX_NODES) : []
+      this.nodes = new Map(nodesArray.filter(([id]) => typeof id === 'string' && id.length <= 200))
+
+      // Restaura edges com validação
+      const edgesArray = Array.isArray(data.edges) ? data.edges.slice(0, MAX_EDGES) : []
+      this.edges = new Map(edgesArray.filter(([id]) => typeof id === 'string' && id.length <= 500))
+
+      // Restaura adjacency list com validação
+      const adjListArray = Array.isArray(data.adjacencyList) ? data.adjacencyList.slice(0, MAX_NODES) : []
       this.adjacencyList = new Map(
-        (data.adjacencyList || []).map(([id, arr]) => [id, new Set(arr)])
+        adjListArray
+          .filter(([id, arr]) => typeof id === 'string' && Array.isArray(arr))
+          .map(([id, arr]) => [id, new Set(arr.slice(0, 100))]) // Limitar conexões por nó
       )
 
       return true
     } catch (error) {
-      console.error('[IdentityGraph] Load error:', error)
+      if (import.meta.env.DEV) {
+        console.error('[IdentityGraph] Load error:', error)
+      }
+      // Em caso de erro, limpar dados corrompidos
+      try {
+        localStorage.removeItem(this.storageKey)
+      } catch (e) {
+        // Ignorar erros ao limpar
+      }
       return false
     }
   }

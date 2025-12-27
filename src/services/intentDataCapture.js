@@ -4,14 +4,29 @@
  */
 
 /**
+ * Valida e sanitiza string antes de hashear
+ * @param {string} str - String para validar
+ * @returns {string} String validada
+ */
+function validateString(str) {
+  if (typeof str !== 'string') return ''
+  // Limitar tamanho para prevenir DoS
+  const MAX_LENGTH = 10000
+  return str.substring(0, MAX_LENGTH)
+}
+
+/**
  * Gera hash simples de uma string (para anonimização)
  * @param {string} str - String para hashear
  * @returns {string} Hash hexadecimal
  */
 function hashString(str) {
+  const validated = validateString(str)
+  if (!validated) return '0'
+  
   let hash = 0
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i)
+  for (let i = 0; i < validated.length; i++) {
+    const char = validated.charCodeAt(i)
     hash = (hash << 5) - hash + char
     hash = hash & hash // Convert to 32bit integer
   }
@@ -151,6 +166,34 @@ export function anonymizeIntentData(
  * @param {boolean} includeRawText - Se true, inclui respostas em texto livre
  * @returns {Promise<string>} CID do IPFS
  */
+/**
+ * Valida dados de intent antes de processar
+ * @param {Object} intentData - Dados do intent
+ * @returns {Object} Dados validados
+ */
+function validateIntentData(intentData) {
+  if (!intentData || typeof intentData !== 'object') {
+    throw new Error('Dados de intent inválidos')
+  }
+
+  // Limitar tamanho de arrays para prevenir memory issues
+  const validated = { ...intentData }
+
+  if (validated.responses && Array.isArray(validated.responses)) {
+    validated.responses = validated.responses.slice(0, 100)
+  }
+
+  if (validated.prompts && Array.isArray(validated.prompts)) {
+    validated.prompts = validated.prompts.slice(0, 100)
+  }
+
+  if (validated.selectedDimensions && Array.isArray(validated.selectedDimensions)) {
+    validated.selectedDimensions = validated.selectedDimensions.slice(0, 50)
+  }
+
+  return validated
+}
+
 export async function saveIntentToIPFS(
   intentData,
   walletAddress = null,
@@ -164,52 +207,95 @@ export async function saveIntentToIPFS(
     throw new Error('VITE_LIGHTHOUSE_API_KEY não configurada. Configure no .env')
   }
 
+  // Validar dados antes de processar
+  const validatedIntentData = validateIntentData(intentData)
+
+  // Validar wallet address
+  if (walletAddress && typeof walletAddress === 'string') {
+    // Validar formato básico de endereço Ethereum
+    if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+      throw new Error('Endereço de wallet inválido')
+    }
+  }
+
   try {
-    console.log('📤 Iniciando upload para IPFS...')
+    if (import.meta.env.DEV) {
+      console.log('📤 Iniciando upload para IPFS...')
+    }
 
     // Anonimizar ou não, conforme flag
     const anonymizedData = anonymizeIntentData(
-      intentData,
+      validatedIntentData,
       walletAddress,
       complete,
       contactData,
       includeRawText
     )
 
-    // Converter para JSON
+    // Converter para JSON com limite de tamanho
     const jsonData = JSON.stringify(anonymizedData, null, 2)
-    console.log('📋 Dados anonimizados preparados:', {
-      version: anonymizedData.version,
-      timestamp: anonymizedData.timestamp,
-      archetypes: anonymizedData.archetypes?.length || 0,
-      hasSynergy: !!anonymizedData.synergy,
-      complete: anonymizedData.complete || false,
-    })
+    
+    // Validar tamanho do JSON (prevenir DoS)
+    const MAX_JSON_SIZE = 10 * 1024 * 1024 // 10MB
+    if (jsonData.length > MAX_JSON_SIZE) {
+      throw new Error(`Dados muito grandes (máximo ${MAX_JSON_SIZE / 1024 / 1024}MB)`)
+    }
+
+    if (import.meta.env.DEV) {
+      console.log('📋 Dados anonimizados preparados:', {
+        version: anonymizedData.version,
+        timestamp: anonymizedData.timestamp,
+        archetypes: anonymizedData.archetypes?.length || 0,
+        hasSynergy: !!anonymizedData.synergy,
+        complete: anonymizedData.complete || false,
+      })
+    }
 
     // Buffer já está disponível globalmente via main.jsx
     // Não é necessário import dinâmico aqui
 
-    // Importar SDK do Lighthouse
-    const lighthouse = await import('@lighthouse-web3/sdk')
-    console.log('✅ SDK do Lighthouse importado')
+    // Importar SDK do Lighthouse com timeout
+    const lighthousePromise = import('@lighthouse-web3/sdk')
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Timeout ao importar SDK do Lighthouse')), 10000)
+    })
+
+    const lighthouse = await Promise.race([lighthousePromise, timeoutPromise])
+    
+    if (import.meta.env.DEV) {
+      console.log('✅ SDK do Lighthouse importado')
+    }
 
     // Criar Blob do JSON
     const blob = new Blob([jsonData], { type: 'application/json' })
     const file = new File([blob], `intent-${Date.now()}.json`, {
       type: 'application/json',
     })
-    console.log('📦 Arquivo criado:', file.name, `(${(file.size / 1024).toFixed(2)} KB)`)
+    
+    if (import.meta.env.DEV) {
+      console.log('📦 Arquivo criado:', file.name, `(${(file.size / 1024).toFixed(2)} KB)`)
+    }
 
-    // Fazer upload para IPFS
-    console.log('🚀 Fazendo upload para Lighthouse...')
+    // Fazer upload para IPFS com timeout
+    if (import.meta.env.DEV) {
+      console.log('🚀 Fazendo upload para Lighthouse...')
+    }
+    
     // SDK no browser espera um FileList/array; enviar array evita erro "files2 is not iterable"
-    const response = await lighthouse.upload([file], lighthouseApiKey)
-
-    console.log('📥 Resposta do Lighthouse recebida:', {
-      hasData: !!response.data,
-      hasHash: !!response.Hash,
-      keys: Object.keys(response),
+    const uploadPromise = lighthouse.upload([file], lighthouseApiKey)
+    const uploadTimeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Timeout ao fazer upload para IPFS')), 60000) // 60 segundos
     })
+
+    const response = await Promise.race([uploadPromise, uploadTimeoutPromise])
+
+    if (import.meta.env.DEV) {
+      console.log('📥 Resposta do Lighthouse recebida:', {
+        hasData: !!response.data,
+        hasHash: !!response.Hash,
+        keys: Object.keys(response),
+      })
+    }
 
     // Extrair CID da resposta
     const cid =
@@ -220,18 +306,24 @@ export async function saveIntentToIPFS(
       response.data?.hash
 
     if (!cid) {
-      console.error('❌ Resposta completa do Lighthouse:', JSON.stringify(response, null, 2))
+      if (import.meta.env.DEV) {
+        console.error('❌ Resposta completa do Lighthouse:', JSON.stringify(response, null, 2))
+      }
       throw new Error(
         `CID não encontrado na resposta do Lighthouse. Estrutura: ${Object.keys(response).join(', ')}`
       )
     }
 
-    console.log('✅ Intent salvo no IPFS:', cid)
-    console.log('🔗 Acesse:', `https://cloudflare-ipfs.com/ipfs/${cid}`)
+    if (import.meta.env.DEV) {
+      console.log('✅ Intent salvo no IPFS:', cid)
+      console.log('🔗 Acesse:', `https://cloudflare-ipfs.com/ipfs/${cid}`)
+    }
 
     return cid
   } catch (error) {
-    console.error('❌ Erro ao salvar Intent no IPFS:', error)
+    if (import.meta.env.DEV) {
+      console.error('❌ Erro ao salvar Intent no IPFS:', error)
+    }
 
     // Melhorar mensagem de erro para o usuário
     let errorMessage = 'Erro ao salvar no IPFS'
