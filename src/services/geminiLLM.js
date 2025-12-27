@@ -68,8 +68,10 @@ function validateContext(context) {
 
   // Validar e limitar arrays para prevenir memory issues
   const validated = {
-    resonance: typeof context.resonance === 'number' ? Math.max(0, Math.min(10, context.resonance)) : 0,
-    coherence: typeof context.coherence === 'number' ? Math.max(0, Math.min(10, context.coherence)) : 0,
+    resonance:
+      typeof context.resonance === 'number' ? Math.max(0, Math.min(10, context.resonance)) : 0,
+    coherence:
+      typeof context.coherence === 'number' ? Math.max(0, Math.min(10, context.coherence)) : 0,
     zone: typeof context.zone === 'string' ? context.zone.substring(0, 100) : 'nenhuma',
     memory: Array.isArray(context.memory) ? context.memory.slice(-5) : [],
     zonesUnlocked: Array.isArray(context.zonesUnlocked) ? context.zonesUnlocked.slice(0, 20) : [],
@@ -94,17 +96,22 @@ export async function generateResponse(prompt, context = {}) {
   const validatedContext = validateContext(context)
 
   // Construir contexto completo
-  const memoryText = validatedContext.memory.length > 0
-    ? validatedContext.memory.slice(-3).map(m => {
-        if (typeof m === 'string') return m.substring(0, 100)
-        if (m && typeof m === 'object') return JSON.stringify(m).substring(0, 100)
-        return 'memória'
-      }).join(', ')
-    : 'nenhuma'
+  const memoryText =
+    validatedContext.memory.length > 0
+      ? validatedContext.memory
+          .slice(-3)
+          .map(m => {
+            if (typeof m === 'string') return m.substring(0, 100)
+            if (m && typeof m === 'object') return JSON.stringify(m).substring(0, 100)
+            return 'memória'
+          })
+          .join(', ')
+      : 'nenhuma'
 
-  const zonesText = validatedContext.zonesUnlocked.length > 0
-    ? validatedContext.zonesUnlocked.slice(0, 10).join(', ')
-    : 'nenhuma'
+  const zonesText =
+    validatedContext.zonesUnlocked.length > 0
+      ? validatedContext.zonesUnlocked.slice(0, 10).join(', ')
+      : 'nenhuma'
 
   const contextString = `
 ESTADO ATUAL DO NÓ:
@@ -160,7 +167,7 @@ SINAL RECEBIDO: "${sanitizedPrompt}"
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: { message: 'Erro desconhecido' } }))
       const status = response.status
-      
+
       // Não expor detalhes de erro em produção
       if (import.meta.env.PROD) {
         if (status === 401 || status === 403) {
@@ -173,7 +180,7 @@ SINAL RECEBIDO: "${sanitizedPrompt}"
           throw new Error('Erro ao processar requisição')
         }
       }
-      
+
       throw new Error(error.error?.message || `Erro ${status}`)
     }
 
@@ -190,12 +197,12 @@ SINAL RECEBIDO: "${sanitizedPrompt}"
     if (error.name === 'AbortError') {
       throw new Error('Timeout ao chamar Gemini API')
     }
-    
+
     // Log apenas em desenvolvimento
     if (import.meta.env.DEV) {
       console.error('Erro ao chamar Gemini API:', error)
     }
-    
+
     throw error
   }
 }

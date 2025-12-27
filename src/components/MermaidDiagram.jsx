@@ -39,7 +39,7 @@ export default function MermaidDiagram({ diagram, id }) {
     /**
      * Sanitiza string para prevenir XSS
      */
-    const sanitizeHTML = (str) => {
+    const sanitizeHTML = str => {
       if (typeof str !== 'string') return ''
       const div = document.createElement('div')
       div.textContent = str
@@ -84,11 +84,11 @@ export default function MermaidDiagram({ diagram, id }) {
             const parser = new DOMParser()
             const svgDoc = parser.parseFromString(svg, 'image/svg+xml')
             const parseError = svgDoc.querySelector('parsererror')
-            
+
             if (parseError) {
               throw new Error('SVG inválido retornado pelo Mermaid')
             }
-            
+
             containerRef.current.innerHTML = svg
           } catch (parseError) {
             throw new Error('Erro ao validar SVG do Mermaid')
@@ -98,22 +98,22 @@ export default function MermaidDiagram({ diagram, id }) {
         if (import.meta.env.DEV) {
           console.error('Erro ao renderizar diagrama Mermaid:', error)
         }
-        
+
         if (isMounted && containerRef.current) {
           // Usar createElement em vez de innerHTML com template strings
           const errorDiv = document.createElement('div')
           errorDiv.className = 'p-4 border border-red-500/30 bg-red-500/10 rounded-xl text-xs'
-          
+
           const title = document.createElement('p')
           title.className = 'text-red-400 font-bold mb-1'
           title.textContent = 'Erro de Renderização'
           errorDiv.appendChild(title)
-          
+
           const message = document.createElement('p')
           message.className = 'text-red-300/80 font-mono'
           message.textContent = error.message || 'Erro desconhecido'
           errorDiv.appendChild(message)
-          
+
           containerRef.current.innerHTML = ''
           containerRef.current.appendChild(errorDiv)
         }

@@ -76,14 +76,14 @@ export default function LiveAgent() {
           const newLog = [...prev, introSequence[index]]
           return newLog.length > maxLogSize ? newLog.slice(-maxLogSize) : newLog
         })
-        
+
         try {
           soundManager.playClick()
         } catch (e) {
           // Ignorar erros de som silenciosamente
         }
         index++
-        
+
         // Usar setTimeout em vez de setInterval para melhor controle
         const timeoutId = setTimeout(scheduleNext, 400)
         timeoutIds.push(timeoutId)
@@ -132,7 +132,10 @@ export default function LiveAgent() {
     // Limitar tamanho do comando (prevenir DoS)
     const MAX_COMMAND_LENGTH = 1000
     if (signal.length > MAX_COMMAND_LENGTH) {
-      setLog(prev => [...prev, `→ Erro: comando muito longo (máximo ${MAX_COMMAND_LENGTH} caracteres)`])
+      setLog(prev => [
+        ...prev,
+        `→ Erro: comando muito longo (máximo ${MAX_COMMAND_LENGTH} caracteres)`,
+      ])
       return
     }
 
@@ -181,7 +184,7 @@ export default function LiveAgent() {
         return newLog.length > maxLogSize ? newLog.slice(-maxLogSize) : newLog
       })
       soundManager.playPulse()
-      
+
       // Usar ref para garantir que o timeout seja limpo se o componente desmontar
       const timeoutId = setTimeout(() => navigate('/'), 1500)
       return () => clearTimeout(timeoutId)
@@ -377,18 +380,14 @@ export default function LiveAgent() {
         ])
 
         // Sanitizar resposta antes de exibir
-        const sanitizedResponse = typeof geminiResponse === 'string'
-          ? geminiResponse.substring(0, 5000).replace(/[\x00-\x1F\x7F]/g, '')
-          : '... resposta vazia do campo simbólico ...'
+        const sanitizedResponse =
+          typeof geminiResponse === 'string'
+            ? geminiResponse.substring(0, 5000).replace(/[\x00-\x1F\x7F]/g, '')
+            : '... resposta vazia do campo simbólico ...'
 
         setLog(prev => {
           const maxLogSize = 1000
-          const newLog = [
-            ...prev,
-            '',
-            sanitizedResponse,
-            '',
-          ]
+          const newLog = [...prev, '', sanitizedResponse, '']
           return newLog.length > maxLogSize ? newLog.slice(-maxLogSize) : newLog
         })
         soundManager.playPulse()
@@ -396,9 +395,7 @@ export default function LiveAgent() {
         updateAgentState({ resonance: Math.min(agentState.resonance + 1, 10) })
       } catch (err) {
         // Não expor detalhes de erro em produção
-        const errorMessage = import.meta.env.PROD
-          ? 'Erro ao processar sinal'
-          : err.message
+        const errorMessage = import.meta.env.PROD ? 'Erro ao processar sinal' : err.message
 
         setLog(prev => {
           const maxLogSize = 1000

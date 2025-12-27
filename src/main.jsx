@@ -168,7 +168,7 @@ if (!rootElement) {
   errorDiv.style.cssText = 'padding: 2rem; color: white; background: red; font-family: monospace;'
   errorDiv.textContent = 'ERRO: Elemento #root não encontrado no DOM!'
   document.body.appendChild(errorDiv)
-  
+
   // Log apenas em desenvolvimento
   if (import.meta.env.DEV) {
     console.error('❌ Elemento #root não encontrado no DOM!')
@@ -195,19 +195,20 @@ if (!rootElement) {
     if (import.meta.env.DEV) {
       console.error('❌ Erro ao renderizar React:', error)
     }
-    
+
     // Usar textContent e createElement em vez de innerHTML
     const errorContainer = document.createElement('div')
-    errorContainer.style.cssText = 'padding: 2rem; color: white; background: red; font-family: monospace;'
-    
+    errorContainer.style.cssText =
+      'padding: 2rem; color: white; background: red; font-family: monospace;'
+
     const title = document.createElement('h1')
     title.textContent = 'Erro ao renderizar React'
     errorContainer.appendChild(title)
-    
+
     const pre = document.createElement('pre')
     pre.textContent = `${error.message}\n${error.stack || ''}`
     errorContainer.appendChild(pre)
-    
+
     rootElement.innerHTML = ''
     rootElement.appendChild(errorContainer)
   }

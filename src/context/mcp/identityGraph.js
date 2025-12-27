@@ -330,10 +330,10 @@ export class IdentityGraph {
       // Limitar tamanho para prevenir memory issues
       const MAX_NODES = 10000
       const MAX_EDGES = 50000
-      
+
       const nodesArray = Array.from(this.nodes.entries()).slice(0, MAX_NODES)
       const edgesArray = Array.from(this.edges.entries()).slice(0, MAX_EDGES)
-      
+
       const serialized = {
         nodes: nodesArray,
         edges: edgesArray,
@@ -348,7 +348,7 @@ export class IdentityGraph {
       }
 
       const jsonString = JSON.stringify(serialized)
-      
+
       // Validar tamanho do JSON (localStorage tem limite de ~5-10MB)
       const MAX_STORAGE_SIZE = 5 * 1024 * 1024 // 5MB
       if (jsonString.length > MAX_STORAGE_SIZE) {
@@ -432,7 +432,9 @@ export class IdentityGraph {
       this.edges = new Map(edgesArray.filter(([id]) => typeof id === 'string' && id.length <= 500))
 
       // Restaura adjacency list com validação
-      const adjListArray = Array.isArray(data.adjacencyList) ? data.adjacencyList.slice(0, MAX_NODES) : []
+      const adjListArray = Array.isArray(data.adjacencyList)
+        ? data.adjacencyList.slice(0, MAX_NODES)
+        : []
       this.adjacencyList = new Map(
         adjListArray
           .filter(([id, arr]) => typeof id === 'string' && Array.isArray(arr))

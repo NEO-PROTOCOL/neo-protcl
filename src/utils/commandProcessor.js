@@ -6,7 +6,10 @@
 function sanitizeCommand(command) {
   if (typeof command !== 'string') return ''
   // Remover caracteres de controle e limitar tamanho
-  return command.replace(/[\x00-\x1F\x7F]/g, '').trim().substring(0, 1000)
+  return command
+    .replace(/[\x00-\x1F\x7F]/g, '')
+    .trim()
+    .substring(0, 1000)
 }
 
 /**
@@ -24,9 +27,10 @@ function validateContext(context) {
     identity: typeof context.identity === 'string' ? context.identity.substring(0, 100) : null,
     hasClient: Boolean(context.hasClient),
     x402Ready: Boolean(context.x402Ready),
-    address: typeof context.address === 'string' && /^0x[a-fA-F0-9]{40}$/.test(context.address)
-      ? context.address
-      : null,
+    address:
+      typeof context.address === 'string' && /^0x[a-fA-F0-9]{40}$/.test(context.address)
+        ? context.address
+        : null,
   }
 }
 

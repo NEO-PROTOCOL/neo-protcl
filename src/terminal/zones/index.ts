@@ -5,4 +5,3 @@ export const zones = {
 }
 
 export type ZoneId = keyof typeof zones
-

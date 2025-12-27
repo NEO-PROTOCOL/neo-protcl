@@ -20,7 +20,10 @@ const rootDir = join(__dirname, '..')
 config({ path: join(rootDir, '.env') })
 
 const isProduction = process.env.NODE_ENV === 'production' || process.argv.includes('--production')
-const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true' || process.env.CIRCLECI === 'true'
+const isCI =
+  process.env.CI === 'true' ||
+  process.env.GITHUB_ACTIONS === 'true' ||
+  process.env.CIRCLECI === 'true'
 
 /**
  * Valida se uma string é um endereço Ethereum válido
@@ -56,7 +59,7 @@ const REQUIRED_VARS = {
   VITE_THIRDWEB_CLIENT_ID: {
     required: true,
     message: 'VITE_THIRDWEB_CLIENT_ID é obrigatório (Thirdweb Client ID para wallet connect)',
-    validate: (value) => {
+    validate: value => {
       if (isPlaceholder(value)) return false
       // Client ID geralmente tem formato específico ou é uma string não vazia
       return value && value.length > 5
@@ -70,7 +73,7 @@ const CRITICAL_VARS = {
   VITE_LIGHTHOUSE_API_KEY: {
     required: false, // Pode ser opcional dependendo do uso
     message: 'VITE_LIGHTHOUSE_API_KEY não configurada - Intent System não funcionará (upload IPFS)',
-    validate: (value) => {
+    validate: value => {
       if (!value || isPlaceholder(value)) return false
       // API keys geralmente têm formato específico
       return value.length > 10
@@ -83,14 +86,14 @@ const CRITICAL_VARS = {
 const RECOMMENDED_VARS = {
   VITE_THIRDWEB_SECRET_KEY: {
     message: 'VITE_THIRDWEB_SECRET_KEY não configurado - x402 Payments não funcionará',
-    validate: (value) => {
+    validate: value => {
       if (!value || isPlaceholder(value)) return false
       return value.length > 10
     },
   },
   VITE_X402_SERVER_WALLET_ADDRESS: {
     message: 'VITE_X402_SERVER_WALLET_ADDRESS não configurado - x402 Payments não funcionará',
-    validate: (value) => {
+    validate: value => {
       if (!value || isPlaceholder(value)) return false
       return isValidEthereumAddress(value)
     },
@@ -98,14 +101,15 @@ const RECOMMENDED_VARS = {
   },
   VITE_GEMINI_API_KEY: {
     message: 'VITE_GEMINI_API_KEY não configurado - funcionalidades de IA não funcionarão',
-    validate: (value) => {
+    validate: value => {
       if (!value || isPlaceholder(value)) return false
       return value.length > 10
     },
   },
   VITE_NODE_DESIGNER_REVIEW_ADDRESS: {
-    message: 'VITE_NODE_DESIGNER_REVIEW_ADDRESS não configurado - funcionalidades de revisão podem não funcionar',
-    validate: (value) => {
+    message:
+      'VITE_NODE_DESIGNER_REVIEW_ADDRESS não configurado - funcionalidades de revisão podem não funcionar',
+    validate: value => {
       if (!value || isPlaceholder(value)) return false
       return isValidEthereumAddress(value)
     },
@@ -113,7 +117,7 @@ const RECOMMENDED_VARS = {
   },
   VITE_NEO_TOKEN_ADDRESS_POLYGON: {
     message: 'VITE_NEO_TOKEN_ADDRESS_POLYGON não configurado - Swap widget pode não funcionar',
-    validate: (value) => {
+    validate: value => {
       if (!value || isPlaceholder(value)) return false
       return isValidEthereumAddress(value)
     },

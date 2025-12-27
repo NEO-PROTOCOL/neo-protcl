@@ -23,7 +23,7 @@ function validateString(str) {
 function hashString(str) {
   const validated = validateString(str)
   if (!validated) return '0'
-  
+
   let hash = 0
   for (let i = 0; i < validated.length; i++) {
     const char = validated.charCodeAt(i)
@@ -234,7 +234,7 @@ export async function saveIntentToIPFS(
 
     // Converter para JSON com limite de tamanho
     const jsonData = JSON.stringify(anonymizedData, null, 2)
-    
+
     // Validar tamanho do JSON (prevenir DoS)
     const MAX_JSON_SIZE = 10 * 1024 * 1024 // 10MB
     if (jsonData.length > MAX_JSON_SIZE) {
@@ -261,7 +261,7 @@ export async function saveIntentToIPFS(
     })
 
     const lighthouse = await Promise.race([lighthousePromise, timeoutPromise])
-    
+
     if (import.meta.env.DEV) {
       console.log('✅ SDK do Lighthouse importado')
     }
@@ -271,7 +271,7 @@ export async function saveIntentToIPFS(
     const file = new File([blob], `intent-${Date.now()}.json`, {
       type: 'application/json',
     })
-    
+
     if (import.meta.env.DEV) {
       console.log('📦 Arquivo criado:', file.name, `(${(file.size / 1024).toFixed(2)} KB)`)
     }
@@ -280,7 +280,7 @@ export async function saveIntentToIPFS(
     if (import.meta.env.DEV) {
       console.log('🚀 Fazendo upload para Lighthouse...')
     }
-    
+
     // SDK no browser espera um FileList/array; enviar array evita erro "files2 is not iterable"
     const uploadPromise = lighthouse.upload([file], lighthouseApiKey)
     const uploadTimeoutPromise = new Promise((_, reject) => {

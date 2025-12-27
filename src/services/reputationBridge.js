@@ -36,10 +36,10 @@ function isValidEthereumAddress(address) {
  */
 function sanitizeEventData(eventData) {
   if (!eventData || typeof eventData !== 'object') return {}
-  
+
   const sanitized = {}
   const allowedKeys = ['blockNumber', 'transactionHash', 'timestamp', 'status']
-  
+
   for (const key of allowedKeys) {
     if (key in eventData) {
       const value = eventData[key]
@@ -56,7 +56,7 @@ function sanitizeEventData(eventData) {
       }
     }
   }
-  
+
   return sanitized
 }
 
