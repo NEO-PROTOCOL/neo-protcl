@@ -55,6 +55,8 @@ export default function LiveAgent() {
   const [introComplete, setIntroComplete] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const introStartedRef = useRef(false) // Ref para garantir que a intro só execute uma vez
+  const isProcessingRef = useRef(false) // Ref para prevenir race conditions
+  const timeoutRef = useRef(null) // Ref para limpar timeouts corretamente
 
   // Sequência de introdução - executa apenas uma vez
   useEffect(() => {
@@ -110,6 +112,19 @@ export default function LiveAgent() {
       timeoutIds = []
     }
   }, []) // Array vazio - executa apenas uma vez na montagem
+
+  // Cleanup global ao desmontar componente
+  useEffect(() => {
+    return () => {
+      // Limpar timeout de navegação se existir
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
+      }
+      // Resetar flag de processamento
+      isProcessingRef.current = false
+    }
+  }, [])
 
   const handleCommand = e => {
     if (e.key === 'Enter') {
@@ -186,8 +201,7 @@ export default function LiveAgent() {
       soundManager.playPulse()
 
       // Usar ref para garantir que o timeout seja limpo se o componente desmontar
-      const timeoutId = setTimeout(() => navigate('/'), 1500)
-      return () => clearTimeout(timeoutId)
+      timeoutRef.current = setTimeout(() => navigate('/'), 1500)
     }
 
     // MELLØ - Resposta sobre identidade
@@ -351,15 +365,8 @@ export default function LiveAgent() {
 
     // Se Gemini está configurado, tentar interpretar com LLM
     if (geminiConfigured) {
-      setIsProcessing(true)
-      setLog(prev => {
-        const maxLogSize = 1000
-        const newLog = [...prev, '→ processando sinal com campo simbólico...']
-        return newLog.length > maxLogSize ? newLog.slice(-maxLogSize) : newLog
-      })
-
-      // Rate limiting: prevenir múltiplas requisições simultâneas
-      if (isProcessing) {
+      // Rate limiting: prevenir múltiplas requisições simultâneas usando ref
+      if (isProcessingRef.current) {
         setLog(prev => {
           const maxLogSize = 1000
           const newLog = [...prev, '→ Aguarde... processamento em andamento']
@@ -368,16 +375,37 @@ export default function LiveAgent() {
         return
       }
 
+      // Marcar como processando usando ref (evita race condition)
+      isProcessingRef.current = true
+      setIsProcessing(true)
+      setLog(prev => {
+        const maxLogSize = 1000
+        const newLog = [...prev, '→ processando sinal com campo simbólico...']
+        return newLog.length > maxLogSize ? newLog.slice(-maxLogSize) : newLog
+      })
+
+      // Criar AbortController para cancelar requisição se componente desmontar
+      const abortController = new AbortController()
+
       try {
         // Timeout para prevenir requisições infinitas
         const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Timeout ao processar sinal')), 30000)
+          timeoutRef.current = setTimeout(() => {
+            abortController.abort()
+            reject(new Error('Timeout ao processar sinal'))
+          }, 30000)
         })
 
         const geminiResponse = await Promise.race([
           askGemini(sanitizedSignal, agentState),
           timeoutPromise,
         ])
+
+        // Limpar timeout se requisição completou antes
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current)
+          timeoutRef.current = null
+        }
 
         // Sanitizar resposta antes de exibir
         const sanitizedResponse =
@@ -394,6 +422,17 @@ export default function LiveAgent() {
         // Aumentar ressonância quando Gemini responde
         updateAgentState({ resonance: Math.min(agentState.resonance + 1, 10) })
       } catch (err) {
+        // Limpar timeout em caso de erro
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current)
+          timeoutRef.current = null
+        }
+
+        // Ignorar erros de abort (componente desmontou)
+        if (err.name === 'AbortError') {
+          return
+        }
+
         // Não expor detalhes de erro em produção
         const errorMessage = import.meta.env.PROD ? 'Erro ao processar sinal' : err.message
 
@@ -414,6 +453,7 @@ export default function LiveAgent() {
         })
         soundManager.playError()
       } finally {
+        isProcessingRef.current = false
         setIsProcessing(false)
       }
       return

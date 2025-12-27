@@ -22,7 +22,33 @@ export default function LiveTerminal() {
 
   // Salvar histórico no localStorage quando mudar
   useEffect(() => {
-    localStorage.setItem('neo_terminal_history', JSON.stringify(history))
+    try {
+      const historyJson = JSON.stringify(history)
+      // Limitar tamanho para prevenir problemas de quota
+      if (historyJson.length > 200 * 1024) {
+        // Se histórico é muito grande, manter apenas últimos 300 entradas
+        const truncatedHistory = history.slice(-300)
+        localStorage.setItem('neo_terminal_history', JSON.stringify(truncatedHistory))
+        return
+      }
+      localStorage.setItem('neo_terminal_history', historyJson)
+    } catch (error) {
+      // Tratar QuotaExceededError
+      if (error.name === 'QuotaExceededError') {
+        // Tentar salvar versão truncada
+        try {
+          const truncatedHistory = history.slice(-100)
+          localStorage.setItem('neo_terminal_history', JSON.stringify(truncatedHistory))
+        } catch (e) {
+          // Se ainda falhar, apenas log em dev
+          if (import.meta.env.DEV) {
+            console.warn('[LiveTerminal] Erro ao salvar histórico:', e)
+          }
+        }
+      } else if (import.meta.env.DEV) {
+        console.error('[LiveTerminal] Erro ao salvar histórico:', error)
+      }
+    }
   }, [history])
 
   const handleCommand = e => {

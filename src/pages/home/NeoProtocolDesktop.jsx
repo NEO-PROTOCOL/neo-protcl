@@ -29,7 +29,33 @@ export default function NeoProtocolDesktop() {
   const autoScrollEnabledRef = useRef(true)
 
   useEffect(() => {
-    localStorage.setItem('neo_shell_events', JSON.stringify(events))
+    try {
+      const eventsJson = JSON.stringify(events)
+      // Limitar tamanho para prevenir problemas de quota
+      if (eventsJson.length > 500 * 1024) {
+        // Se eventos são muito grandes, manter apenas últimos 500
+        const truncatedEvents = events.slice(-500)
+        localStorage.setItem('neo_shell_events', JSON.stringify(truncatedEvents))
+        return
+      }
+      localStorage.setItem('neo_shell_events', eventsJson)
+    } catch (error) {
+      // Tratar QuotaExceededError
+      if (error.name === 'QuotaExceededError') {
+        // Tentar salvar versão truncada
+        try {
+          const truncatedEvents = events.slice(-200)
+          localStorage.setItem('neo_shell_events', JSON.stringify(truncatedEvents))
+        } catch (e) {
+          // Se ainda falhar, apenas log em dev
+          if (import.meta.env.DEV) {
+            console.warn('[NeoProtocolDesktop] Erro ao salvar eventos:', e)
+          }
+        }
+      } else if (import.meta.env.DEV) {
+        console.error('[NeoProtocolDesktop] Erro ao salvar eventos:', error)
+      }
+    }
   }, [events])
 
   useEffect(() => {

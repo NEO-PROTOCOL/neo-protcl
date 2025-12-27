@@ -10,6 +10,7 @@
 ### **1. Repositório: `neo-protocol-webapp`** (ou manter `neo-protcl`)
 
 **Conteúdo:**
+
 - ✅ Frontend React/Vite
 - ✅ Componentes UI
 - ✅ Serviços (Gemini, Lighthouse, Thirdweb)
@@ -20,6 +21,7 @@
 - ❌ **SEM** scripts de deploy de contratos
 
 **CI/CD:**
+
 - Lint & Format (JS/TS/React)
 - Build (Vite)
 - Deploy (Vercel/IPFS)
@@ -30,6 +32,7 @@
 ### **2. Repositório: `neo-protocol-contracts`** (NOVO)
 
 **Conteúdo:**
+
 - ✅ Smart Contracts (`.sol`)
 - ✅ Hardhat config
 - ✅ Scripts de deploy
@@ -40,6 +43,7 @@
 - ❌ **SEM** React/Vite
 
 **CI/CD:**
+
 - Compile contracts (Hardhat)
 - Run tests (Hardhat)
 - Lint Solidity (solhint/slither)
@@ -53,6 +57,7 @@
 ### **1. CI/CD Independente**
 
 **Antes:**
+
 ```
 ❌ CI falha porque Hardhat não compila
 ❌ CI falha porque falta PRIVATE_KEY
@@ -60,6 +65,7 @@
 ```
 
 **Depois:**
+
 ```
 ✅ Webapp CI: Só valida frontend (sempre passa)
 ✅ Contracts CI: Só valida contratos (isolado)
@@ -68,11 +74,13 @@
 ### **2. Dependências Limpas**
 
 **Webapp:**
+
 - React, Vite, Thirdweb, etc.
 - Sem Hardhat
 - Sem `@nomiclabs/hardhat-ethers`
 
 **Contracts:**
+
 - Hardhat, ethers, solc
 - Sem React
 - Sem Vite
@@ -112,6 +120,7 @@ neo-protocol-webapp/
 ```
 
 **Remover:**
+
 - ❌ `contracts/`
 - ❌ `hardhat.config.js`
 - ❌ `scripts/deploy.js`
@@ -143,6 +152,7 @@ neo-protocol-contracts/
 ```
 
 **Adicionar:**
+
 - ✅ `.gitignore` específico para Hardhat
 - ✅ `README.md` com instruções de deploy
 - ✅ Workflow CI para compilar contratos
@@ -185,6 +195,7 @@ npm uninstall @nomiclabs/hardhat-ethers hardhat
 ### **Passo 4: Configurar CI Separado**
 
 **Webapp CI:**
+
 ```yaml
 # .github/workflows/ci.yml (webapp)
 jobs:
@@ -196,6 +207,7 @@ jobs:
 ```
 
 **Contracts CI:**
+
 ```yaml
 # .github/workflows/ci.yml (contracts)
 jobs:
@@ -266,6 +278,7 @@ VITE_NODE_DESIGNER_REVIEW_ADDRESS=0x...
 ## 🎯 Resultado Final
 
 ### **Antes (Problema):**
+
 ```
 ❌ CI falha porque Hardhat não compila
 ❌ Erros de contratos aparecem no webapp
@@ -273,6 +286,7 @@ VITE_NODE_DESIGNER_REVIEW_ADDRESS=0x...
 ```
 
 ### **Depois (Solução):**
+
 ```
 ✅ Webapp CI: Só valida frontend (limpo)
 ✅ Contracts CI: Só valida contratos (isolado)
@@ -291,4 +305,3 @@ VITE_NODE_DESIGNER_REVIEW_ADDRESS=0x...
 ---
 
 **NΞØ Protocol // A Mente é a Nova Blockchain**
-

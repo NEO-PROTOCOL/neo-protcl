@@ -194,6 +194,31 @@ function validateIntentData(intentData) {
   return validated
 }
 
+/**
+ * Valida API key do Lighthouse
+ * @param {string} apiKey - API key para validar
+ * @returns {boolean} true se válida
+ */
+function isValidLighthouseApiKey(apiKey) {
+  if (!apiKey || typeof apiKey !== 'string') return false
+  // Lighthouse API keys têm formato específico e tamanho mínimo
+  const trimmed = apiKey.trim()
+  if (trimmed.length < 30 || trimmed.length > 200) return false
+  if (trimmed.includes(' ')) return false
+  // Não deve conter placeholders
+  const lowerValue = trimmed.toLowerCase()
+  if (
+    lowerValue.includes('your') ||
+    lowerValue.includes('example') ||
+    lowerValue.includes('placeholder') ||
+    lowerValue === 'api_key_here' ||
+    lowerValue === 'your-key-here'
+  ) {
+    return false
+  }
+  return true
+}
+
 export async function saveIntentToIPFS(
   intentData,
   walletAddress = null,
@@ -203,19 +228,25 @@ export async function saveIntentToIPFS(
 ) {
   const lighthouseApiKey = import.meta.env.VITE_LIGHTHOUSE_API_KEY
 
-  if (!lighthouseApiKey) {
-    throw new Error('VITE_LIGHTHOUSE_API_KEY não configurada. Configure no .env')
+  if (!lighthouseApiKey || !isValidLighthouseApiKey(lighthouseApiKey)) {
+    throw new Error('VITE_LIGHTHOUSE_API_KEY não configurada ou inválida. Configure no .env')
   }
 
   // Validar dados antes de processar
   const validatedIntentData = validateIntentData(intentData)
 
-  // Validar wallet address
+  // Validar wallet address com validação robusta
   if (walletAddress && typeof walletAddress === 'string') {
-    // Validar formato básico de endereço Ethereum
-    if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
-      throw new Error('Endereço de wallet inválido')
+    const trimmedAddress = walletAddress.trim()
+    // Validar formato básico de endereço Ethereum (0x seguido de 40 caracteres hexadecimais)
+    if (!/^0x[a-fA-F0-9]{40}$/.test(trimmedAddress)) {
+      throw new Error(
+        'Endereço de wallet inválido: deve ser um endereço Ethereum válido (0x seguido de 40 caracteres hexadecimais)'
+      )
     }
+    // Validar checksum se aplicável (endereços com checksum são case-sensitive)
+    // Para máxima segurança, podemos normalizar para lowercase ou validar checksum
+    // Por enquanto, aceitamos ambos (lowercase e checksum)
   }
 
   try {

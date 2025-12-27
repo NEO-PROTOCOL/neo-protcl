@@ -55,10 +55,17 @@ export default function MermaidDiagram({ diagram, id }) {
         if (isMounted && containerRef.current) {
           const errorDiv = document.createElement('div')
           errorDiv.className = 'p-4 border border-red-500/30 bg-red-500/10 rounded-xl text-xs'
-          errorDiv.innerHTML = `
-            <p class="text-red-400 font-bold mb-1">Erro de Validação</p>
-            <p class="text-red-300/80 font-mono">Diagrama muito grande (máximo ${MAX_DIAGRAM_LENGTH} caracteres)</p>
-          `
+
+          const title = document.createElement('p')
+          title.className = 'text-red-400 font-bold mb-1'
+          title.textContent = 'Erro de Validação'
+          errorDiv.appendChild(title)
+
+          const message = document.createElement('p')
+          message.className = 'text-red-300/80 font-mono'
+          message.textContent = `Diagrama muito grande (máximo ${MAX_DIAGRAM_LENGTH} caracteres)`
+          errorDiv.appendChild(message)
+
           containerRef.current.innerHTML = ''
           containerRef.current.appendChild(errorDiv)
         }
@@ -89,7 +96,13 @@ export default function MermaidDiagram({ diagram, id }) {
               throw new Error('SVG inválido retornado pelo Mermaid')
             }
 
-            containerRef.current.innerHTML = svg
+            // Limpar container antes de inserir novo conteúdo
+            containerRef.current.innerHTML = ''
+            // Usar appendChild para inserir SVG validado (mais seguro que innerHTML)
+            const svgElement = svgDoc.documentElement
+            if (svgElement) {
+              containerRef.current.appendChild(svgElement.cloneNode(true))
+            }
           } catch (parseError) {
             throw new Error('Erro ao validar SVG do Mermaid')
           }

@@ -29,6 +29,7 @@ Fluxo de admissão de nós (genérico).
 **Quem faz:** Architect (MELLØ ou guardião)
 
 **Como:**
+
 ```solidity
 function inviteReviewer(
     address _reviewer,
@@ -39,6 +40,7 @@ function inviteReviewer(
 ```
 
 **Resultado:**
+
 - Status do reviewer muda para `INVITED` (1)
 - Evento `ReviewInvited` é emitido
 - Missão criada no contrato
@@ -64,6 +66,7 @@ function inviteReviewer(
    - Primeira assinatura acontece aqui
 
 3. **Primeira Assinatura (Embedded Wallet):**
+
    ```
    Usuário → ConnectButton → Thirdweb Modal
    ↓
@@ -85,6 +88,7 @@ function inviteReviewer(
 ### **Passo 3: Verificar Status**
 
 **Código:**
+
 ```javascript
 const statusResult = await readContract({
   contract,
@@ -103,6 +107,7 @@ const statusResult = await readContract({
 - `EXPIRED` (5) - Prazo expirado
 
 **No Frontend:**
+
 - Mostra status atual
 - Mostra detalhes da missão (scope, deadline)
 - Mostra botão "Aceitar Revisão" se status = `INVITED`
@@ -114,6 +119,7 @@ const statusResult = await readContract({
 **Quando o usuário clica em "Aceitar Revisão":**
 
 1. **Validação:**
+
    ```javascript
    // Verifica se status é INVITED
    if (Number(currentStatus) !== STATUS.INVITED) {
@@ -122,6 +128,7 @@ const statusResult = await readContract({
    ```
 
 2. **Preparar Transação:**
+
    ```javascript
    const transaction = prepareContractCall({
      contract,
@@ -131,6 +138,7 @@ const statusResult = await readContract({
    ```
 
 3. **Enviar Transação:**
+
    ```javascript
    const result = await sendTransaction({
      transaction,
@@ -166,15 +174,19 @@ const statusResult = await readContract({
    - Gera `proofOfDelivery` (hash do material)
 
 3. **Submeter Revisão (Próximo passo):**
+
    ```solidity
    function submitReview(bytes32 _proofOfDelivery) external
    ```
+
    - Status muda para `SUBMITTED` (3)
 
 4. **Validação (Architect):**
+
    ```solidity
    function validateReview(address _reviewer) external onlyArchitect
    ```
+
    - Status muda para `VALIDATED` (4)
    - Evento `ReviewValidated` é emitido
    - ReputationBridge atualiza Identity Graph
@@ -278,6 +290,7 @@ O componente `AcceptReviewThirdweb.jsx` usa:
 - ✅ `sendTransaction()` - Enviar transação (gasless)
 
 **Vantagens:**
+
 - Suporta gasless (Thirdweb paga)
 - Embedded wallets (email, social login)
 - Type-safe (TypeScript)
@@ -304,4 +317,3 @@ O componente `AcceptReviewThirdweb.jsx` usa:
 ---
 
 **NΞØ Protocol // A Mente é a Nova Blockchain**
-

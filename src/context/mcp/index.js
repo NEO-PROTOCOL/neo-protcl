@@ -92,10 +92,53 @@ export function registerInteraction(interaction) {
 // Persistir estado (localStorage)
 export function persistMCPState() {
   try {
-    localStorage.setItem('mcp_state', JSON.stringify(mcpState))
-    localStorage.setItem('mcp_nodes', JSON.stringify(mcpNodes))
+    const stateJson = JSON.stringify(mcpState)
+    const nodesJson = JSON.stringify(mcpNodes)
+
+    // Validar tamanho antes de salvar (limite ~5MB)
+    const MAX_SIZE = 4 * 1024 * 1024 // 4MB (deixar margem)
+    if (stateJson.length + nodesJson.length > MAX_SIZE) {
+      if (import.meta.env.DEV) {
+        console.warn('[MCP] Dados muito grandes para persistir, truncando...')
+      }
+      // Truncar arrays se necessário
+      const truncatedState = {
+        ...mcpState,
+        interactions: mcpState.interactions.slice(-100), // Manter apenas últimas 100
+        activeNodes: mcpState.activeNodes.slice(-50), // Manter apenas últimos 50
+      }
+      const truncatedNodes = mcpNodes.slice(-100) // Manter apenas últimos 100 nós
+      localStorage.setItem('mcp_state', JSON.stringify(truncatedState))
+      localStorage.setItem('mcp_nodes', JSON.stringify(truncatedNodes))
+      return
+    }
+
+    localStorage.setItem('mcp_state', stateJson)
+    localStorage.setItem('mcp_nodes', nodesJson)
   } catch (error) {
-    console.error('[MCP] Persistence error:', error)
+    // Tratar QuotaExceededError especificamente
+    if (error.name === 'QuotaExceededError') {
+      if (import.meta.env.DEV) {
+        console.warn('[MCP] localStorage cheio, limpando dados antigos...')
+      }
+      try {
+        // Limpar dados antigos e tentar salvar versão truncada
+        const truncatedState = {
+          connected: mcpState.connected,
+          activeNodes: mcpState.activeNodes.slice(-20),
+          interactions: mcpState.interactions.slice(-50),
+        }
+        const truncatedNodes = mcpNodes.slice(-50)
+        localStorage.setItem('mcp_state', JSON.stringify(truncatedState))
+        localStorage.setItem('mcp_nodes', JSON.stringify(truncatedNodes))
+      } catch (e) {
+        if (import.meta.env.DEV) {
+          console.error('[MCP] Erro ao persistir dados truncados:', e)
+        }
+      }
+    } else if (import.meta.env.DEV) {
+      console.error('[MCP] Persistence error:', error)
+    }
   }
 }
 

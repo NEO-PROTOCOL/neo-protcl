@@ -59,7 +59,48 @@ export function AgentProvider({ children }: { children: ReactNode }) {
     }
 
     const timeoutId = setTimeout(() => {
-      localStorage.setItem('neo_agent_state', JSON.stringify(agentState))
+      try {
+        const stateJson = JSON.stringify(agentState)
+        // Validar tamanho antes de salvar
+        const MAX_SIZE = 1024 * 1024 // 1MB (muito mais que suficiente para estado do agente)
+        if (stateJson.length > MAX_SIZE) {
+          if (import.meta.env.DEV) {
+            console.warn('[AgentContext] Estado muito grande, truncando memória...')
+          }
+          // Truncar arrays grandes
+          const truncatedState = {
+            ...agentState,
+            memory: agentState.memory.slice(-20), // Manter apenas últimas 20 memórias
+            zonesUnlocked: agentState.zonesUnlocked.slice(-20), // Manter apenas últimas 20 zonas
+          }
+          localStorage.setItem('neo_agent_state', JSON.stringify(truncatedState))
+          return
+        }
+        localStorage.setItem('neo_agent_state', stateJson)
+      } catch (error) {
+        // Tratar QuotaExceededError
+        if (error.name === 'QuotaExceededError') {
+          if (import.meta.env.DEV) {
+            console.warn('[AgentContext] localStorage cheio, limpando memória antiga...')
+          }
+          try {
+            // Salvar versão truncada
+            const truncatedState = {
+              ...agentState,
+              memory: agentState.memory.slice(-10),
+              zonesUnlocked: agentState.zonesUnlocked.slice(-10),
+            }
+            localStorage.setItem('neo_agent_state', JSON.stringify(truncatedState))
+          } catch (e) {
+            // Se ainda falhar, apenas log (não bloquear aplicação)
+            if (import.meta.env.DEV) {
+              console.error('[AgentContext] Erro ao persistir estado truncado:', e)
+            }
+          }
+        } else if (import.meta.env.DEV) {
+          console.error('[AgentContext] Erro ao salvar estado:', error)
+        }
+      }
     }, 300) // Debounce de 300ms
 
     return () => clearTimeout(timeoutId)

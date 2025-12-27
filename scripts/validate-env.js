@@ -55,17 +55,9 @@ function isPlaceholder(value) {
 }
 
 // Variáveis obrigatórias para produção (bloqueiam build)
+// Nota: VITE_THIRDWEB_CLIENT_ID agora é opcional - aplicação usa clientId de dev como fallback
 const REQUIRED_VARS = {
-  VITE_THIRDWEB_CLIENT_ID: {
-    required: true,
-    message: 'VITE_THIRDWEB_CLIENT_ID é obrigatório (Thirdweb Client ID para wallet connect)',
-    validate: value => {
-      if (isPlaceholder(value)) return false
-      // Client ID geralmente tem formato específico ou é uma string não vazia
-      return value && value.length > 5
-    },
-    formatMessage: 'deve ser um Client ID válido do Thirdweb (string não vazia)',
-  },
+  // Removido VITE_THIRDWEB_CLIENT_ID - agora é opcional (aplicação funciona sem ele)
 }
 
 // Variáveis críticas para funcionalidades específicas (bloqueiam build se requeridas)
@@ -84,20 +76,15 @@ const CRITICAL_VARS = {
 
 // Variáveis recomendadas (não bloqueiam build, mas geram avisos)
 const RECOMMENDED_VARS = {
-  VITE_THIRDWEB_SECRET_KEY: {
-    message: 'VITE_THIRDWEB_SECRET_KEY não configurado - x402 Payments não funcionará',
+  VITE_THIRDWEB_CLIENT_ID: {
+    message:
+      'VITE_THIRDWEB_CLIENT_ID não configurado - usando clientId de desenvolvimento (funcionalidades limitadas)',
     validate: value => {
       if (!value || isPlaceholder(value)) return false
-      return value.length > 10
+      // Client ID geralmente tem formato específico ou é uma string não vazia
+      return value && value.length > 5
     },
-  },
-  VITE_X402_SERVER_WALLET_ADDRESS: {
-    message: 'VITE_X402_SERVER_WALLET_ADDRESS não configurado - x402 Payments não funcionará',
-    validate: value => {
-      if (!value || isPlaceholder(value)) return false
-      return isValidEthereumAddress(value)
-    },
-    formatMessage: 'deve ser um endereço Ethereum válido (0x...)',
+    formatMessage: 'deve ser um Client ID válido do Thirdweb (string não vazia)',
   },
   VITE_GEMINI_API_KEY: {
     message: 'VITE_GEMINI_API_KEY não configurado - funcionalidades de IA não funcionarão',
