@@ -7,17 +7,17 @@ on:
     types: [opened]
 
 jobs:
-  run:
+  assign:
+    name: Auto-assign Issue/PR
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
     steps:
-      - name: 'Auto-assign issue/PR'
+      - name: Auto-assign issue/PR
         uses: pozil/auto-assign-issue@v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          # Atribui automaticamente para CODEOWNERS baseado no arquivo .github/CODEOWNERS
+          # Atribui automaticamente para o time owners baseado no .github/CODEOWNERS
           teams: owners
           numOfAssignee: 1
-
