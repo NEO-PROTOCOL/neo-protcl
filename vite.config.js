@@ -54,19 +54,15 @@ export default defineConfig(({ mode }) => ({
               return 'thirdweb-images'
             }
 
-            // React e React-DOM juntos (pequenos, sempre usados juntos)
+            // Agrupar React e Thirdweb no mesmo chunk para evitar erros de createContext undefined
+            // Isso garante que o React esteja disponível quando o Thirdweb for inicializado
             if (
               id.includes('node_modules/react/') ||
               id.includes('node_modules/react-dom/') ||
+              id.includes('node_modules/thirdweb/') ||
               id.includes('node_modules/scheduler/')
             ) {
-              return 'vendor-react'
-            }
-
-            // Thirdweb em chunk separado (muito grande, ~115MB no node_modules)
-            // O Rollup garantirá que vendor-react seja carregado antes via dependências
-            if (id.includes('node_modules/thirdweb/')) {
-              return 'vendor-thirdweb'
+              return 'vendor-core'
             }
 
             // Ethers em seu próprio chunk
