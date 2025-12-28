@@ -18,6 +18,6 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           # Atribui automaticamente para CODEOWNERS baseado no arquivo .github/CODEOWNERS
-          # A action detecta automaticamente CODEOWNERS quando disponível
+          teams: owners
           numOfAssignee: 1
 
