@@ -12,6 +12,7 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
+      organization: read
     steps:
       - name: 'Auto-assign issue/PR'
         uses: pozil/auto-assign-issue@v1
