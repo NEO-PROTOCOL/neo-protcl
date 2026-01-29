@@ -59,7 +59,7 @@ jobs:
               run: |
                   gh pr review --approve "${{ github.event.pull_request.html_url }}"
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.PATH_TOKEN }}
 
             - name: Auto-merge PR
               if: |
@@ -71,7 +71,7 @@ jobs:
               run: |
                   gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}"
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.PATH_TOKEN }}
 
             - name: Comment on PR if checks failed
               if: |
@@ -87,7 +87,7 @@ jobs:
 
                   Please review manually before merging."
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.PATH_TOKEN }}
 
             - name: Label PR based on update type
               run: |
@@ -99,4 +99,4 @@ jobs:
                     gh pr edit "${{ github.event.pull_request.html_url }}" --add-label "patch-update"
                   fi
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.PATH_TOKEN }}
