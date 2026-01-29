@@ -1,0 +1,102 @@
+name: Auto-merge Dependabot PRs
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    dependabot:
+        runs-on: ubuntu-latest
+        if: github.actor == 'dependabot[bot]'
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run security audit
+              id: audit
+              run: |
+                  # Executar audit e capturar resultado
+                  npm audit --audit-level=moderate || echo "audit_failed=true" >> $GITHUB_OUTPUT
+
+            - name: Run tests (if available)
+              id: tests
+              run: |
+                  # Verificar se há testes configurados
+                  if grep -q '"test"' package.json; then
+                    npm test || echo "tests_failed=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "No tests configured, skipping..."
+                  fi
+
+            - name: Build project
+              id: build
+              run: |
+                  npm run build || echo "build_failed=true" >> $GITHUB_OUTPUT
+
+            - name: Check PR metadata
+              id: metadata
+              uses: dependabot/fetch-metadata@v2
+              with:
+                  github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+            - name: Auto-approve PR
+              if: |
+                  steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+                  steps.metadata.outputs.update-type == 'version-update:semver-minor'
+              run: |
+                  gh pr review --approve "${{ github.event.pull_request.html_url }}"
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Auto-merge PR
+              if: |
+                  steps.build.outputs.build_failed != 'true' &&
+                  steps.audit.outputs.audit_failed != 'true' &&
+                  steps.tests.outputs.tests_failed != 'true' &&
+                  (steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+                   steps.metadata.outputs.update-type == 'version-update:semver-minor')
+              run: |
+                  gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}"
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Comment on PR if checks failed
+              if: |
+                  steps.build.outputs.build_failed == 'true' ||
+                  steps.audit.outputs.audit_failed == 'true' ||
+                  steps.tests.outputs.tests_failed == 'true'
+              run: |
+                  gh pr comment "${{ github.event.pull_request.html_url }}" --body "⚠️ **Automated checks failed**
+
+                  - Build: ${{ steps.build.outputs.build_failed == 'true' && '❌ Failed' || '✅ Passed' }}
+                  - Security Audit: ${{ steps.audit.outputs.audit_failed == 'true' && '❌ Failed' || '✅ Passed' }}
+                  - Tests: ${{ steps.tests.outputs.tests_failed == 'true' && '❌ Failed' || '✅ Passed' }}
+
+                  Please review manually before merging."
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Label PR based on update type
+              run: |
+                  if [ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-major" ]; then
+                    gh pr edit "${{ github.event.pull_request.html_url }}" --add-label "major-update,needs-review"
+                  elif [ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-minor" ]; then
+                    gh pr edit "${{ github.event.pull_request.html_url }}" --add-label "minor-update"
+                  else
+                    gh pr edit "${{ github.event.pull_request.html_url }}" --add-label "patch-update"
+                  fi
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

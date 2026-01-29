@@ -4,29 +4,52 @@
 
 O Dependabot está ativo e monitorando vulnerabilidades no repositório.
 
-## 🔴 Alertas Abertos (Ação Necessária)
+**Última atualização:** 29/01/2026
 
-### 1. cookie (Alert #24 e #7)
+## 🟡 Alertas Abertos (Baixa Prioridade)
+
+### 1. ethers / @ethersproject/* (14 alertas LOW)
 
 - **Severidade:** LOW
-- **Pacote:** `cookie`
-- **Versão vulnerável:** < 0.7.0
-- **Versão corrigida:** 0.7.0
-- **Tipo:** Dependência transitiva (development)
-- **CVE:** CVE-2024-47764
-- **Descrição:** Cookie name, path e domain aceitam caracteres fora dos limites, podendo resultar em valores inesperados
-- **Status:** OPEN
-- **Links:**
-  - Alert #24: https://github.com/NEO-PROTOCOL/neo-protcl/security/dependabot/24
-  - Alert #7: https://github.com/NEO-PROTOCOL/neo-protcl/security/dependabot/7
+- **Pacote:** `ethers` e pacotes `@ethersproject/*`
+- **Versão atual:** 5.7.2
+- **Versão corrigida:** 6.16.0+
+- **Tipo:** Dependência direta
+- **CVE:** GHSA-848j-6mx2-7j84
+- **Descrição:** Elliptic usa primitiva criptográfica com implementação arriscada
+- **Status:** OPEN (aguardando atualização)
 
-**Ação:** Atualizar dependência transitiva que usa `cookie` ou usar `npm overrides` para forçar versão 0.7.0+
+**Impacto:** Baixo - vulnerabilidade criptográfica de baixa severidade
+
+**Ação:** Atualização para ethers@6.x requer breaking changes. Avaliar migração em versão futura.
+
+**Pacotes afetados:**
+- `elliptic`
+- `@ethersproject/signing-key`
+- `@ethersproject/hdnode`
+- `@ethersproject/json-wallets`
+- `@ethersproject/transactions`
+- `@ethersproject/abstract-provider`
+- `@ethersproject/abstract-signer`
+- `@ethersproject/hash`
+- `@ethersproject/abi`
+- `@ethersproject/contracts`
+- `@ethersproject/providers`
+- `@ethersproject/wallet`
+- `@ethersproject/wordlists`
+- `ethers`
 
 ## ✅ Alertas Corrigidos (Resolvidos)
 
-A maioria dos alertas já foi corrigida automaticamente ou via atualizações:
+### Vulnerabilidades Corrigidas em 29/01/2026:
 
-### Vulnerabilidades Corrigidas:
+- ✅ **hono** (Moderate) - Prototype Pollution via JSON parsing → Corrigido para 4.11.7 via override
+- ✅ **lodash-es** (Moderate) - Prototype Pollution em `_.unset` e `_.omit` → Corrigido para 4.17.23 via override
+- ✅ **preact** (High) - JSON VNode Injection → Corrigido via `npm audit fix`
+- ✅ **cookie** (Low) - CVE-2024-47764 → Corrigido para 0.7.0+ via override
+- ✅ **tmp** (Low) - Vulnerabilidades diversas → Corrigido para 0.2.1+ via override
+
+### Vulnerabilidades Corrigidas Anteriormente:
 
 - ✅ **elliptic** (múltiplas CVEs) - Corrigido para 6.6.1+
 - ✅ **@coinbase/wallet-sdk** - Corrigido para 4.3.0+
@@ -53,34 +76,37 @@ curl -H "Authorization: token YOUR_TOKEN" \
   https://api.github.com/repos/NEO-PROTOCOL/neo-protcl/dependabot/alerts
 ```
 
-## 🛠️ Ações Recomendadas
+## 🛠️ Overrides Aplicados
 
-### Para cookie (LOW severity):
+Os seguintes overrides foram aplicados no `package.json` para corrigir vulnerabilidades:
 
-1. Verificar qual dependência usa `cookie`:
-
-   ```bash
-   npm ls cookie
-   ```
-
-2. Se for dependência transitiva, usar `overrides` no `package.json`:
-
-   ```json
-   {
-     "overrides": {
-       "cookie": "^0.7.0"
-     }
-   }
-   ```
-
-3. Ou aguardar atualização upstream da dependência que usa `cookie`
+```json
+{
+  "overrides": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "cookie": "^0.7.0",
+    "tmp": "^0.2.1",
+    "source-map": "^0.7.4",
+    "lodash-es": "^4.17.23",
+    "hono": "^4.11.7",
+    "@walletconnect/sign-client": "^2.23.1",
+    "@walletconnect/universal-provider": "^2.23.1",
+    "@walletconnect/ethereum-provider": "^2.23.1"
+  }
+}
+```
 
 ## 📈 Monitoramento
 
-- **Total de alertas:** ~30+
-- **Abertos:** 2 (cookie - LOW)
-- **Corrigidos:** ~28+
-- **Última verificação:** Dezembro 2025
+- **Total de vulnerabilidades:** 14
+- **Severidade:**
+  - 🔴 Critical: 0
+  - 🟠 High: 0
+  - 🟡 Moderate: 0
+  - 🟢 Low: 14 (todas relacionadas ao ethers@5.x)
+- **Última verificação:** 29/01/2026
+- **Última correção:** 29/01/2026
 
 ## ⚙️ Configuração do Dependabot
 

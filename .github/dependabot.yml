@@ -1,0 +1,59 @@
+version: 2
+updates:
+  # Atualizar dependências npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Sao_Paulo"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "neoprotocol"
+    assignees:
+      - "neoprotocol"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automated"
+    # Agrupar atualizações de desenvolvimento
+    groups:
+      development-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "patch"
+    # Ignorar atualizações de major version que podem quebrar
+    ignore:
+      # Manter ethers@5.x até migração planejada
+      - dependency-name: "ethers"
+        update-types: ["version-update:semver-major"]
+      # Manter React@18.x
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      # Manter Vite@7.x
+      - dependency-name: "vite"
+        update-types: ["version-update:semver-major"]
+
+  # Atualizar GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Sao_Paulo"
+    commit-message:
+      prefix: "chore(ci)"
+    labels:
+      - "ci"
+      - "automated"
