@@ -13,7 +13,7 @@
 
 ## 🟡 Alertas Abertos (Baixa Prioridade)
 
-### 1. ethers / @ethersproject/* (14 alertas LOW)
+### 1. ethers / @ethersproject/\* (14 alertas LOW)
 
 - **Severidade:** LOW
 - **CVE:** GHSA-848j-6mx2-7j84
@@ -29,6 +29,7 @@
 **Solução:**
 
 Atualização para ethers@6.x requer breaking changes significativos:
+
 - API completamente reformulada
 - Mudanças em providers, signers, contracts
 - Requer refatoração de todo código que usa ethers
@@ -64,9 +65,11 @@ Atualização para ethers@6.x requer breaking changes significativos:
 ## 📊 Progresso de Correções
 
 **Antes (28/01/2026):**
+
 - 28 vulnerabilidades (6 HIGH, 8 MODERATE, 14 LOW)
 
 **Depois (29/01/2026):**
+
 - 14 vulnerabilidades (0 HIGH, 0 MODERATE, 14 LOW)
 
 **Redução:** 50% das vulnerabilidades eliminadas ✅

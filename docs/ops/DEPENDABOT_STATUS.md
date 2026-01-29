@@ -8,7 +8,7 @@ O Dependabot está ativo e monitorando vulnerabilidades no repositório.
 
 ## 🟡 Alertas Abertos (Baixa Prioridade)
 
-### 1. ethers / @ethersproject/* (14 alertas LOW)
+### 1. ethers / @ethersproject/\* (14 alertas LOW)
 
 - **Severidade:** LOW
 - **Pacote:** `ethers` e pacotes `@ethersproject/*`
@@ -24,6 +24,7 @@ O Dependabot está ativo e monitorando vulnerabilidades no repositório.
 **Ação:** Atualização para ethers@6.x requer breaking changes. Avaliar migração em versão futura.
 
 **Pacotes afetados:**
+
 - `elliptic`
 - `@ethersproject/signing-key`
 - `@ethersproject/hdnode`

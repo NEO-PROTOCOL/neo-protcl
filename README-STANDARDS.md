@@ -33,12 +33,12 @@ neo-init /caminho/do/projeto
 
 ## O que é Aplicado
 
--  `.cursorrules` - Regras do Cursor IDE
--  `.editorconfig` - Configuração do editor
--  `.cursor/standards/` - Padrões de desenvolvimento
--  `.github/workflows/` - Workflows CI/CD (se não existirem)
--  `.markdownlint.json` - Validação Markdown (se não existir)
--  `.prettierrc.json` - Configuração Prettier (se não existir)
+- `.cursorrules` - Regras do Cursor IDE
+- `.editorconfig` - Configuração do editor
+- `.cursor/standards/` - Padrões de desenvolvimento
+- `.github/workflows/` - Workflows CI/CD (se não existirem)
+- `.markdownlint.json` - Validação Markdown (se não existir)
+- `.prettierrc.json` - Configuração Prettier (se não existir)
 
 ## Verificação
 
