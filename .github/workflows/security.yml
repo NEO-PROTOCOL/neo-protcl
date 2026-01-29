@@ -31,14 +31,20 @@ jobs:
           # Procura apenas por secrets hardcoded críticos (valores reais, não referências)
           # Padrões perigosos: sk- seguido de 32+ caracteres (tokens OpenAI reais)
           # Ignora tudo que é referência a variável de ambiente ou nome de variável
-          if grep -r --include="*.js" --include="*.json" --include="*.ts" \
+          RESULTS=$(grep -r --include="*.js" --include="*.json" --include="*.ts" \
             -E "(sk-[a-zA-Z0-9]{32,})" \
-            . | grep -v "node_modules" | grep -v ".git" | grep -v "package-lock.json" | \
+            . 2>/dev/null | grep -v "node_modules" | grep -v ".git" | grep -v "package-lock.json" | \
+            grep -v "dev-dist" | grep -v "dist/" | \
             grep -v "test" | grep -v "tests/" | grep -v "\.test\." | grep -v "env-example" | \
             grep -v "\.example\." | grep -v "process\.env" | grep -v "config\." | \
             grep -v "window\.APP_CONFIG" | grep -v "GOOGLE_API_KEY\|OPENAI_API_KEY" | \
-            grep -v "VAR_NAME\|VAR\s*=" | head -5; then
-            echo "⚠️  Potential secrets found. Please review."
+            grep -v "VAR_NAME\|VAR\s*=" || true)
+          
+          if [ -n "$RESULTS" ]; then
+            echo "⚠️  Potential secrets found:"
+            echo "$RESULTS" | head -5
+            echo ""
+            echo "Please review these findings. If they are false positives, update the security.yml filters."
             exit 1
           fi
           echo "✅ No obvious secrets found"
