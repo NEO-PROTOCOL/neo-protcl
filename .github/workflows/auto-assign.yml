@@ -16,7 +16,7 @@ jobs:
       organization: read
     steps:
       - name: Auto-assign issue/PR
-        uses: pozil/auto-assign-issue@v1
+        uses: pozil/auto-assign-issue@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           # Atribui automaticamente para o time owners baseado no .github/CODEOWNERS
