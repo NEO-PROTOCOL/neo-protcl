@@ -30,7 +30,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.0",
     "serve": "^14.2.1",
-    "thirdweb": "^5.116.1"
+    "thirdweb": "^5.118.0"
   },
   "devDependencies": {
     "@lighthouse-web3/sdk": "^0.4.3",
