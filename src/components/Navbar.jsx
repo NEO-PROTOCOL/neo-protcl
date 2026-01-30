@@ -3,13 +3,16 @@ import { Link } from 'react-router-dom'
 import { soundManager } from '../utils/sounds'
 import ConnectButton from './WalletConnect/ConnectButton'
 import { getIPFSGatewayUrl } from '../services/intentDataCapture'
-import { useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react'
+// import { useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react' // Temporariamente desabilitado
 
 export default function Navbar() {
   const logoCid = 'bafkreifm3hzdhem47tfzzqxm4274t3rqkzrgsa2zi2bc72nzjecxaixsxm'
-  const account = useActiveAccount()
-  const wallet = useActiveWallet()
-  const disconnectHook = useDisconnect()
+  // const account = useActiveAccount() // Temporariamente desabilitado
+  // const wallet = useActiveWallet() // Temporariamente desabilitado
+  // const disconnectHook = useDisconnect() // Temporariamente desabilitado
+  const account = null
+  const wallet = null
+  const disconnectHook = null
   const [showWalletMenu, setShowWalletMenu] = useState(false)
   const menuRef = useRef(null)
 

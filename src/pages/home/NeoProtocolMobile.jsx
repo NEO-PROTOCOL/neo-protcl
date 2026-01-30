@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { useActiveAccount } from 'thirdweb/react'
+// import { useActiveAccount } from 'thirdweb/react' // Temporariamente desabilitado
 import Navbar from '../../components/Navbar'
 import BottomNavigation from '../../components/BottomNavigation'
 import Footer from '../../components/Footer'
@@ -14,16 +14,17 @@ import { processCommand } from '../../utils/commandProcessor'
  * Alvo: Home Mobile
  */
 export default function NeoProtocolMobile() {
-  const account = useActiveAccount()
+  // const account = useActiveAccount() // Temporariamente desabilitado
+  const account = null
   const [mcp, setMcp] = useState(getMCPState())
   const [events, setEvents] = useState(() => {
     const saved = localStorage.getItem('neo_shell_events_mobile')
     return saved
       ? JSON.parse(saved)
       : [
-          { id: 1, text: 'Bootstrap complete.' },
-          { id: 2, text: 'Shell active.' },
-        ]
+        { id: 1, text: 'Bootstrap complete.' },
+        { id: 2, text: 'Shell active.' },
+      ]
   })
 
   useEffect(() => {

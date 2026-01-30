@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useActiveAccount } from 'thirdweb/react'
+// import { useActiveAccount } from 'thirdweb/react' // Temporariamente desabilitado
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CommandInput from '../../components/CommandInput'
@@ -13,16 +13,17 @@ import { processCommand } from '../../utils/commandProcessor'
  * Alvo: Home Desktop
  */
 export default function NeoProtocolDesktop() {
-  const account = useActiveAccount()
+  // const account = useActiveAccount() // Temporariamente desabilitado
+  const account = null
   const [mcp, setMcp] = useState(getMCPState())
   const [events, setEvents] = useState(() => {
     const saved = localStorage.getItem('neo_shell_events')
     return saved
       ? JSON.parse(saved)
       : [
-          { id: 1, text: 'Bootstrap sequence completed.' },
-          { id: 2, text: 'Protocol shell active.' },
-        ]
+        { id: 1, text: 'Bootstrap sequence completed.' },
+        { id: 2, text: 'Protocol shell active.' },
+      ]
   })
   const eventsContainerRef = useRef(null)
   const isUserScrollingRef = useRef(false)

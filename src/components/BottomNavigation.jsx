@@ -2,20 +2,23 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { soundManager } from '../utils/sounds'
 import { useDeviceDetection } from '../hooks/useDeviceDetection'
-import { useActiveAccount } from 'thirdweb/react'
-import {
-  ConnectButton as ThirdwebConnectButton,
-  useDisconnect,
-  useActiveWallet,
-} from 'thirdweb/react'
+// import { useActiveAccount } from 'thirdweb/react' // Temporariamente desabilitado
+// import {
+//   ConnectButton as ThirdwebConnectButton,
+//   useDisconnect,
+//   useActiveWallet,
+// } from 'thirdweb/react' // Temporariamente desabilitado
 import { useThirdwebClient } from '../providers/X402Provider'
 
 export default function BottomNavigation() {
   const location = useLocation()
   const { isMobile } = useDeviceDetection()
-  const account = useActiveAccount()
-  const wallet = useActiveWallet()
-  const disconnectHook = useDisconnect()
+  // const account = useActiveAccount() // Temporariamente desabilitado
+  // const wallet = useActiveWallet() // Temporariamente desabilitado
+  // const disconnectHook = useDisconnect() // Temporariamente desabilitado
+  const account = null
+  const wallet = null
+  const disconnectHook = null
   const client = useThirdwebClient()
 
   // Verificar se disconnect é uma função (pode ser undefined em alguns casos)
