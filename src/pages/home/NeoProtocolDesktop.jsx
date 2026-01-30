@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-// import { useActiveAccount } from 'thirdweb/react' // Temporariamente desabilitado
+// import { useActiveAccount } from 'thirdweb/react' // Temporarily disabled
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CommandInput from '../../components/CommandInput'
@@ -9,11 +9,11 @@ import { processCommand } from '../../utils/commandProcessor'
 
 /**
  * NeoProtocolDesktop - Protocol Shell Frame
- * Fase 3: Ciclo de Intenção e Feedback
- * Alvo: Home Desktop
+ * Phase 3: Intent and Feedback Cycle
+ * Target: Desktop Home
  */
 export default function NeoProtocolDesktop() {
-  // const account = useActiveAccount() // Temporariamente desabilitado
+  // const account = useActiveAccount() // Temporarily disabled
   const account = null
   const [mcp, setMcp] = useState(getMCPState())
   const [events, setEvents] = useState(() => {

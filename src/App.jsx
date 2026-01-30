@@ -8,22 +8,22 @@ import IntentSystemPage from './pages/intent/IntentSystemPage'
 import DocumentationPage from './pages/docs/DocumentationPage'
 import ProjectPage from './pages/project/ProjectPage'
 import ReviewPage from './pages/review/ReviewPage'
-// import RegisterNodePage from './pages/register/RegisterNodePage' // Temporariamente desabilitado - aguardando definição de conexões
+// import RegisterNodePage from './pages/register/RegisterNodePage' // Temporarily disabled - awaiting connection definition
 import { soundManager } from './utils/sounds'
 import PWAUpdatePrompt from './components/PWAUpdatePrompt'
 
-// Componente para detectar mudanças de rota
+// Component to detect route changes
 function RouteChangeListener() {
   const location = useLocation()
   const [isInitialMount, setIsInitialMount] = useState(true)
 
   useEffect(() => {
-    // Ignorar o primeiro carregamento (antes de qualquer interação)
+    // Ignore first load (before any interaction)
     if (isInitialMount) {
       setIsInitialMount(false)
       return
     }
-    // Tocar som quando a rota mudar (apenas após primeira interação)
+    // Play sound when route changes (only after first interaction)
     soundManager.playPageLoad()
   }, [location.pathname, isInitialMount])
 
@@ -45,11 +45,11 @@ function App() {
         <Route path="/documentacao" element={<DocumentationPage />} />
         <Route path="/project" element={<ProjectPage />} />
         <Route path="/review" element={<ReviewPage />} />
-        {/* Rotas temporariamente desabilitadas - aguardando definição de conexões */}
+        {/* Routes temporarily disabled - awaiting connection definition */}
         {/* <Route path="/register" element={<RegisterNodePage />} /> */}
         {/* <Route path="/cadastro" element={<RegisterNodePage />} /> */}
       </Routes>
-      {/* PWA Update Prompt - aparece quando há nova versão */}
+      {/* PWA Update Prompt - appears when there's a new version */}
       <PWAUpdatePrompt />
     </Router>
   )

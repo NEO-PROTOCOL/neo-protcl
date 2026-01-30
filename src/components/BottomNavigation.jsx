@@ -228,7 +228,7 @@ export default function BottomNavigation() {
                   ></div>
                 </button>
 
-                {/* Menu de desconexão */}
+                {/* Disconnect menu */}
                 {showWalletMenu && (
                   <div
                     className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-56 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50"
@@ -239,7 +239,7 @@ export default function BottomNavigation() {
                   >
                     <div className="p-3 border-b border-gray-700">
                       <div className="text-[10px] text-gray-400 mb-1 uppercase tracking-wider">
-                        WALLET CONECTADA
+                        CONNECTED WALLET
                       </div>
                       <div className="font-mono text-xs text-green-400 break-all">
                         {account.address.slice(0, 8)}...{account.address.slice(-6)}
@@ -250,13 +250,13 @@ export default function BottomNavigation() {
                       className="w-full px-4 py-3 text-left text-xs text-red-400 hover:bg-red-500/10 transition-colors font-mono flex items-center gap-2 border-t border-gray-700"
                     >
                       <span className="text-base">✕</span>
-                      <span>DESCONECTAR</span>
+                      <span>DISCONNECT</span>
                     </button>
                   </div>
                 )}
               </>
             ) : client ? (
-              // Desconectado: ícone minimalista que abre modal
+              // Disconnected: minimalist icon that opens modal
               <div className="flex flex-col items-center w-full">
                 <div
                   className="mb-3 flex items-center justify-center"

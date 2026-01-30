@@ -140,7 +140,7 @@ export default function Navbar() {
                     >
                       <div className="p-3 border-b border-gray-700">
                         <div className="text-[10px] text-gray-400 mb-1 uppercase tracking-wider">
-                          WALLET CONECTADA
+                          CONNECTED WALLET
                         </div>
                         <div className="font-mono text-xs text-green-400 break-all">
                           {account.address}
@@ -151,7 +151,7 @@ export default function Navbar() {
                         className="w-full px-4 py-2 text-left text-xs text-red-400 hover:bg-red-500/10 transition-colors font-mono flex items-center gap-2 border-t border-gray-700"
                       >
                         <span className="text-base">✕</span>
-                        <span>DESCONECTAR</span>
+                        <span>DISCONNECT</span>
                       </button>
                     </div>
                   )}

@@ -1,12 +1,12 @@
 import React from 'react'
 
 // ============================================
-// X402Provider - TEMPORARIAMENTE DESABILITADO
+// X402Provider - TEMPORARILY DISABLED
 // ============================================
-// Este provider foi desabilitado pois o projeto não usa mais Thirdweb.
-// Mantemos o arquivo para evitar quebrar imports existentes.
+// This provider was disabled as the project no longer uses Thirdweb.
+// We keep the file to avoid breaking existing imports.
 
-// Exportações vazias para compatibilidade
+// Empty exports for compatibility
 export const thirdwebClient = null
 export const thirdwebX402Facilitator = null
 export const x402Config = {
@@ -17,10 +17,10 @@ export const x402Config = {
   hasClient: false,
 }
 
-// Hook vazio para compatibilidade
+// Empty hook for compatibility
 export const useThirdwebClient = () => null
 
-// Provider vazio que apenas renderiza os children
+// Empty provider that just renders children
 export default function X402Provider({ children }) {
   return <>{children}</>
 }
