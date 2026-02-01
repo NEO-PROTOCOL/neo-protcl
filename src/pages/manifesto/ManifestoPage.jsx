@@ -36,13 +36,13 @@ export default function ManifestoPage() {
       color: 'text-cyan-400',
     },
     { text: '◍ Cada decisão emerge da rede como um organismo coletivo.', color: 'text-cyan-400' },
-    { text: 'Protocolo NΞØ:', color: 'text-white font-semibold' },
+    { text: 'NΞØ SMART FACTORY:', color: 'text-white font-semibold' },
     {
-      text: 'Um sistema que aprende, se adapta e evolui com quem o habita. Organização sem dono. Movimento sem fronteira.',
+      text: 'Uma Fábrica de Tokens que aprende, se adapta e evolui com quem a habita. Organização sem dono. Ativos inteligentes sem fronteira.',
       color: 'text-gray-300',
     },
     {
-      text: 'Isso não é um convite. O protocolo NΞØ já existe. Está presente pelas redes, em ideias, interações, colaborações invisíveis.',
+      text: 'Isso não é um convite. A NΞØ SMART FACTORY já é o estado operacional. Está presente pelas redes, em ideias, interações e emissões invisíveis.',
       color: 'text-gray-300',
     },
     {
@@ -70,8 +70,8 @@ flowchart TD
 Ø((Ø))
 H>Human Interface]
 D{Intent Valid?}
-A[[NEØ Agent]]
-P[Execute Protocol Action]
+A[[Token Factory Agent]]
+P[Mint Smart Asset]
 M[(On-chain Memory)]
 S((System State))
 X(Event)
@@ -182,7 +182,7 @@ class X danger
               <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-sm flex items-center justify-center ios-shadow-md">
                 <span className="text-3xl font-mono">⦙</span>
               </div>
-              <h1 className="ios-headline text-white mb-2">MANIFESTO NΞØ</h1>
+              <h1 className="ios-headline text-white mb-2">NΞØ SMART FACTORY</h1>
               <p className="ios-body text-gray-300 leading-relaxed max-w-md">
                 Protocolo NΞØ é o mais recente movimento a emergir do submundo digital com a
                 proposta de devolver a identidade digital pessoal, da governança e da identidade
@@ -241,7 +241,7 @@ class X danger
             {/* Terminal ASCII com Typewriter */}
             <div className="bg-black/80 border border-cyan-500/30 rounded-lg p-4 font-mono text-sm overflow-x-auto">
               <div className="text-cyan-400 mb-2">
-                ┌─ NΞØ PROTOCOL ────────────────────────────────┐
+                ┌─ NΞØ SMART FACTORY ──────────────────────────┐
               </div>
               <div className="space-y-1 text-green-400">
                 <div className="text-gray-400">$ cat manifesto.txt</div>
@@ -298,7 +298,7 @@ class X danger
             style={{ animationDelay: '1.4s' }}
           >
             <p className="text-cyan-400 font-mono text-sm">
-              PROTOCOLO NΞØ // A Mente é a Nova Blockchain
+              NΞØ SMART FACTORY // A Mente é a Fábrica
             </p>
           </div>
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { soundManager } from '../utils/sounds'
 import ConnectButton from './WalletConnect/ConnectButton'
 import { getIPFSGatewayUrl } from '../services/intentDataCapture'
-// import { useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react' // Temporariamente desabilitado
+// Wallet imports disabled
 
 export default function Navbar() {
   const logoCid = 'bafkreifm3hzdhem47tfzzqxm4274t3rqkzrgsa2zi2bc72nzjecxaixsxm'
@@ -62,7 +62,7 @@ export default function Navbar() {
         >
           <img
             src={getIPFSGatewayUrl(logoCid)}
-            alt="NΞØ Protocol"
+            alt="NΞØ SMART FACTORY"
             className="h-7 md:h-9 w-auto"
             style={{
               filter: 'drop-shadow(0 0 12px rgba(0, 255, 255, 0.3))',

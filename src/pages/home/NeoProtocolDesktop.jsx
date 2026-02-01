@@ -4,7 +4,7 @@ import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CommandInput from '../../components/CommandInput'
 import { getMCPState, initMCP } from '../../context/mcp'
-import { thirdwebClient, x402Config } from '../../providers/X402Provider'
+import { getMCPState, initMCP } from '../../context/mcp'
 import { processCommand } from '../../utils/commandProcessor'
 
 /**
@@ -123,7 +123,7 @@ export default function NeoProtocolDesktop() {
     setEvents(prev => [...prev, ...newEvents])
   }
 
-  const networkStatus = thirdwebClient ? 'CONNECTED (BASE)' : 'DISCONNECTED'
+  const networkStatus = 'NΞØ SMART FACTORY'
   const identityStatus = account
     ? `${account.address.slice(0, 6)}...${account.address.slice(-4)}`
     : 'NOT_INITIALIZED'
@@ -191,8 +191,8 @@ export default function NeoProtocolDesktop() {
           <div className="flex justify-between items-start mb-8 text-[10px] uppercase tracking-widest text-gray-400">
             <div className="flex gap-10">
               <div className="flex flex-col">
-                <span className="text-gray-300 mb-1">network_status</span>
-                <span className={thirdwebClient ? 'text-cyan-400' : 'text-red-400'}>
+                <span className="text-gray-300 mb-1">engine_core</span>
+                <span className="text-cyan-400">
                   {networkStatus}
                 </span>
               </div>

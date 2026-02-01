@@ -396,9 +396,17 @@ export function getIPFSGatewayUrl(cid) {
   // Limpar CID se vier com prefixo ipfs://
   const cleanCid = cid.replace('ipfs://', '')
 
+  // Priorizar Gateway Lighthouse (mais estável para os ativos atuais)
+  const lighthouseGateway = 'gateway.lighthouse.storage'
+
+  // Se houver gateway dedicado do Pinata no .env, ainda mantemos como opção, 
+  // mas vamos garantir que o Lighthouse seja o padrão funcional para ativos críticos
   const pinataGateway = import.meta.env.VITE_PINATA_GATEWAY
 
-  // Se houver gateway dedicado configurado, usa ele
+  if (lighthouseGateway) {
+    return `https://${lighthouseGateway}/ipfs/${cleanCid}`
+  }
+
   if (pinataGateway && pinataGateway.trim().length > 0) {
     return `https://${pinataGateway}/ipfs/${cleanCid}`
   }

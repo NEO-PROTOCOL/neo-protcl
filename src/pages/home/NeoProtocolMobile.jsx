@@ -5,7 +5,7 @@ import BottomNavigation from '../../components/BottomNavigation'
 import Footer from '../../components/Footer'
 import CommandInput from '../../components/CommandInput'
 import { getMCPState, initMCP } from '../../context/mcp'
-import { thirdwebClient, x402Config } from '../../providers/X402Provider'
+import { getMCPState, initMCP } from '../../context/mcp'
 import { processCommand } from '../../utils/commandProcessor'
 
 /**
@@ -127,7 +127,7 @@ export default function NeoProtocolMobile() {
     }
   }
 
-  const networkStatus = thirdwebClient ? 'OK' : 'OFF'
+  const networkStatus = 'FACTORY_CORE'
   const identityStatus = account
     ? `${account.address.slice(0, 4)}..${account.address.slice(-2)}`
     : 'NONE'
@@ -234,8 +234,8 @@ export default function NeoProtocolMobile() {
           {/* Mobile Telemetry Grid */}
           <div className="grid grid-cols-2 gap-4 mb-6 text-[9px] uppercase tracking-widest text-gray-400">
             <div className="flex flex-col border-l border-gray-700 pl-2">
-              <span className="text-gray-300 mb-0.5">network</span>
-              <span className={thirdwebClient ? 'text-cyan-400' : 'text-red-400'}>
+              <span className="text-gray-300 mb-0.5">infra</span>
+              <span className="text-cyan-400">
                 {networkStatus}
               </span>
             </div>
