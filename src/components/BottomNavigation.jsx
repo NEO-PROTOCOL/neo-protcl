@@ -2,24 +2,12 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { soundManager } from '../utils/sounds'
 import { useDeviceDetection } from '../hooks/useDeviceDetection'
-// import { useActiveAccount } from 'thirdweb/react' // Temporariamente desabilitado
-// import {
-//   ConnectButton as ThirdwebConnectButton,
-//   useDisconnect,
-//   useActiveWallet,
-// } from 'thirdweb/react' // Temporariamente desabilitado
-import { useThirdwebClient } from '../providers/X402Provider'
-
 export default function BottomNavigation() {
   const location = useLocation()
   const { isMobile } = useDeviceDetection()
-  // const account = useActiveAccount() // Temporariamente desabilitado
-  // const wallet = useActiveWallet() // Temporariamente desabilitado
-  // const disconnectHook = useDisconnect() // Temporariamente desabilitado
   const account = null
   const wallet = null
   const disconnectHook = null
-  const client = useThirdwebClient()
 
   // Verificar se disconnect é uma função (pode ser undefined em alguns casos)
   const disconnect = typeof disconnectHook === 'function' ? disconnectHook : null
@@ -255,59 +243,8 @@ export default function BottomNavigation() {
                   </div>
                 )}
               </>
-            ) : client ? (
-              // Disconnected: minimalist icon that opens modal
-              <div className="flex flex-col items-center w-full">
-                <div
-                  className="mb-3 flex items-center justify-center"
-                  style={{ minHeight: '18px' }}
-                >
-                  <ThirdwebConnectButton
-                    client={client}
-                    connectModal={{
-                      size: 'wide',
-                      title: 'Conectar Wallet',
-                      welcomeScreen: {
-                        title: 'Bem-vindo ao NΞØ Protocol',
-                        subtitle: 'Conecte sua wallet para começar',
-                      },
-                    }}
-                    connectButton={{
-                      label: '',
-                      className: 'p-0 border-0 bg-transparent min-w-0',
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: '18px',
-                        fontFamily: 'Inter, sans-serif',
-                        fontWeight: 300,
-                        color: '#6B7280',
-                        transition: 'color 0.2s linear',
-                        cursor: 'pointer',
-                        display: 'block',
-                        lineHeight: '1',
-                      }}
-                    >
-                      ⦿
-                    </span>
-                  </ThirdwebConnectButton>
-                </div>
-                <span
-                  className="uppercase"
-                  style={{
-                    fontSize: '9px',
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 300,
-                    letterSpacing: '0.05em',
-                    color: '#6B7280',
-                  }}
-                >
-                  WALLET
-                </span>
-              </div>
             ) : (
-              // Fallback se não houver cliente configurado
+              // Wallet desabilitada (sem Thirdweb)
               <div className="flex flex-col items-center w-full opacity-30">
                 <span style={{ fontSize: '18px', marginBottom: '3px' }}>⦿</span>
                 <span style={{ fontSize: '9px', color: '#6B7280' }}>WALLET</span>

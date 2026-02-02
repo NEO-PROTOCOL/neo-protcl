@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
-// import { useActiveAccount } from 'thirdweb/react' // Temporarily disabled
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CommandInput from '../../components/CommandInput'
 import { getMCPState, initMCP } from '../../context/mcp'
-import { getMCPState, initMCP } from '../../context/mcp'
 import { processCommand } from '../../utils/commandProcessor'
+import { x402Config } from '../../providers/X402Provider'
 
 /**
  * NeoProtocolDesktop - Protocol Shell Frame
@@ -100,7 +99,7 @@ export default function NeoProtocolDesktop() {
       mcpConnected: mcp.connected,
       identity: account ? 'AUTHENTICATED' : 'ANONYMOUS',
       address: account?.address,
-      hasClient: !!thirdwebClient,
+      hasClient: false,
       x402Ready: x402Config.isConfigured,
     }
 

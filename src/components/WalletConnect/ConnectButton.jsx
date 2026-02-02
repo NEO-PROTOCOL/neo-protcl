@@ -3,7 +3,7 @@ import React from 'react'
 /**
  * ConnectButton - TEMPORARILY DISABLED
  * 
- * This component was disabled as the project no longer uses Thirdweb.
+ * Placeholder: wallet desabilitada até nova integração.
  * Renders a placeholder button until a new wallet solution is implemented.
  */
 export default function ConnectButton({ compact = false }) {

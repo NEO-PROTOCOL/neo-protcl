@@ -3,7 +3,7 @@ import React from 'react'
 // ============================================
 // X402Provider - TEMPORARILY DISABLED
 // ============================================
-// This provider was disabled as the project no longer uses Thirdweb.
+// x402 provider; wallet client desabilitado (projeto não usa Thirdweb).
 // We keep the file to avoid breaking existing imports.
 
 // Empty exports for compatibility

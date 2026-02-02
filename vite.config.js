@@ -45,21 +45,9 @@ export default defineConfig(({ mode }) => ({
         // Agrupar dependências para reduzir o número de arquivos e evitar erros de carregamento
         manualChunks: id => {
           if (id.includes('node_modules')) {
-            // Imagens do Thirdweb (muitos arquivos pequenos)
-            if (
-              id.includes('node_modules/thirdweb') &&
-              id.includes('image-') &&
-              id.endsWith('.js')
-            ) {
-              return 'thirdweb-images'
-            }
-
-            // Agrupar React e Thirdweb no mesmo chunk para evitar erros de createContext undefined
-            // Isso garante que o React esteja disponível quando o Thirdweb for inicializado
             if (
               id.includes('node_modules/react/') ||
               id.includes('node_modules/react-dom/') ||
-              id.includes('node_modules/thirdweb/') ||
               id.includes('node_modules/scheduler/')
             ) {
               return 'vendor-core'
@@ -112,13 +100,9 @@ export default defineConfig(({ mode }) => ({
         if (warning.code === 'EVAL' && warning.id?.includes('@lighthouse-web3')) {
           return
         }
-        // Suprimir avisos sobre comentários @__PURE__ do thirdweb
-        // Rollup não consegue interpretar esses comentários em certas posições
-        // São apenas anotações de otimização, não erros
         if (
           warning.message?.includes('@__PURE__') ||
           warning.message?.includes('/*#__PURE__*/') ||
-          warning.message?.includes('/* @__PURE__ */') ||
           (warning.code === 'PLUGIN_WARNING' &&
             warning.plugin === 'vite:react-babel' &&
             warning.message?.includes('@__PURE__'))
@@ -132,10 +116,7 @@ export default defineConfig(({ mode }) => ({
   },
   optimizeDeps: {
     include: ['buffer', '@lighthouse-web3/sdk', 'react', 'react-dom', 'react/jsx-runtime'],
-    exclude: [
-      // Excluir wallets não usadas do Thirdweb para reduzir bundle
-      // Manter apenas o que é necessário (Embedded Wallets)
-    ],
+    exclude: [],
     esbuildOptions: {
       define: {
         global: 'globalThis',
@@ -209,7 +190,6 @@ export default defineConfig(({ mode }) => ({
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
-        // Aumentar limite para permitir bundles grandes (Thirdweb + vendor podem ser ~6MB)
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024, // 6 MB
         runtimeCaching: [
           {

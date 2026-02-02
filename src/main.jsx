@@ -36,8 +36,6 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       const errorMessage = this.state.error?.message || 'Erro desconhecido'
       const errorStack = this.state.error?.stack || ''
-      const isClientIdError = errorMessage.includes('clientId') || errorStack.includes('clientId')
-
       return (
         <div
           style={{
@@ -78,52 +76,6 @@ class ErrorBoundary extends React.Component {
             )}
           </div>
 
-          {isClientIdError && (
-            <div
-              style={{
-                marginTop: '1.5rem',
-                padding: '1.5rem',
-                background: '#1a1a00',
-                borderRadius: '0.5rem',
-                maxWidth: '800px',
-                border: '1px solid #333300',
-              }}
-            >
-              <p
-                style={{
-                  color: '#ffa500',
-                  marginBottom: '0.75rem',
-                  fontWeight: 'bold',
-                  fontSize: '1.1rem',
-                }}
-              >
-                💡 Dica: Falha na configuração do Thirdweb Client
-              </p>
-              <p style={{ color: '#ccc', fontSize: '0.95rem', lineHeight: '1.5' }}>
-                Este erro geralmente ocorre quando o <strong>clientId</strong> não é fornecido ou o
-                objeto <strong>client</strong> está indefinido ao ser usado por um componente ou
-                hook da Thirdweb.
-              </p>
-              <div
-                style={{ marginTop: '1rem', textAlign: 'left', color: '#aaa', fontSize: '0.85rem' }}
-              >
-                <p>Verificações recomendadas:</p>
-                <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem' }}>
-                  <li>
-                    Certifique-se que <strong>VITE_THIRDWEB_CLIENT_ID</strong> está definido no seu
-                    arquivo <strong>.env</strong>
-                  </li>
-                  <li>
-                    Reinicie o servidor de desenvolvimento (npm run dev) para carregar mudanças no
-                    .env
-                  </li>
-                  <li>
-                    Verifique se o valor do clientId no .env não possui espaços ou aspas extras
-                  </li>
-                </ul>
-              </div>
-            </div>
-          )}
           <button
             onClick={() => window.location.reload()}
             style={{

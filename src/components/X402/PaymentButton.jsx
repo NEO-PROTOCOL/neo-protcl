@@ -17,7 +17,7 @@ export default function PaymentButton({
   const handlePayment = async () => {
     if (!isConfigured) {
       alert(
-        'x402 Payments não está configurado. Configure VITE_THIRDWEB_SECRET_KEY e VITE_X402_SERVER_WALLET_ADDRESS no .env'
+        'x402 Payments não está configurado. Configure VITE_X402_SERVER_WALLET_ADDRESS no .env'
       )
       return
     }

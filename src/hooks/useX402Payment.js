@@ -23,7 +23,7 @@ export function useX402Payment() {
     try {
       if (!x402Config.isConfigured) {
         throw new Error(
-          'x402 Payments não está configurado. Configure VITE_THIRDWEB_SECRET_KEY e VITE_X402_SERVER_WALLET_ADDRESS'
+          'x402 Payments não está configurado. Configure VITE_X402_SERVER_WALLET_ADDRESS (e secret no backend)'
         )
       }
 
