@@ -1,18 +1,8 @@
-// Comentado - wallet não está sendo usada
-// import { useAddress, useDisconnect, useConnectionStatus } from "@thirdweb-dev/react";
-// import { ConnectWallet } from "@thirdweb-dev/react";
-// import { soundManager } from '../../utils/sounds';
-
 /**
- * Botão de wallet como ícone para o Navbar
- * COMENTADO - Wallet não está sendo usada no momento
+ * Botão de wallet como ícone para o Navbar.
+ * Placeholder: wallet desabilitada até nova integração.
  */
 export default function WalletIconButton() {
-  // const address = useAddress();
-  // const disconnect = useDisconnect();
-  // const connectionStatus = useConnectionStatus();
-
-  // Componente desabilitado - wallet não está sendo usada
   return null
 
   /* Código original comentado:

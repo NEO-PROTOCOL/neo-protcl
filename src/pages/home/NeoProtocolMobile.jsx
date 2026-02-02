@@ -13,7 +13,6 @@ import { x402Config } from '../../providers/X402Provider'
  * Target: Mobile Home
  */
 export default function NeoProtocolMobile() {
-  // const account = useActiveAccount() // Temporarily disabled
   const account = null
   const [mcp, setMcp] = useState(getMCPState())
   const [events, setEvents] = useState(() => {

@@ -3,13 +3,8 @@ import { Link } from 'react-router-dom'
 import { soundManager } from '../utils/sounds'
 import ConnectButton from './WalletConnect/ConnectButton'
 import { getIPFSGatewayUrl } from '../services/intentDataCapture'
-// Wallet imports disabled
-
 export default function Navbar() {
   const logoCid = 'bafkreifm3hzdhem47tfzzqxm4274t3rqkzrgsa2zi2bc72nzjecxaixsxm'
-  // const account = useActiveAccount() // Temporariamente desabilitado
-  // const wallet = useActiveWallet() // Temporariamente desabilitado
-  // const disconnectHook = useDisconnect() // Temporariamente desabilitado
   const account = null
   const wallet = null
   const disconnectHook = null

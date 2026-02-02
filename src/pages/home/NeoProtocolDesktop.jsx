@@ -12,7 +12,6 @@ import { x402Config } from '../../providers/X402Provider'
  * Target: Desktop Home
  */
 export default function NeoProtocolDesktop() {
-  // const account = useActiveAccount() // Temporarily disabled
   const account = null
   const [mcp, setMcp] = useState(getMCPState())
   const [events, setEvents] = useState(() => {
